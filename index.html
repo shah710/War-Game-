@@ -726,7 +726,8 @@
         missileClass: "nuclear-attack",
         explosionClass: "nuclear-explosion",
         soundFreq: 90,
-        soundDur: 0.22
+        soundDur: 0.22,
+        audioFile: "nuclear.mp3"
       }
     };
 
@@ -735,9 +736,16 @@
       B: { x: 875, y: 232 }
     };
 
+    let nuclearAudio = null;
+
     function sanitizeCountryName(name) {
       const cleaned = name.replace(/[<>]/g, "").trim();
       return cleaned.length ? cleaned : "Blue Nation";
+    }
+
+    function setupAudio() {
+      nuclearAudio = new Audio(attackData.nuclear.audioFile);
+      nuclearAudio.preload = "auto";
     }
 
     function startGame() {
@@ -749,6 +757,7 @@
       document.getElementById("gameArea").classList.remove("hidden");
 
       applyNames();
+      setupAudio();
       restartGame(true);
     }
 
@@ -848,7 +857,7 @@
       document.body.classList.add("shake");
     }
 
-    function playAttackSound(type) {
+    function playSyntheticSound(type) {
       const data = attackData[type];
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
       if (!AudioContextClass) return;
@@ -879,6 +888,22 @@
         }, 400);
       } catch (e) {
       }
+    }
+
+    function playAttackSound(type) {
+      if (type === "nuclear" && nuclearAudio) {
+        try {
+          nuclearAudio.pause();
+          nuclearAudio.currentTime = 0;
+          nuclearAudio.play().catch(() => {
+            playSyntheticSound(type);
+          });
+          return;
+        } catch (e) {
+        }
+      }
+
+      playSyntheticSound(type);
     }
 
     function createImpactRing(map, x, y, size) {
