@@ -352,21 +352,20 @@
       100% { opacity: 0; width: 520px; }
     }
 
-    @keyframes boom {
-      0% {
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
-      60% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(2.8);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(4.2);
-      }
-    }
-
+@keyframes boom {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.2);
+  }
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(calc(var(--scale) * 1));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.6));
+  }
+}
     @media (max-width: 900px) {
       .hud {
         grid-template-columns: 1fr;
@@ -580,52 +579,61 @@
       return rand(2, 4);
     }
 
-    function animateAttack(attacker, defender, callback) {
-      const map = document.getElementById("map");
-      const from = positions[attacker];
-      const to = positions[defender];
+    
+      function animateAttack(attacker, defender, type, callback) {
+  const map = document.getElementById("map");
+  const from = positions[attacker];
+  const to = positions[defender];
 
-      const missile = document.createElement("div");
-      missile.className = "missile";
-      missile.style.left = from.x + "px";
-      missile.style.top = from.y + "px";
+  const missile = document.createElement("div");
+  missile.className = "missile";
+  missile.style.left = from.x + "px";
+  missile.style.top = from.y + "px";
 
-      const trail = document.createElement("div");
-      trail.className = "trail";
-      trail.style.left = from.x + "px";
-      trail.style.top = (from.y + 2) + "px";
+  const trail = document.createElement("div");
+  trail.className = "trail";
+  trail.style.left = from.x + "px";
+  trail.style.top = (from.y + 2) + "px";
 
-      const explosion = document.createElement("div");
-      explosion.className = "explosion";
-      explosion.style.left = to.x + "px";
-      explosion.style.top = to.y + "px";
+  const explosion = document.createElement("div");
+  explosion.className = "explosion";
+  explosion.style.left = to.x + "px";
+  explosion.style.top = to.y + "px";
 
-      map.appendChild(trail);
-      map.appendChild(missile);
-      map.appendChild(explosion);
+  // 💥 SIZE BASED ON WEAPON
+  let scale = 1;
+  if (type === "missile") scale = 1.5;
+  if (type === "ballistic") scale = 2.5;
+  if (type === "nuclear") scale = 4;
 
-      if (attacker === "A") {
-        missile.style.animation = "fly-right 0.9s linear forwards";
-        trail.style.animation = "trail-grow-right 0.85s linear forwards";
-      } else {
-        missile.style.animation = "fly-left 0.9s linear forwards";
-        trail.style.left = to.x + "px";
-        trail.style.top = (to.y + 2) + "px";
-        trail.style.transform = "rotate(180deg)";
-        trail.style.animation = "trail-grow-left 0.85s linear forwards";
-      }
+  explosion.style.setProperty("--scale", scale);
 
-      setTimeout(() => {
-        explosion.style.animation = "boom 0.75s ease-out forwards";
-      }, 820);
+  map.appendChild(trail);
+  map.appendChild(missile);
+  map.appendChild(explosion);
 
-      setTimeout(() => {
-        missile.remove();
-        trail.remove();
-        explosion.remove();
-        callback();
-      }, 1650);
-    }
+  if (attacker === "A") {
+    missile.style.animation = "fly-right 0.9s linear forwards";
+    trail.style.animation = "trail-grow-right 0.85s linear forwards";
+  } else {
+    missile.style.animation = "fly-left 0.9s linear forwards";
+    trail.style.left = to.x + "px";
+    trail.style.top = (to.y + 2) + "px";
+    trail.style.transform = "rotate(180deg)";
+    trail.style.animation = "trail-grow-left 0.85s linear forwards";
+  }
+
+  setTimeout(() => {
+    explosion.style.animation = "boom 0.75s ease-out forwards";
+  }, 820);
+
+  setTimeout(() => {
+    missile.remove();
+    trail.remove();
+    explosion.remove();
+    callback();
+  }, 1650);
+}
 
     function playerAttack(type) {
       if (gameOver || busy) return;
