@@ -1,216 +1,204 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Country A vs Country B</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #111;
-      color: #eee;
-      text-align: center;
-      padding: 20px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>War Game</title>
 
-    .container {
-      max-width: 900px;
-      margin: auto;
-      background: #1c1c1c;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px rgba(255,255,255,0.08);
-    }
+<style>
+body {
+  font-family: Arial;
+  background: #111;
+  color: white;
+  text-align: center;
+}
 
-    h1 {
-      margin-bottom: 10px;
-    }
+.container {
+  max-width: 900px;
+  margin: auto;
+}
 
-    .scoreboard {
-      display: flex;
-      justify-content: space-around;
-      margin: 20px 0;
-      font-size: 20px;
-      font-weight: bold;
-    }
+/* Beta banner */
+.beta {
+  background: #ffcc00;
+  color: black;
+  padding: 8px;
+  border-radius: 6px;
+  margin: 10px;
+  font-weight: bold;
+}
 
-    .turn {
-      margin: 15px 0;
-      font-size: 18px;
-    }
+/* Countries */
+.countries {
+  display: flex;
+  justify-content: space-around;
+  margin: 30px 0;
+}
 
-    .buttons {
-      margin: 20px 0;
-    }
+.country {
+  width: 40%;
+}
 
-    button {
-      margin: 8px;
-      padding: 12px 20px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      background: #2d6cdf;
-      color: white;
-    }
+/* Health bars */
+.bar {
+  height: 25px;
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-    button:hover {
-      background: #1e4fa8;
-    }
+.fill {
+  height: 100%;
+  width: 100%;
+}
 
-    button:disabled {
-      background: #666;
-      cursor: not-allowed;
-    }
+/* Colors */
+.blue { background: #2196f3; }
+.red { background: #e53935; }
 
-    #log {
-      margin-top: 20px;
-      text-align: left;
-      background: #0d0d0d;
-      padding: 15px;
-      border-radius: 8px;
-      height: 260px;
-      overflow-y: auto;
-      border: 1px solid #333;
-    }
+/* Buttons */
+button {
+  padding: 12px 20px;
+  margin: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
 
-    .winner {
-      font-size: 24px;
-      margin-top: 20px;
-      color: #ffd54a;
-    }
+button:hover {
+  opacity: 0.8;
+}
 
-    .restart {
-      background: #28a745;
-    }
-
-    .restart:hover {
-      background: #1d7f34;
-    }
-  </style>
+#log {
+  background: black;
+  height: 200px;
+  overflow-y: auto;
+  margin-top: 20px;
+  padding: 10px;
+  text-align: left;
+}
+</style>
 </head>
+
 <body>
-  <div class="container">
-    <h1>War Game: Country A vs Country B</h1>
-    <p>Each country takes turns attacking. After 10 rounds, the country with fewer points loses.</p>
 
-    <div class="scoreboard">
-      <div>Country A Points: <span id="scoreA">100</span></div>
-      <div>Country B Points: <span id="scoreB">100</span></div>
+<div class="container">
+  <h1>War Game: Country A vs Country B</h1>
+  <div class="beta">⚠️ Trial Version — Beta v0.1</div>
+
+  <p>You are <b style="color:#2196f3;">Country A (Blue)</b><br>
+  Computer is <b style="color:#e53935;">Country B (Red)</b></p>
+
+  <div class="countries">
+    <div class="country">
+      <h2 style="color:#2196f3;">Country A</h2>
+      <div class="bar"><div id="barA" class="fill blue"></div></div>
+      <p>Points: <span id="scoreA">100</span></p>
     </div>
 
-    <div class="turn">
-      Round: <span id="round">1</span> / 10<br />
-      Current Turn: <span id="currentTurn">Country A</span>
+    <div class="country">
+      <h2 style="color:#e53935;">Country B</h2>
+      <div class="bar"><div id="barB" class="fill red"></div></div>
+      <p>Points: <span id="scoreB">100</span></p>
     </div>
-
-    <div class="buttons">
-      <button onclick="attack('missile')">Missile Attack</button>
-      <button onclick="attack('ballistic')">Ballistic Attack</button>
-      <button onclick="attack('nuclear')">Nuclear Bomb</button>
-    </div>
-
-    <div id="log"></div>
-    <div class="winner" id="winner"></div>
-    <button class="restart" onclick="restartGame()">Restart Game</button>
   </div>
 
-  <script>
-    let scoreA = 100;
-    let scoreB = 100;
-    let round = 1;
-    let maxRounds = 10;
-    let currentPlayer = "A";
-    let gameOver = false;
+  <div>
+    <button onclick="playerAttack('missile')">Missile</button>
+    <button onclick="playerAttack('ballistic')">Ballistic</button>
+    <button onclick="playerAttack('nuclear')">Nuclear</button>
+  </div>
 
-    const attackTypes = {
-      missile: { min: 8, max: 15, label: "Missile Attack" },
-      ballistic: { min: 12, max: 22, label: "Ballistic Attack" },
-      nuclear: { min: 18, max: 35, label: "Nuclear Bomb" }
-    };
+  <h3 id="round">Round 1 / 10</h3>
+  <div id="log"></div>
+  <h2 id="result"></h2>
+</div>
 
-    function randomDamage(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+<script>
+let scoreA = 100;
+let scoreB = 100;
+let round = 1;
+let maxRounds = 10;
+let gameOver = false;
 
-    function logMessage(message) {
-      const log = document.getElementById("log");
-      const entry = document.createElement("div");
-      entry.textContent = message;
-      log.prepend(entry);
-    }
+const attacks = {
+  missile: [8,15],
+  ballistic: [12,22],
+  nuclear: [18,35]
+};
 
-    function updateUI() {
-      document.getElementById("scoreA").textContent = scoreA;
-      document.getElementById("scoreB").textContent = scoreB;
-      document.getElementById("round").textContent = round;
-      document.getElementById("currentTurn").textContent =
-        currentPlayer === "A" ? "Country A" : "Country B";
+function rand(min,max){
+  return Math.floor(Math.random()*(max-min+1))+min;
+}
 
-      const buttons = document.querySelectorAll("button");
-      buttons.forEach(btn => {
-        if (!btn.classList.contains("restart")) {
-          btn.disabled = gameOver;
-        }
-      });
-    }
+function updateBars(){
+  document.getElementById("scoreA").textContent = scoreA;
+  document.getElementById("scoreB").textContent = scoreB;
 
-    function attack(type) {
-      if (gameOver) return;
+  document.getElementById("barA").style.width = scoreA + "%";
+  document.getElementById("barB").style.width = scoreB + "%";
 
-      const attackData = attackTypes[type];
-      const damage = randomDamage(attackData.min, attackData.max);
+  document.getElementById("round").textContent =
+    "Round " + round + " / 10";
+}
 
-      if (currentPlayer === "A") {
-        scoreB -= damage;
-        if (scoreB < 0) scoreB = 0;
-        logMessage(`Country A used ${attackData.label} and caused ${damage} damage to Country B.`);
-        currentPlayer = "B";
-      } else {
-        scoreA -= damage;
-        if (scoreA < 0) scoreA = 0;
-        logMessage(`Country B used ${attackData.label} and caused ${damage} damage to Country A.`);
-        currentPlayer = "A";
-        round++;
-      }
+function log(msg){
+  let div = document.createElement("div");
+  div.textContent = msg;
+  document.getElementById("log").prepend(div);
+}
 
-      if (round > maxRounds || scoreA <= 0 || scoreB <= 0) {
-        endGame();
-      }
+function playerAttack(type){
+  if(gameOver) return;
 
-      updateUI();
-    }
+  let dmg = rand(...attacks[type]);
+  scoreB -= dmg;
+  if(scoreB < 0) scoreB = 0;
 
-    function endGame() {
-      gameOver = true;
+  log("You used " + type + " → -" + dmg + " to Country B");
 
-      let result = "";
-      if (scoreA > scoreB) {
-        result = "Country A wins! Country B loses!";
-      } else if (scoreB > scoreA) {
-        result = "Country B wins! Country A loses!";
-      } else {
-        result = "It's a draw!";
-      }
+  updateBars();
 
-      document.getElementById("winner").textContent = result;
-      logMessage("Game Over: " + result);
-    }
+  if(checkEnd()) return;
 
-    function restartGame() {
-      scoreA = 100;
-      scoreB = 100;
-      round = 1;
-      currentPlayer = "A";
-      gameOver = false;
-      document.getElementById("winner").textContent = "";
-      document.getElementById("log").innerHTML = "";
-      updateUI();
-      logMessage("New game started.");
-    }
+  setTimeout(aiTurn, 800);
+}
 
-    updateUI();
-    logMessage("New game started.");
-  </script>
+function aiTurn(){
+  let types = ["missile","ballistic","nuclear"];
+  let type = types[Math.floor(Math.random()*3)];
+
+  let dmg = rand(...attacks[type]);
+  scoreA -= dmg;
+  if(scoreA < 0) scoreA = 0;
+
+  log("Computer used " + type + " → -" + dmg + " to YOU");
+
+  round++;
+  updateBars();
+
+  checkEnd();
+}
+
+function checkEnd(){
+  if(round > maxRounds || scoreA <= 0 || scoreB <= 0){
+    gameOver = true;
+
+    let result = "";
+    if(scoreA > scoreB) result = "🏆 YOU WIN!";
+    else if(scoreB > scoreA) result = "💀 COMPUTER WINS!";
+    else result = "🤝 DRAW";
+
+    document.getElementById("result").textContent = result;
+    return true;
+  }
+  return false;
+}
+
+updateBars();
+log("Game started.");
+</script>
+
 </body>
 </html>
