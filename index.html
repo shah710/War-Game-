@@ -1,204 +1,722 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>War Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>War Game Beta v0.1</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<style>
-body {
-  font-family: Arial;
-  background: #111;
-  color: white;
-  text-align: center;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #1d3557 0%, #0b1320 45%, #05080f 100%);
+      color: white;
+      text-align: center;
+    }
 
-.container {
-  max-width: 900px;
-  margin: auto;
-}
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-/* Beta banner */
-.beta {
-  background: #ffcc00;
-  color: black;
-  padding: 8px;
-  border-radius: 6px;
-  margin: 10px;
-  font-weight: bold;
-}
+    h1 {
+      margin-bottom: 8px;
+    }
 
-/* Countries */
-.countries {
-  display: flex;
-  justify-content: space-around;
-  margin: 30px 0;
-}
+    .beta {
+      display: inline-block;
+      background: #ffd166;
+      color: #111;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 14px;
+    }
 
-.country {
-  width: 40%;
-}
+    .subtitle {
+      color: #d7e3f4;
+      margin-bottom: 20px;
+    }
 
-/* Health bars */
-.bar {
-  height: 25px;
-  background: #333;
-  border-radius: 10px;
-  overflow: hidden;
-}
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
 
-.fill {
-  height: 100%;
-  width: 100%;
-}
+    .panel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+    }
 
-/* Colors */
-.blue { background: #2196f3; }
-.red { background: #e53935; }
+    .country-name {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
 
-/* Buttons */
-button {
-  padding: 12px 20px;
-  margin: 10px;
-  font-size: 16px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-}
+    .blue-text { color: #4da3ff; }
+    .red-text { color: #ff5e5e; }
 
-button:hover {
-  opacity: 0.8;
-}
+    .bar-wrap {
+      background: rgba(255,255,255,0.12);
+      height: 26px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
 
-#log {
-  background: black;
-  height: 200px;
-  overflow-y: auto;
-  margin-top: 20px;
-  padding: 10px;
-  text-align: left;
-}
-</style>
+    .bar {
+      height: 100%;
+      width: 100%;
+      transition: width 0.5s ease;
+    }
+
+    .bar.blue {
+      background: linear-gradient(90deg, #2f7de1, #64b5ff);
+    }
+
+    .bar.red {
+      background: linear-gradient(90deg, #c62828, #ff6b6b);
+    }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      font-size: 15px;
+      color: #d8e1ea;
+    }
+
+    .map {
+      position: relative;
+      height: 430px;
+      margin: 22px 0;
+      border-radius: 22px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05), transparent 20%),
+        radial-gradient(circle at 75% 30%, rgba(255,255,255,0.04), transparent 18%),
+        radial-gradient(circle at 60% 70%, rgba(255,255,255,0.04), transparent 16%),
+        linear-gradient(180deg, #16324f 0%, #0d2238 100%);
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.3);
+    }
+
+    .grid-lines::before,
+    .grid-lines::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .grid-lines::before {
+      background:
+        repeating-linear-gradient(
+          to right,
+          transparent 0,
+          transparent 59px,
+          rgba(255,255,255,0.05) 60px
+        ),
+        repeating-linear-gradient(
+          to bottom,
+          transparent 0,
+          transparent 59px,
+          rgba(255,255,255,0.05) 60px
+        );
+      opacity: 0.35;
+    }
+
+    .land {
+      position: absolute;
+      background: #3f6b45;
+      opacity: 0.9;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.25));
+    }
+
+    .land1 {
+      width: 230px;
+      height: 150px;
+      left: 90px;
+      top: 120px;
+      clip-path: polygon(5% 28%, 22% 8%, 52% 4%, 80% 16%, 94% 44%, 89% 75%, 70% 96%, 36% 92%, 14% 78%, 0% 54%);
+    }
+
+    .land2 {
+      width: 250px;
+      height: 165px;
+      right: 75px;
+      top: 110px;
+      clip-path: polygon(8% 20%, 30% 4%, 74% 10%, 96% 36%, 100% 70%, 79% 92%, 46% 96%, 18% 86%, 2% 58%);
+    }
+
+    .country {
+      position: absolute;
+      width: 190px;
+      height: 140px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+      border: 2px solid rgba(255,255,255,0.25);
+      box-shadow: inset 0 0 30px rgba(255,255,255,0.07), 0 10px 20px rgba(0,0,0,0.25);
+    }
+
+    .country.a {
+      left: 110px;
+      top: 130px;
+      background: linear-gradient(135deg, rgba(47,125,225,0.95), rgba(30,80,160,0.95));
+    }
+
+    .country.b {
+      right: 95px;
+      top: 125px;
+      background: linear-gradient(135deg, rgba(198,40,40,0.95), rgba(120,15,15,0.95));
+    }
+
+    .capital {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 18px rgba(255,255,255,0.7);
+      z-index: 3;
+    }
+
+    .capital.a {
+      left: 255px;
+      top: 192px;
+      background: #8ecaff;
+    }
+
+    .capital.b {
+      right: 225px;
+      top: 190px;
+      background: #ffb0b0;
+    }
+
+    .label {
+      position: absolute;
+      font-size: 14px;
+      color: #eef6ff;
+      z-index: 3;
+    }
+
+    .label.a {
+      left: 280px;
+      top: 188px;
+    }
+
+    .label.b {
+      right: 110px;
+      top: 186px;
+    }
+
+    .missile {
+      position: absolute;
+      width: 18px;
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, #fff, #ffb703);
+      box-shadow: 0 0 12px rgba(255,255,255,0.85);
+      z-index: 5;
+      opacity: 0;
+      transform-origin: center;
+    }
+
+    .trail {
+      position: absolute;
+      height: 2px;
+      background: rgba(255,255,255,0.5);
+      z-index: 4;
+      opacity: 0;
+      transform-origin: left center;
+    }
+
+    .explosion {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 6;
+      background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb5607 60%, rgba(255,0,0,0.2) 100%);
+      transform: translate(-50%, -50%) scale(0.2);
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 18px 0;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.15s ease, opacity 0.15s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-missile { background: #2f7de1; }
+    .btn-ballistic { background: #7b2cbf; }
+    .btn-nuclear { background: #c62828; }
+    .btn-restart { background: #2a9d8f; }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      color: #d8e1ea;
+    }
+
+    .status {
+      font-weight: bold;
+      min-height: 24px;
+    }
+
+    #log {
+      margin-top: 16px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 14px;
+      height: 220px;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    #log div {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+
+    #result {
+      font-size: 28px;
+      font-weight: bold;
+      margin-top: 12px;
+      min-height: 38px;
+    }
+
+    @keyframes fly-right {
+      0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
+      100% { opacity: 1; transform: translate(520px, -5px) rotate(0deg); }
+    }
+
+    @keyframes fly-left {
+      0% { opacity: 1; transform: translate(0, 0) rotate(180deg); }
+      100% { opacity: 1; transform: translate(-520px, 5px) rotate(180deg); }
+    }
+
+    @keyframes trail-grow-right {
+      0% { opacity: 0.7; width: 0; }
+      100% { opacity: 0; width: 520px; }
+    }
+
+    @keyframes trail-grow-left {
+      0% { opacity: 0.7; width: 0; }
+      100% { opacity: 0; width: 520px; }
+    }
+
+    @keyframes boom {
+      0% {
+        opacity: 0.95;
+        transform: translate(-50%, -50%) scale(0.2);
+      }
+      60% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(2.8);
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(4.2);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .hud {
+        grid-template-columns: 1fr;
+      }
+
+      .map {
+        height: 360px;
+      }
+
+      .country {
+        width: 150px;
+        height: 110px;
+        font-size: 22px;
+      }
+
+      .country.a {
+        left: 50px;
+      }
+
+      .country.b {
+        right: 40px;
+      }
+
+      .capital.a {
+        left: 165px;
+      }
+
+      .capital.b {
+        right: 145px;
+      }
+
+      .label.a {
+        left: 190px;
+      }
+
+      .label.b {
+        right: 35px;
+      }
+    }
+  </style>
 </head>
-
 <body>
-
-<div class="container">
-  <h1>War Game: Country A vs Country B</h1>
-  <div class="beta">⚠️ Trial Version — Beta v0.1</div>
-
-  <p>You are <b style="color:#2196f3;">Country A (Blue)</b><br>
-  Computer is <b style="color:#e53935;">Country B (Red)</b></p>
-
-  <div class="countries">
-    <div class="country">
-      <h2 style="color:#2196f3;">Country A</h2>
-      <div class="bar"><div id="barA" class="fill blue"></div></div>
-      <p>Points: <span id="scoreA">100</span></p>
+  <div class="container">
+    <h1>War Game: Country A vs Country B</h1>
+    <div class="beta">⚠️ Trial Version — Beta v0.1</div>
+    <div class="subtitle">
+      You are <span class="blue-text"><b>Country A</b></span>. The computer is
+      <span class="red-text"><b>Country B</b></span>.
     </div>
 
-    <div class="country">
-      <h2 style="color:#e53935;">Country B</h2>
-      <div class="bar"><div id="barB" class="fill red"></div></div>
-      <p>Points: <span id="scoreB">100</span></p>
+    <div class="hud">
+      <div class="panel">
+        <div class="country-name blue-text">Country A</div>
+        <div class="bar-wrap"><div id="barA" class="bar blue"></div></div>
+        <div class="stats">
+          <span>Points: <span id="scoreA">100</span></span>
+          <span>Player</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="country-name red-text">Country B</div>
+        <div class="bar-wrap"><div id="barB" class="bar red"></div></div>
+        <div class="stats">
+          <span>Points: <span id="scoreB">100</span></span>
+          <span>Computer AI</span>
+        </div>
+      </div>
     </div>
+
+    <div class="map grid-lines" id="map">
+      <div class="land land1"></div>
+      <div class="land land2"></div>
+
+      <div class="country a">A</div>
+      <div class="country b">B</div>
+
+      <div class="capital a"></div>
+      <div class="capital b"></div>
+
+      <div class="label a">Capital A</div>
+      <div class="label b">Capital B</div>
+    </div>
+
+    <div class="info-row">
+      <div>Round: <b id="round">1</b> / 10</div>
+      <div class="status" id="status">Your turn</div>
+    </div>
+
+    <div class="controls">
+      <button class="btn-missile" id="btnMissile" onclick="playerAttack('missile')">Missile</button>
+      <button class="btn-ballistic" id="btnBallistic" onclick="playerAttack('ballistic')">Ballistic</button>
+      <button class="btn-nuclear" id="btnNuclear" onclick="playerAttack('nuclear')">Nuclear</button>
+      <button class="btn-restart" onclick="restartGame()">Restart</button>
+    </div>
+
+    <div id="result"></div>
+    <div id="log"></div>
   </div>
 
-  <div>
-    <button onclick="playerAttack('missile')">Missile</button>
-    <button onclick="playerAttack('ballistic')">Ballistic</button>
-    <button onclick="playerAttack('nuclear')">Nuclear</button>
-  </div>
+  <script>
+    let scoreA = 100;
+    let scoreB = 100;
+    let round = 1;
+    const maxRounds = 10;
+    let gameOver = false;
+    let busy = false;
 
-  <h3 id="round">Round 1 / 10</h3>
-  <div id="log"></div>
-  <h2 id="result"></h2>
-</div>
+    const attackData = {
+      missile: {
+        label: "Missile",
+        min: 8,
+        max: 15
+      },
+      ballistic: {
+        label: "Ballistic",
+        min: 12,
+        max: 22
+      },
+      nuclear: {
+        label: "Nuclear",
+        min: 18,
+        max: 35
+      }
+    };
 
-<script>
-let scoreA = 100;
-let scoreB = 100;
-let round = 1;
-let maxRounds = 10;
-let gameOver = false;
+    const positions = {
+      A: { x: 270, y: 200 },
+      B: { x: 820, y: 198 }
+    };
 
-const attacks = {
-  missile: [8,15],
-  ballistic: [12,22],
-  nuclear: [18,35]
-};
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-function rand(min,max){
-  return Math.floor(Math.random()*(max-min+1))+min;
-}
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
 
-function updateBars(){
-  document.getElementById("scoreA").textContent = scoreA;
-  document.getElementById("scoreB").textContent = scoreB;
+    function logMessage(message) {
+      const log = document.getElementById("log");
+      const entry = document.createElement("div");
+      entry.textContent = message;
+      log.prepend(entry);
+    }
 
-  document.getElementById("barA").style.width = scoreA + "%";
-  document.getElementById("barB").style.width = scoreB + "%";
+    function updateUI() {
+      document.getElementById("scoreA").textContent = scoreA;
+      document.getElementById("scoreB").textContent = scoreB;
+      document.getElementById("barA").style.width = scoreA + "%";
+      document.getElementById("barB").style.width = scoreB + "%";
+      document.getElementById("round").textContent = Math.min(round, maxRounds);
 
-  document.getElementById("round").textContent =
-    "Round " + round + " / 10";
-}
+      disableAttackButtons(gameOver || busy);
+    }
 
-function log(msg){
-  let div = document.createElement("div");
-  div.textContent = msg;
-  document.getElementById("log").prepend(div);
-}
+    function disableAttackButtons(disabled) {
+      document.getElementById("btnMissile").disabled = disabled;
+      document.getElementById("btnBallistic").disabled = disabled;
+      document.getElementById("btnNuclear").disabled = disabled;
+    }
 
-function playerAttack(type){
-  if(gameOver) return;
+    function setStatus(text) {
+      document.getElementById("status").textContent = text;
+    }
 
-  let dmg = rand(...attacks[type]);
-  scoreB -= dmg;
-  if(scoreB < 0) scoreB = 0;
+    function calculateDamage(type, attacker, defender) {
+      const attack = attackData[type];
+      let damage = rand(attack.min, attack.max);
 
-  log("You used " + type + " → -" + dmg + " to Country B");
+      if (attacker === "B") {
+        damage += aiBonus(type);
+      }
 
-  updateBars();
+      if (type === "nuclear") {
+        if (attacker === "A" && scoreA < 30) damage -= 3;
+        if (attacker === "B" && scoreB < 30) damage += 2;
+      }
 
-  if(checkEnd()) return;
+      return clamp(damage, 5, 40);
+    }
 
-  setTimeout(aiTurn, 800);
-}
+    function aiChooseAttack() {
+      const lead = scoreB - scoreA;
 
-function aiTurn(){
-  let types = ["missile","ballistic","nuclear"];
-  let type = types[Math.floor(Math.random()*3)];
+      if (scoreB <= 25) {
+        return Math.random() < 0.65 ? "nuclear" : "ballistic";
+      }
 
-  let dmg = rand(...attacks[type]);
-  scoreA -= dmg;
-  if(scoreA < 0) scoreA = 0;
+      if (scoreA <= 20) {
+        return Math.random() < 0.6 ? "missile" : "ballistic";
+      }
 
-  log("Computer used " + type + " → -" + dmg + " to YOU");
+      if (lead < -18) {
+        return Math.random() < 0.7 ? "nuclear" : "ballistic";
+      }
 
-  round++;
-  updateBars();
+      if (lead > 15) {
+        return Math.random() < 0.65 ? "missile" : "ballistic";
+      }
 
-  checkEnd();
-}
+      const roll = Math.random();
+      if (roll < 0.4) return "missile";
+      if (roll < 0.75) return "ballistic";
+      return "nuclear";
+    }
 
-function checkEnd(){
-  if(round > maxRounds || scoreA <= 0 || scoreB <= 0){
-    gameOver = true;
+    function aiBonus(type) {
+      if (type === "missile") return rand(0, 2);
+      if (type === "ballistic") return rand(1, 3);
+      return rand(2, 4);
+    }
 
-    let result = "";
-    if(scoreA > scoreB) result = "🏆 YOU WIN!";
-    else if(scoreB > scoreA) result = "💀 COMPUTER WINS!";
-    else result = "🤝 DRAW";
+    function animateAttack(attacker, defender, callback) {
+      const map = document.getElementById("map");
+      const from = positions[attacker];
+      const to = positions[defender];
 
-    document.getElementById("result").textContent = result;
-    return true;
-  }
-  return false;
-}
+      const missile = document.createElement("div");
+      missile.className = "missile";
+      missile.style.left = from.x + "px";
+      missile.style.top = from.y + "px";
 
-updateBars();
-log("Game started.");
-</script>
+      const trail = document.createElement("div");
+      trail.className = "trail";
+      trail.style.left = from.x + "px";
+      trail.style.top = (from.y + 2) + "px";
 
+      const explosion = document.createElement("div");
+      explosion.className = "explosion";
+      explosion.style.left = to.x + "px";
+      explosion.style.top = to.y + "px";
+
+      map.appendChild(trail);
+      map.appendChild(missile);
+      map.appendChild(explosion);
+
+      if (attacker === "A") {
+        missile.style.animation = "fly-right 0.9s linear forwards";
+        trail.style.animation = "trail-grow-right 0.85s linear forwards";
+      } else {
+        missile.style.animation = "fly-left 0.9s linear forwards";
+        trail.style.left = to.x + "px";
+        trail.style.top = (to.y + 2) + "px";
+        trail.style.transform = "rotate(180deg)";
+        trail.style.animation = "trail-grow-left 0.85s linear forwards";
+      }
+
+      setTimeout(() => {
+        explosion.style.animation = "boom 0.75s ease-out forwards";
+      }, 820);
+
+      setTimeout(() => {
+        missile.remove();
+        trail.remove();
+        explosion.remove();
+        callback();
+      }, 1650);
+    }
+
+    function playerAttack(type) {
+      if (gameOver || busy) return;
+
+      busy = true;
+      updateUI();
+      setStatus("Launching " + attackData[type].label + "...");
+
+      animateAttack("A", "B", () => {
+        const damage = calculateDamage(type, "A", "B");
+        scoreB = Math.max(0, scoreB - damage);
+
+        logMessage("You used " + attackData[type].label + " and dealt " + damage + " damage to Country B.");
+        updateUI();
+
+        if (checkEnd()) {
+          busy = false;
+          updateUI();
+          return;
+        }
+
+        setStatus("Computer is thinking...");
+        setTimeout(aiTurn, 700);
+      });
+    }
+
+    function aiTurn() {
+      if (gameOver) return;
+
+      const type = aiChooseAttack();
+
+      animateAttack("B", "A", () => {
+        const damage = calculateDamage(type, "B", "A");
+        scoreA = Math.max(0, scoreA - damage);
+
+        logMessage("Computer used " + attackData[type].label + " and dealt " + damage + " damage to Country A.");
+        round++;
+        updateUI();
+
+        busy = false;
+
+        if (checkEnd()) {
+          updateUI();
+          return;
+        }
+
+        setStatus("Your turn");
+        updateUI();
+      });
+    }
+
+    function checkEnd() {
+      if (scoreA <= 0 || scoreB <= 0 || round > maxRounds) {
+        gameOver = true;
+        disableAttackButtons(true);
+
+        let resultText = "";
+        if (scoreA > scoreB) {
+          resultText = "🏆 You win!";
+        } else if (scoreB > scoreA) {
+          resultText = "💀 Computer wins!";
+        } else {
+          resultText = "🤝 Draw!";
+        }
+
+        document.getElementById("result").textContent = resultText;
+        setStatus("Game over");
+        logMessage("Game Over — " + resultText);
+        return true;
+      }
+
+      return false;
+    }
+
+    function restartGame() {
+      scoreA = 100;
+      scoreB = 100;
+      round = 1;
+      gameOver = false;
+      busy = false;
+
+      document.getElementById("result").textContent = "";
+      document.getElementById("log").innerHTML = "";
+      setStatus("Your turn");
+
+      updateUI();
+      logMessage("New game started.");
+    }
+
+    updateUI();
+    logMessage("New game started.");
+  </script>
 </body>
 </html>
