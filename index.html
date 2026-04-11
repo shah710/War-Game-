@@ -5,9 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>War Game Beta v0.1</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     :root {
       --blue1: #2f7de1;
@@ -24,16 +22,13 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background:
-        radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
       color: white;
       text-align: center;
       overflow-x: hidden;
     }
 
-    body.shake {
-      animation: screenShake 0.35s linear;
-    }
+    body.shake { animation: screenShake 0.35s linear; }
 
     @keyframes screenShake {
       0% { transform: translate(0, 0); }
@@ -50,9 +45,7 @@
       padding: 20px;
     }
 
-    h1 {
-      margin-bottom: 8px;
-    }
+    h1 { margin-bottom: 8px; }
 
     .beta {
       display: inline-block;
@@ -69,8 +62,7 @@
       margin-bottom: 18px;
     }
 
-    .start-panel,
-    .panel {
+    .start-panel, .panel {
       background: var(--panel);
       border: 1px solid var(--panel-border);
       border-radius: 18px;
@@ -93,7 +85,7 @@
 
     input {
       min-width: 260px;
-      padding: 14px 14px;
+      padding: 14px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(255,255,255,0.08);
@@ -102,9 +94,7 @@
       outline: none;
     }
 
-    input::placeholder {
-      color: #c8d4e4;
-    }
+    input::placeholder { color: #c8d4e4; }
 
     .hud {
       display: grid;
@@ -113,9 +103,7 @@
       margin-bottom: 18px;
     }
 
-    .panel {
-      padding: 14px;
-    }
+    .panel { padding: 14px; }
 
     .country-name {
       font-size: 22px;
@@ -143,13 +131,8 @@
       transition: width 0.45s ease;
     }
 
-    .bar.blue {
-      background: linear-gradient(90deg, var(--blue1), var(--blue2));
-    }
-
-    .bar.red {
-      background: linear-gradient(90deg, var(--red1), var(--red2));
-    }
+    .bar.blue { background: linear-gradient(90deg, var(--blue1), var(--blue2)); }
+    .bar.red { background: linear-gradient(90deg, var(--red1), var(--red2)); }
 
     .stats {
       display: flex;
@@ -180,18 +163,8 @@
       inset: 0;
       pointer-events: none;
       background:
-        repeating-linear-gradient(
-          to right,
-          transparent 0,
-          transparent 59px,
-          rgba(255,255,255,0.05) 60px
-        ),
-        repeating-linear-gradient(
-          to bottom,
-          transparent 0,
-          transparent 59px,
-          rgba(255,255,255,0.05) 60px
-        );
+        repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.05) 60px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.05) 60px);
       opacity: 0.35;
     }
 
@@ -433,9 +406,7 @@
       box-shadow: 0 8px 18px rgba(0,0,0,0.25);
     }
 
-    button:hover {
-      transform: translateY(-2px);
-    }
+    button:hover { transform: translateY(-2px); }
 
     button:disabled {
       opacity: 0.55;
@@ -487,9 +458,7 @@
       min-height: 40px;
     }
 
-    .hidden {
-      display: none;
-    }
+    .hidden { display: none; }
 
     @keyframes fly-right {
       0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
@@ -512,105 +481,35 @@
     }
 
     @keyframes boom {
-      0% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
-      60% {
-        opacity: 1;
-        transform: translate(-50%, -50%) scale(calc(var(--scale) * 1));
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.6));
-      }
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.2); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1)); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.6)); }
     }
 
     @keyframes ringExpand {
-      0% {
-        opacity: 0.95;
-        transform: translate(-50%, -50%) scale(0.2);
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -50%) scale(2.8);
-      }
+      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
     }
 
     @keyframes cloudRise {
-      0% {
-        opacity: 0.05;
-        transform: translate(-50%, -30%) scale(0.35);
-      }
-      30% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-        transform: translate(-50%, -95%) scale(1.3);
-      }
+      0% { opacity: 0.05; transform: translate(-50%, -30%) scale(0.35); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -95%) scale(1.3); }
     }
 
     @media (max-width: 900px) {
-      .hud {
-        grid-template-columns: 1fr;
-      }
-
-      .map {
-        height: 390px;
-      }
-
-      .country {
-        width: 160px;
-        height: 120px;
-        font-size: 20px;
-      }
-
-      .country.a {
-        left: 38px;
-        top: 160px;
-      }
-
-      .country.b {
-        right: 28px;
-        top: 155px;
-      }
-
-      .land1 {
-        width: 210px;
-        height: 145px;
-        left: 25px;
-      }
-
-      .land2 {
-        width: 220px;
-        height: 150px;
-        right: 18px;
-      }
-
-      .capital.a {
-        left: 155px;
-        top: 223px;
-      }
-
-      .capital.b {
-        right: 145px;
-        top: 220px;
-      }
-
-      .label.a {
-        left: 180px;
-        top: 220px;
-      }
-
-      .label.b {
-        right: 28px;
-        top: 216px;
-      }
-
-      input {
-        min-width: 220px;
-      }
+      .hud { grid-template-columns: 1fr; }
+      .map { height: 390px; }
+      .country { width: 160px; height: 120px; font-size: 20px; }
+      .country.a { left: 38px; top: 160px; }
+      .country.b { right: 28px; top: 155px; }
+      .land1 { width: 210px; height: 145px; left: 25px; }
+      .land2 { width: 220px; height: 150px; right: 18px; }
+      .capital.a { left: 155px; top: 223px; }
+      .capital.b { right: 145px; top: 220px; }
+      .label.a { left: 180px; top: 220px; }
+      .label.b { right: 28px; top: 216px; }
+      input { min-width: 220px; }
     }
   </style>
 </head>
@@ -651,7 +550,6 @@
 
       <div class="map grid-lines" id="map">
         <div class="stars"></div>
-
         <div class="land land1"></div>
         <div class="land land2"></div>
 
@@ -703,8 +601,7 @@
         shake: 0,
         missileClass: "missile-attack",
         explosionClass: "missile-explosion",
-        soundFreq: 210,
-        soundDur: 0.11
+        totalDuration: 1700
       },
       ballistic: {
         label: "Ballistic",
@@ -714,8 +611,7 @@
         shake: 1,
         missileClass: "ballistic-attack",
         explosionClass: "ballistic-explosion",
-        soundFreq: 150,
-        soundDur: 0.15
+        totalDuration: 2000
       },
       nuclear: {
         label: "Nuclear",
@@ -725,8 +621,7 @@
         shake: 2,
         missileClass: "nuclear-attack",
         explosionClass: "nuclear-explosion",
-        soundFreq: 90,
-        soundDur: 0.22,
+        totalDuration: 7000,
         audioFile: "nuclear.mp3"
       }
     };
@@ -807,9 +702,7 @@
       const attack = attackData[type];
       let damage = rand(attack.min, attack.max);
 
-      if (attacker === "B") {
-        damage += aiBonus(type);
-      }
+      if (attacker === "B") damage += aiBonus(type);
 
       if (type === "nuclear") {
         if (attacker === "A" && scoreA < 30) damage -= 3;
@@ -822,21 +715,10 @@
     function aiChooseAttack() {
       const lead = scoreB - scoreA;
 
-      if (scoreB <= 24) {
-        return Math.random() < 0.68 ? "nuclear" : "ballistic";
-      }
-
-      if (scoreA <= 20) {
-        return Math.random() < 0.62 ? "missile" : "ballistic";
-      }
-
-      if (lead < -18) {
-        return Math.random() < 0.72 ? "nuclear" : "ballistic";
-      }
-
-      if (lead > 16) {
-        return Math.random() < 0.65 ? "missile" : "ballistic";
-      }
+      if (scoreB <= 24) return Math.random() < 0.68 ? "nuclear" : "ballistic";
+      if (scoreA <= 20) return Math.random() < 0.62 ? "missile" : "ballistic";
+      if (lead < -18) return Math.random() < 0.72 ? "nuclear" : "ballistic";
+      if (lead > 16) return Math.random() < 0.65 ? "missile" : "ballistic";
 
       const roll = Math.random();
       if (roll < 0.40) return "missile";
@@ -857,78 +739,37 @@
       document.body.classList.add("shake");
     }
 
-    function playSyntheticSound(type) {
-      const data = attackData[type];
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-
-      try {
-        const ctx = new AudioContextClass();
-        const now = ctx.currentTime;
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-
-        osc.type = type === "nuclear" ? "sawtooth" : type === "ballistic" ? "square" : "triangle";
-        osc.frequency.setValueAtTime(data.soundFreq, now);
-        osc.frequency.exponentialRampToValueAtTime(Math.max(45, data.soundFreq / 3), now + data.soundDur);
-
-        gain.gain.setValueAtTime(0.0001, now);
-        gain.gain.exponentialRampToValueAtTime(0.12, now + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + data.soundDur);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        osc.start(now);
-        osc.stop(now + data.soundDur + 0.02);
-
-        setTimeout(() => {
-          if (ctx.state !== "closed") ctx.close();
-        }, 400);
-      } catch (e) {
-      }
-    }
-
     function playAttackSound(type) {
       if (type === "nuclear" && nuclearAudio) {
         try {
           nuclearAudio.pause();
           nuclearAudio.currentTime = 0;
-          nuclearAudio.play().catch(() => {
-            playSyntheticSound(type);
-          });
-          return;
-        } catch (e) {
-        }
+          nuclearAudio.play().catch(() => {});
+        } catch (e) {}
       }
-
-      playSyntheticSound(type);
     }
 
-    function createImpactRing(map, x, y, size) {
+    function createImpactRing(map, x, y, size, duration) {
       const ring = document.createElement("div");
       ring.className = "impact-ring";
       ring.style.left = x + "px";
       ring.style.top = y + "px";
       ring.style.width = size + "px";
       ring.style.height = size + "px";
-      ring.style.animation = "ringExpand 0.7s ease-out forwards";
+      ring.style.animation = `ringExpand ${duration}ms ease-out forwards`;
       map.appendChild(ring);
-
-      setTimeout(() => ring.remove(), 720);
+      setTimeout(() => ring.remove(), duration + 50);
     }
 
-    function createMushroomCloud(map, x, y) {
+    function createMushroomCloud(map, x, y, duration) {
       const cloud = document.createElement("div");
       cloud.className = "cloud nuclear-cloud";
       cloud.style.left = x + "px";
       cloud.style.top = y + "px";
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
-      cloud.style.animation = "cloudRise 1.6s ease-out forwards";
+      cloud.style.animation = `cloudRise ${duration}ms ease-out forwards`;
       map.appendChild(cloud);
-
-      setTimeout(() => cloud.remove(), 1650);
+      setTimeout(() => cloud.remove(), duration + 50);
     }
 
     function animateAttack(attacker, defender, type, callback) {
@@ -957,34 +798,49 @@
       map.appendChild(missile);
       map.appendChild(explosion);
 
+      const isNuclear = type === "nuclear";
+
       if (attacker === "A") {
-        missile.style.animation = "fly-right 0.9s linear forwards";
-        trail.style.animation = "trail-grow-right 0.85s linear forwards";
+        missile.style.animation = isNuclear
+          ? "fly-right 3.5s linear forwards"
+          : "fly-right 0.9s linear forwards";
+        trail.style.animation = isNuclear
+          ? "trail-grow-right 3.3s linear forwards"
+          : "trail-grow-right 0.85s linear forwards";
       } else {
-        missile.style.animation = "fly-left 0.9s linear forwards";
+        missile.style.animation = isNuclear
+          ? "fly-left 3.5s linear forwards"
+          : "fly-left 0.9s linear forwards";
         trail.style.left = to.x + "px";
         trail.style.top = (to.y + 2) + "px";
         trail.style.transform = "rotate(180deg)";
-        trail.style.animation = "trail-grow-left 0.85s linear forwards";
+        trail.style.animation = isNuclear
+          ? "trail-grow-left 3.3s linear forwards"
+          : "trail-grow-left 0.85s linear forwards";
       }
+
+      const impactDelay = isNuclear ? 3500 : 820;
+      const explosionDuration = isNuclear ? 2500 : 780;
+      const ringDuration = isNuclear ? 2200 : 700;
+      const cloudDuration = isNuclear ? 3200 : 1600;
 
       setTimeout(() => {
         playAttackSound(type);
         triggerShake(attack.shake);
-        explosion.style.animation = "boom 0.78s ease-out forwards";
-        createImpactRing(map, to.x, to.y, type === "nuclear" ? 95 : type === "ballistic" ? 65 : 42);
+        explosion.style.animation = `boom ${explosionDuration}ms ease-out forwards`;
+        createImpactRing(map, to.x, to.y, isNuclear ? 120 : type === "ballistic" ? 65 : 42, ringDuration);
 
-        if (type === "nuclear") {
-          createMushroomCloud(map, to.x, to.y - 4);
+        if (isNuclear) {
+          createMushroomCloud(map, to.x, to.y - 4, cloudDuration);
         }
-      }, 820);
+      }, impactDelay);
 
       setTimeout(() => {
         missile.remove();
         trail.remove();
         explosion.remove();
         callback();
-      }, 1700);
+      }, attack.totalDuration);
     }
 
     function playerAttack(type) {
@@ -992,7 +848,7 @@
 
       busy = true;
       updateUI();
-      setStatus("Launching " + attackData[type].label + "...");
+      setStatus(type === "nuclear" ? "Launching Nuclear strike..." : "Launching " + attackData[type].label + "...");
 
       animateAttack("A", "B", type, () => {
         const damage = calculateDamage(type, "A");
@@ -1042,20 +898,15 @@
         disableAttackButtons(true);
 
         let resultText = "";
-        if (scoreA > scoreB) {
-          resultText = "🏆 " + playerCountry + " wins!";
-        } else if (scoreB > scoreA) {
-          resultText = "💀 " + enemyCountry + " wins!";
-        } else {
-          resultText = "🤝 Draw!";
-        }
+        if (scoreA > scoreB) resultText = "🏆 " + playerCountry + " wins!";
+        else if (scoreB > scoreA) resultText = "💀 " + enemyCountry + " wins!";
+        else resultText = "🤝 Draw!";
 
         document.getElementById("result").textContent = resultText;
         setStatus("Game over");
         logMessage("Game Over — " + resultText);
         return true;
       }
-
       return false;
     }
 
