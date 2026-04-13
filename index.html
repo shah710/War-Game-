@@ -561,11 +561,23 @@
     }
 
     .projectile.ship {
-      width: 34px;
-      height: 14px;
-      border-radius: 6px;
-      background: linear-gradient(180deg, #cbd5e1, #64748b);
-      box-shadow: 0 0 16px rgba(203,213,225,0.6);
+      width: 40px;
+      height: 16px;
+      border-radius: 8px 8px 5px 5px;
+      background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 40%, #475569 100%);
+      box-shadow: 0 0 18px rgba(203,213,225,0.65);
+    }
+
+    .projectile.ship::before {
+      content: "";
+      position: absolute;
+      width: 14px;
+      height: 6px;
+      left: 12px;
+      top: -4px;
+      border-radius: 4px;
+      background: #f8fafc;
+      box-shadow: 0 0 8px rgba(255,255,255,0.5);
     }
 
     .projectile.ground {
@@ -587,9 +599,45 @@
       animation: fadeTrail 0.45s linear forwards;
     }
 
+    .wake-dot {
+      position: absolute;
+      width: 14px;
+      height: 6px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 6;
+      transform: translate(-50%, -50%);
+      background: rgba(220, 240, 255, 0.85);
+      box-shadow: 0 0 8px rgba(220,240,255,0.65);
+      animation: fadeWake 0.55s linear forwards;
+    }
+
+    .sea-splash {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 8;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(170,220,255,0.8) 45%, rgba(170,220,255,0.05) 100%);
+      animation: splashUp 0.8s ease-out forwards;
+    }
+
     @keyframes fadeTrail {
       from { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    }
+
+    @keyframes fadeWake {
+      from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
+    }
+
+    @keyframes splashUp {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+      40% { opacity: 0.95; transform: translate(-50%, calc(-50% - 10px)) scale(1.05); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 18px)) scale(1.35); }
     }
 
     .explosion {
@@ -883,7 +931,7 @@
       <div class="top-row">
         <div>Mode: <span id="modeLabel">Single Player</span></div>
         <div>Level: <span id="levelLabel">5</span></div>
-        <div>Timer: <span id="timerLabel">03:00</span></div>
+        <div>Timer: <span id="timerLabel">06:00</span></div>
         <div>Combat: <span id="turnLabel">Real-Time</span></div>
         <div>Actions: <span id="actionCount">0</span></div>
         <div>Player Cooldown: <span id="cooldownLabel">Ready</span></div>
@@ -906,8 +954,8 @@
           <div class="bar-wrap"><div id="moneyBarA" class="bar money-blue"></div></div>
 
           <div class="stats">
-            <span>Health: <span id="scoreA">100</span></span>
-            <span>Pop: <span id="popA">120M</span></span>
+            <span>Health: <span id="scoreA">180</span></span>
+            <span>Pop: <span id="popA">200M</span></span>
             <span>CP: <span id="cpA">30</span></span>
             <span>Money: $<span id="moneyA">150</span>M</span>
           </div>
@@ -929,8 +977,8 @@
           <div class="bar-wrap"><div id="moneyBarB" class="bar money-red"></div></div>
 
           <div class="stats">
-            <span>Health: <span id="scoreB">100</span></span>
-            <span>Pop: <span id="popB">120M</span></span>
+            <span>Health: <span id="scoreB">180</span></span>
+            <span>Pop: <span id="popB">200M</span></span>
             <span>CP: <span id="cpB">30</span></span>
             <span>Money: $<span id="moneyB">150</span>M</span>
           </div>
@@ -1014,27 +1062,28 @@
         <button class="w-ship" id="btnShip" onclick="humanAttack('ship')">Ship Attack<br>24 CP / $34</button>
         <button class="w-ground" id="btnGround" onclick="humanAttack('ground')">Ground Invasion<br>28 CP / $38</button>
         <button class="w-emp" id="btnEMP" onclick="humanAttack('emp')">EMP<br>24 CP / $32</button>
-        <button class="w-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear<br>55 CP / $90</button>
-        <button class="w-hydrogen" id="btnHydrogen" onclick="humanAttack('hydrogen')">Hydrogen<br>80 CP / $140</button>
-        <button class="btn-restart" onclick="restartGame()">Restart</button>
-      </div>
+        <button class="w-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear<br>55 CP / $ 55 CP / $90</button>
+<button class="w-hydrogen" id="btnHydrogen" onclick="humanAttack('hydrogen')">Hydrogen<br>80 CP / $140</button>
+<button class="btn-restart" onclick="restartGame()">Restart</button>
+</div>
 
-      <div id="result"></div>
-      <div id="log"></div>
-    </div>
-  </div>
-
+<div id="result"></div>
+<div id="log"></div>
+</div>
+</div>
   <script>
     let mode = "single";
     let level = 5;
     let playerCountry = "Blue Nation";
     let enemyCountry = "Red Dominion";
 
-    const MAX_HEALTH = 100;
+    const MAX_HEALTH = 180;
     const MAX_CP = 120;
     const MAX_MONEY = 600;
-    const START_POP = 120;
-    const MATCH_SECONDS = 180;
+    const START_POP = 200;
+    const MATCH_SECONDS = 360;
+
+    let unlockedLevel = parseInt(localStorage.getItem("warGameUnlockedLevel") || "1", 10);
 
     let state = {};
     let gameStarted = false;
@@ -1063,9 +1112,9 @@
         label: "Drone Strike",
         costCP: 8,
         costMoney: 12,
-        min: 5,
-        max: 10,
-        cooldown: 2,
+        min: 4,
+        max: 8,
+        cooldown: 3,
         cpDrain: 0,
         explosionScale: 1.1,
         flight: 700,
@@ -1074,15 +1123,15 @@
         projectileClass: "drone",
         explosionClass: "drone",
         splashSelf: 0,
-        popFactor: 0.35
+        popFactor: 0.25
       },
       missile: {
         label: "Missile",
         costCP: 14,
         costMoney: 18,
-        min: 8,
-        max: 15,
-        cooldown: 3,
+        min: 7,
+        max: 12,
+        cooldown: 4,
         cpDrain: 0,
         explosionScale: 1.6,
         flight: 900,
@@ -1091,16 +1140,16 @@
         projectileClass: "missile",
         explosionClass: "missile",
         splashSelf: 0,
-        popFactor: 0.45,
+        popFactor: 0.34,
         customKey: "missile"
       },
       pink: {
         label: "Pink Missile",
         costCP: 18,
         costMoney: 24,
-        min: 11,
-        max: 18,
-        cooldown: 3,
+        min: 9,
+        max: 14,
+        cooldown: 4,
         cpDrain: 0,
         explosionScale: 2.0,
         flight: 1050,
@@ -1109,16 +1158,16 @@
         projectileClass: "pink",
         explosionClass: "pink",
         splashSelf: 0,
-        popFactor: 0.5,
+        popFactor: 0.38,
         customKey: "pink"
       },
       cruise: {
         label: "Cruise Missile",
         costCP: 20,
         costMoney: 28,
-        min: 12,
-        max: 18,
-        cooldown: 4,
+        min: 10,
+        max: 15,
+        cooldown: 5,
         cpDrain: 0,
         explosionScale: 2.0,
         flight: 1150,
@@ -1127,15 +1176,15 @@
         projectileClass: "cruise",
         explosionClass: "cruise",
         splashSelf: 0,
-        popFactor: 0.55
+        popFactor: 0.42
       },
       ballistic: {
         label: "Ballistic Missile",
         costCP: 30,
         costMoney: 42,
-        min: 18,
-        max: 26,
-        cooldown: 5,
+        min: 13,
+        max: 19,
+        cooldown: 6,
         cpDrain: 0,
         explosionScale: 2.9,
         flight: 1500,
@@ -1144,51 +1193,51 @@
         projectileClass: "ballistic",
         explosionClass: "ballistic",
         splashSelf: 0,
-        popFactor: 0.75,
+        popFactor: 0.56,
         customKey: "ballistic"
       },
       ship: {
         label: "Naval Strike",
         costCP: 24,
         costMoney: 34,
-        min: 14,
-        max: 22,
-        cooldown: 4,
+        min: 11,
+        max: 17,
+        cooldown: 5,
         cpDrain: 0,
         explosionScale: 2.2,
-        flight: 1300,
-        arc: 12,
+        flight: 1500,
+        arc: 10,
         shake: "medium",
         projectileClass: "ship",
         explosionClass: "ship",
         splashSelf: 0,
-        popFactor: 0.6
+        popFactor: 0.44
       },
       ground: {
         label: "Ground Invasion",
         costCP: 28,
         costMoney: 38,
-        min: 16,
-        max: 24,
-        cooldown: 5,
+        min: 12,
+        max: 18,
+        cooldown: 6,
         cpDrain: 0,
         explosionScale: 2.3,
-        flight: 1500,
-        arc: 8,
+        flight: 1600,
+        arc: 6,
         shake: "medium",
         projectileClass: "ground",
         explosionClass: "ground",
         splashSelf: 0,
-        popFactor: 0.9
+        popFactor: 0.7
       },
       emp: {
         label: "EMP Blast",
         costCP: 24,
         costMoney: 32,
-        min: 6,
-        max: 12,
-        cooldown: 5,
-        cpDrain: 12,
+        min: 4,
+        max: 8,
+        cooldown: 6,
+        cpDrain: 10,
         explosionScale: 2.2,
         flight: 1100,
         arc: 30,
@@ -1196,15 +1245,15 @@
         projectileClass: "emp",
         explosionClass: "emp",
         splashSelf: 0,
-        popFactor: 0.2
+        popFactor: 0.12
       },
       nuclear: {
         label: "Nuclear Bomb",
         costCP: 55,
         costMoney: 90,
-        min: 30,
-        max: 42,
-        cooldown: 9,
+        min: 20,
+        max: 30,
+        cooldown: 10,
         cpDrain: 0,
         explosionScale: 4.5,
         flight: 2600,
@@ -1212,17 +1261,17 @@
         shake: "heavy",
         projectileClass: "nuclear",
         explosionClass: "nuclear",
-        splashSelf: 6,
-        popFactor: 1.7,
+        splashSelf: 4,
+        popFactor: 1.3,
         customKey: "nuclear"
       },
       hydrogen: {
         label: "Hydrogen Bomb",
         costCP: 80,
         costMoney: 140,
-        min: 40,
-        max: 62,
-        cooldown: 14,
+        min: 26,
+        max: 40,
+        cooldown: 15,
         cpDrain: 0,
         explosionScale: 9.5,
         flight: 3600,
@@ -1230,8 +1279,8 @@
         shake: "heavy",
         projectileClass: "hydrogen",
         explosionClass: "hydrogen",
-        splashSelf: 12,
-        popFactor: 3.1
+        splashSelf: 8,
+        popFactor: 2.2
       }
     };
 
@@ -1253,6 +1302,31 @@
         alert("Online mode is disabled in this refined v0.3 build. Use Single Player.");
         $("modeSelect").value = "single";
         mode = "single";
+      }
+    }
+
+    function updateLevelLocks() {
+      const select = $("levelSelect");
+      if (!select) return;
+
+      for (let i = 0; i < select.options.length; i++) {
+        const lvl = i + 1;
+        const option = select.options[i];
+        option.disabled = lvl > unlockedLevel;
+        option.textContent = lvl > unlockedLevel ? `Level ${lvl} 🔒` : `Level ${lvl}`;
+      }
+
+      if (parseInt(select.value, 10) > unlockedLevel) {
+        select.value = String(unlockedLevel);
+      }
+    }
+
+    function unlockNextLevelIfNeeded() {
+      if (level === unlockedLevel && unlockedLevel < 9) {
+        unlockedLevel += 1;
+        localStorage.setItem("warGameUnlockedLevel", String(unlockedLevel));
+        updateLevelLocks();
+        logMessage(`🔓 Level ${unlockedLevel} unlocked.`);
       }
     }
 
@@ -1423,8 +1497,8 @@
 
     function resetState() {
       state = {
-        healthA: 100,
-        healthB: 100,
+        healthA: MAX_HEALTH,
+        healthB: MAX_HEALTH,
         popA: START_POP,
         popB: START_POP,
         cpA: 30,
@@ -1521,30 +1595,32 @@
 
     function getLevelDamageBonus(type) {
       const scale = Math.max(0, level - 1);
-      if (type === "drone") return Math.floor(scale / 4);
-      if (type === "missile") return Math.floor(scale / 3);
-      if (type === "pink") return Math.floor(scale / 3);
-      if (type === "cruise") return Math.floor(scale / 3);
-      if (type === "ballistic") return Math.floor(scale / 2);
-      if (type === "ship") return Math.floor(scale / 2);
-      if (type === "ground") return Math.floor(scale / 2);
-      if (type === "emp") return Math.floor(scale / 3);
-      if (type === "nuclear") return Math.floor(scale / 2);
-      return Math.floor(scale / 1.8);
+      if (type === "drone") return Math.floor(scale / 5);
+      if (type === "missile") return Math.floor(scale / 4);
+      if (type === "pink") return Math.floor(scale / 4);
+      if (type === "cruise") return Math.floor(scale / 4);
+      if (type === "ballistic") return Math.floor(scale / 3);
+      if (type === "ship") return Math.floor(scale / 3);
+      if (type === "ground") return Math.floor(scale / 3);
+      if (type === "emp") return Math.floor(scale / 4);
+      if (type === "nuclear") return Math.floor(scale / 3);
+      return Math.floor(scale / 2.5);
     }
 
     function getAIDamage(type) {
       let damage = rand(ATTACKS[type].min, ATTACKS[type].max) + getLevelDamageBonus(type);
-      if ((type === "nuclear" || type === "hydrogen") && state.healthB < 30) damage += 2;
-      if (type === "ship" && state.portsB > 0) damage += 4;
-      return clamp(damage, 1, 80);
+      if ((type === "nuclear" || type === "hydrogen") && state.healthB < 40) damage += 2;
+      if (type === "ship" && state.portsB > 0) damage += 3;
+      damage = Math.floor(damage * 0.8);
+      return clamp(damage, 1, 60);
     }
 
     function getPlayerDamage(type) {
       let damage = rand(ATTACKS[type].min, ATTACKS[type].max);
-      if ((type === "nuclear" || type === "hydrogen") && state.healthA < 30) damage -= 3;
-      if (type === "ship" && state.portsA > 0) damage += 4;
-      return clamp(damage, 1, 80);
+      if ((type === "nuclear" || type === "hydrogen") && state.healthA < 40) damage -= 2;
+      if (type === "ship" && state.portsA > 0) damage += 3;
+      damage = Math.floor(damage * 0.75);
+      return clamp(damage, 1, 55);
     }
 
     function triggerShake(kind) {
@@ -1577,6 +1653,26 @@
       dot.style.background = colors[type] || "white";
       map.appendChild(dot);
       setTimeout(() => dot.remove(), 420);
+    }
+
+    function createWakeDot(map, x, y) {
+      const wake = document.createElement("div");
+      wake.className = "wake-dot";
+      wake.style.left = x + "px";
+      wake.style.top = y + "px";
+      map.appendChild(wake);
+      setTimeout(() => wake.remove(), 600);
+    }
+
+    function createSeaSplash(map, x, y, count = 5) {
+      for (let i = 0; i < count; i++) {
+        const splash = document.createElement("div");
+        splash.className = "sea-splash";
+        splash.style.left = (x + rand(-18, 18)) + "px";
+        splash.style.top = (y + rand(-8, 8)) + "px";
+        map.appendChild(splash);
+        setTimeout(() => splash.remove(), 850);
+      }
     }
 
     function createImpactRing(map, x, y, size, duration, color = "rgba(255,235,180,0.85)") {
@@ -1625,7 +1721,7 @@
       cloud.style.top = y + "px";
       cloud.style.transform = `translate(-50%, -50%) scale(${0.3 * scale})`;
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
-      cloud.style.animation = `cloudRise ${duration}ms ease-out forwards`;
+      cloud.style.animation = `cloudRise ${duration ms ease-out forwards`;
       map.appendChild(cloud);
       setTimeout(() => cloud.remove(), duration + 80);
     }
@@ -1640,7 +1736,7 @@
 
     function getPopulationLoss(type, damage) {
       const factor = ATTACKS[type].popFactor || 0.5;
-      return clamp((damage * factor) / 4, 0.2, 18);
+      return clamp((damage * factor) / 6, 0.2, 12);
     }
 
     function animateAttack(attacker, defender, type, callback) {
@@ -1674,7 +1770,13 @@
         projectile.style.left = x + "px";
         projectile.style.top = y + "px";
 
-        if (now - lastTrail > 55) {
+        if (type === "ship") {
+          if (now - lastTrail > 80) {
+            createWakeDot(map, x - (attacker === "A" ? 12 : -12), y + 5);
+            if (Math.random() < 0.45) createSeaSplash(map, x, y + 6, 1);
+            lastTrail = now;
+          }
+        } else if (now - lastTrail > 55) {
           createTrailDot(map, x, y, type);
           lastTrail = now;
         }
@@ -1696,11 +1798,12 @@
         explosion.style.animation = type === "hydrogen" ? "boom 1600ms ease-out forwards" : "boom 900ms ease-out forwards";
         map.appendChild(explosion);
 
-        const ringColor = type === "emp" ? "rgba(106,247,255,0.9)" :
-                          type === "pink" ? "rgba(255,150,235,0.9)" :
-                          type === "ship" ? "rgba(203,213,225,0.9)" :
-                          type === "ground" ? "rgba(249,115,22,0.9)" :
-                          "rgba(255,235,180,0.85)";
+        const ringColor =
+          type === "emp" ? "rgba(106,247,255,0.9)" :
+          type === "pink" ? "rgba(255,150,235,0.9)" :
+          type === "ship" ? "rgba(203,213,225,0.9)" :
+          type === "ground" ? "rgba(249,115,22,0.9)" :
+          "rgba(255,235,180,0.85)";
 
         const ringSize =
           type === "hydrogen" ? 260 :
@@ -1729,6 +1832,7 @@
           createParticles(map, to.x, to.y, 40, "rgba(255,220,130,0.98)", 145, 1400);
           createImpactRing(map, from.x, from.y, 110, 1000, "rgba(255,180,80,0.72)");
         } else if (type === "ship") {
+          createSeaSplash(map, to.x, to.y + 6, 6);
           createParticles(map, to.x, to.y, 18, "rgba(203,213,225,0.95)", 80, 900);
         } else if (type === "ground") {
           createParticles(map, to.x, to.y, 18, "rgba(249,115,22,0.95)", 85, 950);
@@ -1756,12 +1860,11 @@
     }
 
     function evaluateWinnerByTime() {
-      if (state.healthA > state.healthB) return "🏆 " + playerCountry + " wins by higher health!";
-      if (state.healthB > state.healthA) return "🏆 " + enemyCountry + " wins by higher health!";
-      if (state.popA > state.popB) return "🏆 " + playerCountry + " wins by higher population!";
-      if (state.popB > state.popA) return "🏆 " + enemyCountry + " wins by higher population!";
-      if (state.moneyA > state.moneyB) return "🏆 " + playerCountry + " wins by higher money!";
-      if (state.moneyB > state.moneyA) return "🏆 " + enemyCountry + " wins by higher money!";
+      const scoreA = state.healthA + state.popA;
+      const scoreB = state.healthB + state.popB;
+
+      if (scoreA > scoreB) return "🏆 " + playerCountry + " wins (better health + population)!";
+      if (scoreB > scoreA) return "🏆 " + enemyCountry + " wins (better health + population)!";
       return "🤝 Draw!";
     }
 
@@ -1773,6 +1876,10 @@
       $("result").textContent = resultText;
       setStatus(statusText);
       updateUI();
+
+      if (resultText.includes(playerCountry)) {
+        unlockNextLevelIfNeeded();
+      }
     }
 
     function checkEnd() {
@@ -1807,12 +1914,12 @@
       const weapon = ATTACKS[type];
 
       if (attacker === "A") {
-        state.cpA -= weapon.costCP;
-        state.moneyA -= weapon.costMoney;
+        state.cpA = clamp(state.cpA - weapon.costCP, 0, MAX_CP);
+        state.moneyA = clamp(state.moneyA - weapon.costMoney, 0, MAX_MONEY);
         state.cooldownA = weapon.cooldown;
       } else {
-        state.cpB -= weapon.costCP;
-        state.moneyB -= weapon.costMoney;
+        state.cpB = clamp(state.cpB - weapon.costCP, 0, MAX_CP);
+        state.moneyB = clamp(state.moneyB - weapon.costMoney, 0, MAX_MONEY);
         state.cooldownB = weapon.cooldown;
       }
 
@@ -1827,13 +1934,13 @@
         state.popB = clamp(state.popB - popLoss, 0, START_POP);
       }
 
-      let log = attackerName + " used " + weapon.label + " and dealt " + damage + " damage to " + defenderName + ". Population loss: " + popLoss.toFixed(1) + "M.";
+      let log = `${attackerName} used ${weapon.label} and dealt ${damage} damage to ${defenderName}. Population loss: ${popLoss.toFixed(1)}M.`;
 
       if (type === "emp") {
         const drain = clamp(weapon.cpDrain + (attacker === "B" ? Math.floor(level / 2) : 0), 8, 26);
         if (defender === "A") state.cpA = clamp(state.cpA - drain, 0, MAX_CP);
         else state.cpB = clamp(state.cpB - drain, 0, MAX_CP);
-        log += " " + defenderName + " also lost " + drain + " command points.";
+        log += ` ${defenderName} also lost ${drain} command points.`;
       }
 
       if (type === "ship" && attacker === "A" && state.portsA > 0) {
@@ -1846,7 +1953,7 @@
       if (weapon.splashSelf > 0) {
         if (attacker === "A") state.healthA = clamp(state.healthA - weapon.splashSelf, 0, MAX_HEALTH);
         else state.healthB = clamp(state.healthB - weapon.splashSelf, 0, MAX_HEALTH);
-        log += " Shockwave also damaged " + attackerName + " for " + weapon.splashSelf + ".";
+        log += ` Shockwave also damaged ${attackerName} for ${weapon.splashSelf}.`;
       }
 
       state.actionCount += 1;
@@ -1890,7 +1997,7 @@
 
       if (!affordable.length) return null;
 
-      const danger = (100 - state.healthB) + (START_POP - state.popB);
+      const danger = (MAX_HEALTH - state.healthB) + (START_POP - state.popB);
       let best = affordable[0];
       let bestScore = -Infinity;
 
@@ -1946,8 +2053,8 @@
     function tickResources() {
       if (!gameStarted || state.gameOver) return;
 
-      state.cpA = clamp(state.cpA + 6, 0, MAX_CP);
-      state.cpB = clamp(state.cpB + (5 + Math.floor(level / 2)), 0, MAX_CP);
+      state.cpA = clamp(state.cpA + 4, 0, MAX_CP);
+      state.cpB = clamp(state.cpB + (4 + Math.floor(level / 2)), 0, MAX_CP);
 
       const popIncomeA = Math.max(0.5, state.popA * 0.015);
       const popIncomeB = Math.max(0.5, state.popB * 0.015);
@@ -1972,7 +2079,7 @@
         return;
       }
 
-      state.moneyA -= item.cost;
+      state.moneyA = clamp(state.moneyA - item.cost, 0, MAX_MONEY);
       state.incomeA += item.income;
       state[item.key + "A"] = (state[item.key + "A"] || 0) + 1;
 
@@ -1992,9 +2099,18 @@
     function startSinglePlayer() {
       ensureAudio();
       setupCustomAudio();
+      updateLevelLocks();
 
       mode = "single";
       level = parseInt($("levelSelect").value, 10);
+
+      if (level > unlockedLevel) {
+        alert("🔒 Complete previous levels first!");
+        $("levelSelect").value = String(unlockedLevel);
+        level = unlockedLevel;
+        return;
+      }
+
       playerCountry = sanitizeName($("countryAInput").value, "Blue Nation");
       enemyCountry = sanitizeName($("singleEnemyInput").value, "Red Dominion");
 
@@ -2016,10 +2132,11 @@
       setStatus("Battle started — attacks are simultaneous now.");
       logMessage("New real-time war started: " + playerCountry + " vs " + enemyCountry + ".");
       logMessage("Use money and command points to buy and launch weapons.");
+      logMessage("Win the current level to unlock the next one.");
 
       timerInterval = setInterval(tickTimer, 1000);
       resourceInterval = setInterval(tickResources, 1000);
-      aiInterval = setInterval(aiAttack, 2200);
+      aiInterval = setInterval(aiAttack, 2600);
     }
 
     function restartGame() {
@@ -2034,6 +2151,7 @@
     window.toggleEconomy = toggleEconomy;
     window.buyBusiness = buyBusiness;
 
+    updateLevelLocks();
     toggleModeFields();
   </script>
 </body>
