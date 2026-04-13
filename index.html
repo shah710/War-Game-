@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>War Game Beta v0.1</title>
+  <title>War Game Beta v0.2</title>
   <style>
     * { box-sizing: border-box; }
 
@@ -13,6 +13,8 @@
       --red1: #c62828;
       --red2: #ff6b6b;
       --gold: #ffd166;
+      --panel: rgba(255,255,255,0.08);
+      --panel-border: rgba(255,255,255,0.12);
     }
 
     body {
@@ -24,28 +26,44 @@
       overflow-x: hidden;
     }
 
-    body.shake {
-      animation: screenShake 0.35s linear;
+    body.shake-light { animation: screenShakeLight 0.22s linear; }
+    body.shake-medium { animation: screenShakeMedium 0.32s linear; }
+    body.shake-heavy { animation: screenShakeHeavy 0.48s linear; }
+
+    @keyframes screenShakeLight {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(-3px, 2px); }
+      50% { transform: translate(3px, -2px); }
+      75% { transform: translate(-2px, -1px); }
+      100% { transform: translate(0, 0); }
     }
 
-    @keyframes screenShake {
+    @keyframes screenShakeMedium {
       0% { transform: translate(0, 0); }
-      20% { transform: translate(-6px, 3px); }
-      40% { transform: translate(6px, -2px); }
+      20% { transform: translate(-5px, 3px); }
+      40% { transform: translate(5px, -2px); }
       60% { transform: translate(-4px, -3px); }
       80% { transform: translate(4px, 2px); }
       100% { transform: translate(0, 0); }
     }
 
+    @keyframes screenShakeHeavy {
+      0% { transform: translate(0, 0); }
+      15% { transform: translate(-8px, 4px); }
+      30% { transform: translate(8px, -4px); }
+      45% { transform: translate(-7px, -5px); }
+      60% { transform: translate(7px, 4px); }
+      75% { transform: translate(-5px, 3px); }
+      100% { transform: translate(0, 0); }
+    }
+
     .container {
-      max-width: 1160px;
+      max-width: 1180px;
       margin: 0 auto;
       padding: 20px;
     }
 
-    h1 {
-      margin-bottom: 8px;
-    }
+    h1 { margin-bottom: 8px; }
 
     .beta {
       display: inline-block;
@@ -63,15 +81,15 @@
     }
 
     .panel {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
       border-radius: 18px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
       padding: 16px;
     }
 
     .setup-panel {
-      max-width: 820px;
+      max-width: 900px;
       margin: 0 auto 22px;
     }
 
@@ -105,8 +123,16 @@
       outline: none;
     }
 
-    option {
-      color: black;
+    option { color: black; }
+
+    .top-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      color: #d7e3f4;
+      font-weight: bold;
     }
 
     .hud {
@@ -130,7 +156,7 @@
 
     .bar-wrap {
       background: rgba(255,255,255,0.12);
-      height: 26px;
+      height: 24px;
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 8px;
@@ -139,7 +165,7 @@
     .bar {
       height: 100%;
       width: 100%;
-      transition: width 0.45s ease;
+      transition: width 0.35s ease;
     }
 
     .bar.blue {
@@ -150,27 +176,33 @@
       background: linear-gradient(90deg, var(--red1), var(--red2));
     }
 
+    .cp-bar.blue {
+      background: linear-gradient(90deg, #15b8a6, #8ff5e8);
+    }
+
+    .cp-bar.red {
+      background: linear-gradient(90deg, #ff8a00, #ffd166);
+    }
+
     .stats {
       display: flex;
       justify-content: space-between;
       gap: 12px;
-      font-size: 15px;
+      font-size: 14px;
       color: #d8e1ea;
+      flex-wrap: wrap;
     }
 
-    .top-row {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 14px;
-      color: #d7e3f4;
-      font-weight: bold;
+    .section-label {
+      font-size: 13px;
+      color: #cbd8eb;
+      text-align: left;
+      margin: 6px 0 4px;
     }
 
     .map {
       position: relative;
-      height: 460px;
+      height: 470px;
       margin: 22px 0;
       border-radius: 22px;
       overflow: hidden;
@@ -189,8 +221,8 @@
       inset: 0;
       pointer-events: none;
       background:
-        repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.05) 60px),
-        repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.05) 60px);
+        repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px);
       opacity: 0.35;
     }
 
@@ -209,79 +241,64 @@
       pointer-events: none;
     }
 
-   .world-map-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.9;
-  pointer-events: none;
-}
+    .world-map-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.9;
+      pointer-events: none;
+    }
 
-.continent {
-  fill: #4d7a4f;
-  stroke: rgba(255,255,255,0.08);
-  stroke-width: 2;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.22));
-}
-   .world-map-bg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-  opacity: 0.9;
-  pointer-events: none;
-}
+    .continent {
+      fill: #4d7a4f;
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 2;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.22));
+    }
 
-.continent {
-  fill: #4d7a4f;
-  stroke: rgba(255,255,255,0.08);
-  stroke-width: 2;
-  filter: drop-shadow(0 6px 10px rgba(0,0,0,0.22));
-}
+    .country-shape {
+      position: absolute;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      font-weight: bold;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+      box-shadow: 0 0 18px rgba(255,255,255,0.12);
+      border: 2px solid rgba(255,255,255,0.22);
+    }
 
-.country-shape {
-  position: absolute;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 12px;
-  font-weight: bold;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-  box-shadow: 0 0 18px rgba(255,255,255,0.12);
-  border: 2px solid rgba(255,255,255,0.22);
-}
+    .country-shape.a {
+      left: 90px;
+      top: 120px;
+      width: 250px;
+      height: 190px;
+      background: linear-gradient(135deg, rgba(47,125,225,0.92), rgba(30,80,160,0.92));
+      clip-path: polygon(6% 30%, 28% 8%, 62% 7%, 88% 20%, 96% 44%, 88% 70%, 70% 88%, 42% 95%, 16% 82%, 4% 58%);
+    }
 
-.country-shape.a {
-  left: 90px;
-  top: 120px;
-  width: 250px;
-  height: 190px;
-  background: linear-gradient(135deg, rgba(47,125,225,0.92), rgba(30,80,160,0.92));
-  clip-path: polygon(6% 30%, 28% 8%, 62% 7%, 88% 20%, 96% 44%, 88% 70%, 70% 88%, 42% 95%, 16% 82%, 4% 58%);
-}
+    .country-shape.b {
+      right: 90px;
+      top: 145px;
+      width: 250px;
+      height: 185px;
+      background: linear-gradient(135deg, rgba(198,40,40,0.92), rgba(120,15,15,0.92));
+      clip-path: polygon(8% 22%, 30% 8%, 68% 10%, 90% 24%, 98% 48%, 90% 74%, 72% 90%, 42% 96%, 16% 84%, 4% 56%);
+    }
 
-.country-shape.b {
-  right: 90px;
-  top: 145px;
-  width: 250px;
-  height: 185px;
-  background: linear-gradient(135deg, rgba(198,40,40,0.92), rgba(120,15,15,0.92));
-  clip-path: polygon(8% 22%, 30% 8%, 68% 10%, 90% 24%, 98% 48%, 90% 74%, 72% 90%, 42% 96%, 16% 84%, 4% 56%);
-}
-
-.country-text {
-  display: block;
-  max-width: 80%;
-  font-size: 28px;
-  line-height: 1.1;
-  word-break: break-word;
-  color: white;
-}
+    .country-text {
+      display: block;
+      max-width: 78%;
+      font-size: 24px;
+      line-height: 1.05;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      color: white;
+    }
 
     .capital {
       position: absolute;
@@ -294,14 +311,14 @@
     }
 
     .capital.a {
-      left: 285px;
-      top: 230px;
+      left: 260px;
+      top: 205px;
       background: #8ecaff;
     }
 
     .capital.b {
-      right: 260px;
-      top: 225px;
+      right: 235px;
+      top: 212px;
       background: #ffb0b0;
     }
 
@@ -313,82 +330,145 @@
     }
 
     .label.a {
-      left: 310px;
-      top: 226px;
+      left: 285px;
+      top: 201px;
     }
 
     .label.b {
-      right: 145px;
-      top: 221px;
+      right: 120px;
+      top: 208px;
     }
 
-    .missile {
+    .projectile {
       position: absolute;
+      z-index: 6;
       border-radius: 999px;
-      z-index: 5;
-      opacity: 0;
-      transform-origin: center;
-      box-shadow: 0 0 12px rgba(255,255,255,0.85);
+      pointer-events: none;
+      box-shadow: 0 0 12px rgba(255,255,255,0.8);
+      transform: translate(-50%, -50%);
     }
 
-    .missile.missile-attack {
+    .projectile.drone {
+      width: 10px;
+      height: 10px;
+      background: radial-gradient(circle, #ffffff 10%, #b7f3ff 80%);
+      box-shadow: 0 0 10px rgba(183,243,255,0.9);
+    }
+
+    .projectile.missile {
       width: 18px;
       height: 8px;
       background: linear-gradient(90deg, #ffffff, #ffdd57);
     }
 
-    .missile.ballistic-attack {
+    .projectile.cruise {
+      width: 24px;
+      height: 9px;
+      background: linear-gradient(90deg, #ffffff, #6ef7d8);
+      box-shadow: 0 0 14px rgba(110,247,216,0.9);
+    }
+
+    .projectile.ballistic {
       width: 28px;
       height: 10px;
       background: linear-gradient(90deg, #ffffff, #b388ff);
       box-shadow: 0 0 16px rgba(179,136,255,0.9);
     }
 
-    .missile.nuclear-attack {
+    .projectile.emp {
+      width: 22px;
+      height: 22px;
+      background: radial-gradient(circle, rgba(180,255,255,0.95), rgba(0,255,240,0.2));
+      box-shadow: 0 0 18px rgba(120,255,255,0.95);
+      border-radius: 50%;
+    }
+
+    .projectile.nuclear {
       width: 38px;
       height: 13px;
       background: linear-gradient(90deg, #ffffff, #ff6b6b);
       box-shadow: 0 0 20px rgba(255,120,120,0.95);
     }
 
-    .trail {
+    .projectile.hydrogen {
+      width: 48px;
+      height: 16px;
+      background: linear-gradient(90deg, #ffffff, #ff3b3b);
+      box-shadow: 0 0 28px rgba(255,100,100,1);
+    }
+
+    .trail-dot {
       position: absolute;
-      height: 2px;
-      background: rgba(255,255,255,0.6);
-      z-index: 4;
-      opacity: 0;
-      transform-origin: left center;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 5;
+      transform: translate(-50%, -50%);
+      animation: fadeTrail 0.4s linear forwards;
+    }
+
+    @keyframes fadeTrail {
+      from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
     }
 
     .explosion {
       position: absolute;
-      width: 26px;
-      height: 26px;
+      width: 28px;
+      height: 28px;
       border-radius: 50%;
       pointer-events: none;
       opacity: 0;
-      z-index: 6;
+      z-index: 7;
       transform: translate(-50%, -50%) scale(0.2);
       --scale: 1.6;
     }
 
-    .explosion.missile-explosion {
+    .explosion.drone {
+      background: radial-gradient(circle, #ffffff 0%, #9ef7ff 40%, rgba(0,180,255,0.18) 100%);
+    }
+
+    .explosion.missile {
       background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb8500 65%, rgba(255,115,0,0.15) 100%);
     }
 
-    .explosion.ballistic-explosion {
+    .explosion.cruise {
+      background: radial-gradient(circle, #ffffff 0%, #7df4d9 30%, #14b8a6 62%, rgba(20,184,166,0.2) 100%);
+    }
+
+    .explosion.ballistic {
       background: radial-gradient(circle, #ffffff 0%, #ffd166 25%, #ff7b00 55%, #d62828 80%, rgba(214,40,40,0.22) 100%);
     }
 
-    .explosion.nuclear-explosion {
+    .explosion.emp {
+      background: radial-gradient(circle, #e8ffff 0%, #6af7ff 35%, #00d4ff 65%, rgba(0,200,255,0.18) 100%);
+    }
+
+    .explosion.nuclear {
       background: radial-gradient(circle, #ffffff 0%, #fff3b0 18%, #ffb703 35%, #fb5607 58%, #d00000 78%, rgba(208,0,0,0.26) 100%);
       box-shadow: 0 0 34px rgba(255,140,0,0.75);
+    }
+
+    .explosion.hydrogen {
+      background: radial-gradient(circle, #ffffff 0%, #fff8d9 14%, #ffe066 25%, #ff922b 45%, #ff3b3b 68%, #8b0000 88%, rgba(139,0,0,0.35) 100%);
+      box-shadow: 0 0 46px rgba(255,180,0,0.9);
+    }
+
+    .impact-ring {
+      position: absolute;
+      border: 3px solid rgba(255,235,180,0.85);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+      z-index: 6;
+      pointer-events: none;
     }
 
     .cloud {
       position: absolute;
       pointer-events: none;
-      z-index: 7;
+      z-index: 8;
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.3);
     }
@@ -420,29 +500,18 @@
       background: linear-gradient(180deg, rgba(255,200,120,0.9), rgba(180,70,30,0.45));
     }
 
-    .impact-ring {
-      position: absolute;
-      border: 3px solid rgba(255,235,180,0.85);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0.3);
-      opacity: 0;
-      z-index: 5;
-      pointer-events: none;
-    }
-
     .controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
       margin: 18px 0;
     }
 
     button {
       border: none;
       border-radius: 12px;
-      padding: 14px 18px;
-      font-size: 16px;
+      padding: 14px 10px;
+      font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       color: white;
@@ -450,21 +519,23 @@
       box-shadow: 0 8px 18px rgba(0,0,0,0.25);
     }
 
-    button:hover {
-      transform: translateY(-2px);
-    }
+    button:hover { transform: translateY(-2px); }
 
     button:disabled {
-      opacity: 0.55;
+      opacity: 0.45;
       cursor: not-allowed;
       transform: none;
     }
 
     .btn-start { background: #2a9d8f; }
-    .btn-missile { background: #2f7de1; }
-    .btn-ballistic { background: #7b2cbf; }
-    .btn-nuclear { background: #c62828; }
     .btn-restart { background: #2a9d8f; }
+    .w-drone { background: #2d9cdb; }
+    .w-missile { background: #2f7de1; }
+    .w-cruise { background: #14b8a6; }
+    .w-ballistic { background: #7b2cbf; }
+    .w-emp { background: #0ea5e9; }
+    .w-nuclear { background: #c62828; }
+    .w-hydrogen { background: #7f1d1d; }
 
     .info-row {
       display: flex;
@@ -486,7 +557,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 16px;
       padding: 14px;
-      height: 240px;
+      height: 250px;
       overflow-y: auto;
       text-align: left;
     }
@@ -504,29 +575,7 @@
       min-height: 40px;
     }
 
-    .hidden {
-      display: none;
-    }
-
-    @keyframes fly-right {
-      0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
-      100% { opacity: 1; transform: translate(565px, -6px) rotate(0deg); }
-    }
-
-    @keyframes fly-left {
-      0% { opacity: 1; transform: translate(0, 0) rotate(180deg); }
-      100% { opacity: 1; transform: translate(-565px, 6px) rotate(180deg); }
-    }
-
-    @keyframes trail-grow-right {
-      0% { opacity: 0.75; width: 0; }
-      100% { opacity: 0; width: 565px; }
-    }
-
-    @keyframes trail-grow-left {
-      0% { opacity: 0.75; width: 0; }
-      100% { opacity: 0; width: 565px; }
-    }
+    .hidden { display: none; }
 
     @keyframes boom {
       0% { opacity: 1; transform: translate(-50%, -50%) scale(0.2); }
@@ -545,61 +594,55 @@
       100% { opacity: 0; transform: translate(-50%, -95%) scale(1.3); }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 980px) {
       .setup-grid, .hud {
         grid-template-columns: 1fr;
+      }
+
+      .controls {
+        grid-template-columns: repeat(2, minmax(120px, 1fr));
       }
 
       .map {
         height: 390px;
       }
 
-      .country {
-        width: 160px;
-        height: 120px;
-        font-size: 20px;
+      .country-shape.a {
+        left: 35px;
+        top: 145px;
+        width: 170px;
+        height: 125px;
       }
 
-      .country.a {
-        left: 38px;
-        top: 160px;
+      .country-shape.b {
+        right: 30px;
+        top: 145px;
+        width: 170px;
+        height: 125px;
       }
 
-      .country.b {
-        right: 28px;
-        top: 155px;
-      }
-
-      .land1 {
-        width: 210px;
-        height: 145px;
-        left: 25px;
-      }
-
-      .land2 {
-        width: 220px;
-        height: 150px;
-        right: 18px;
+      .country-text {
+        font-size: 18px;
       }
 
       .capital.a {
-        left: 155px;
-        top: 223px;
+        left: 150px;
+        top: 205px;
       }
 
       .capital.b {
         right: 145px;
-        top: 220px;
+        top: 208px;
       }
 
       .label.a {
-        left: 180px;
-        top: 220px;
+        left: 172px;
+        top: 202px;
       }
 
       .label.b {
         right: 28px;
-        top: 216px;
+        top: 205px;
       }
     }
   </style>
@@ -607,8 +650,8 @@
 <body>
   <div class="container">
     <h1>War Game: Nations at War</h1>
-    <div class="beta">⚠️ Trial Version — Beta v0.1</div>
-    <div class="subtitle">Choose a mode, set names, choose a level, and fight.</div>
+    <div class="beta">⚠️ Trial Version — Beta v0.2</div>
+    <div class="subtitle">Choose a mode, set names, choose a level, and fight for survival.</div>
 
     <div class="panel setup-panel" id="setupPanel">
       <div><b>Game Setup</b></div>
@@ -661,66 +704,84 @@
       <div class="top-row">
         <div>Mode: <span id="modeLabel">Single Player</span></div>
         <div>Level: <span id="levelLabel">5</span></div>
-        <div>Current Turn: <span id="turnLabel">Player 1</span></div>
+        <div>Timer: <span id="timerLabel">03:00</span></div>
+        <div>Turn: <span id="turnLabel">Player 1</span></div>
+        <div>Actions: <span id="actionCount">0</span></div>
       </div>
 
       <div class="hud">
         <div class="panel">
           <div class="country-name blue-text" id="hudNameA">Country A</div>
+
+          <div class="section-label">Health</div>
           <div class="bar-wrap"><div id="barA" class="bar blue"></div></div>
+
+          <div class="section-label">Command Points</div>
+          <div class="bar-wrap"><div id="cpBarA" class="bar cp-bar blue"></div></div>
+
           <div class="stats">
-            <span>Points: <span id="scoreA">100</span></span>
+            <span>Health: <span id="scoreA">100</span></span>
+            <span>CP: <span id="cpA">30</span></span>
             <span id="roleA">Player 1</span>
           </div>
         </div>
 
         <div class="panel">
           <div class="country-name red-text" id="hudNameB">Country B</div>
+
+          <div class="section-label">Health</div>
           <div class="bar-wrap"><div id="barB" class="bar red"></div></div>
+
+          <div class="section-label">Command Points</div>
+          <div class="bar-wrap"><div id="cpBarB" class="bar cp-bar red"></div></div>
+
           <div class="stats">
-            <span>Points: <span id="scoreB">100</span></span>
+            <span>Health: <span id="scoreB">100</span></span>
+            <span>CP: <span id="cpB">30</span></span>
             <span id="roleB">Computer</span>
           </div>
         </div>
       </div>
 
       <div class="map grid-lines" id="map">
-  <div class="stars"></div>
+        <div class="stars"></div>
 
-  <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
-    <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
-    <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
+        <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+          <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
+          <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
+          <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
+          <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
+          <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
+          <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
+        </svg>
 
-    <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
-    <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
+        <div class="country-shape a" id="countryABox">
+          <span class="country-text" id="countryAText">Country A</span>
+        </div>
 
-    <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
-    <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
-  </svg>
+        <div class="country-shape b" id="countryBBox">
+          <span class="country-text" id="countryBText">Country B</span>
+        </div>
 
-  <div class="country-shape a" id="countryABox">
-  <span class="country-text" id="countryAText">Country A</span>
-</div>
+        <div class="capital a"></div>
+        <div class="capital b"></div>
 
-<div class="country-shape b" id="countryBBox">
-  <span class="country-text" id="countryBText">Country B</span>
-</div>
+        <div class="label a" id="capitalALabel">Capital A</div>
+        <div class="label b" id="capitalBLabel">Capital B</div>
+      </div>
 
-  <div class="capital a"></div>
-  <div class="capital b"></div>
-
-  <div class="label a" id="capitalALabel">Capital A</div>
-  <div class="label b" id="capitalBLabel">Capital B</div>
-</div>
       <div class="info-row">
-        <div>Round: <span id="round">1</span> / 10</div>
         <div class="status" id="status">Your turn</div>
       </div>
 
       <div class="controls">
-        <button class="btn-missile" id="btnMissile" onclick="humanAttack('missile')">Missile</button>
-        <button class="btn-ballistic" id="btnBallistic" onclick="humanAttack('ballistic')">Ballistic</button>
-        <button class="btn-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear</button>
+        <button class="w-drone" id="btnDrone" onclick="humanAttack('drone')">Drone<br>(8 CP)</button>
+        <button class="w-missile" id="btnMissile" onclick="humanAttack('missile')">Missile<br>(14 CP)</button>
+        <button class="w-cruise" id="btnCruise" onclick="humanAttack('cruise')">Cruise<br>(20 CP)</button>
+        <button class="w-ballistic" id="btnBallistic" onclick="humanAttack('ballistic')">Ballistic<br>(30 CP)</button>
+        <button class="w-emp" id="btnEMP" onclick="humanAttack('emp')">EMP<br>(24 CP)</button>
+        <button class="w-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear<br>(55 CP)</button>
+        <button class="w-hydrogen" id="btnHydrogen" onclick="humanAttack('hydrogen')">Hydrogen<br>(80 CP)</button>
         <button class="btn-restart" onclick="restartGame()">Restart</button>
       </div>
 
@@ -735,59 +796,121 @@
     let enemyCountry = "Red Dominion";
     let level = 5;
 
-    let scoreA = 100;
-    let scoreB = 100;
-    let round = 1;
-    const maxRounds = 10;
+    let healthA = 100;
+    let healthB = 100;
+    let cpA = 30;
+    let cpB = 30;
+    const maxHealth = 100;
+    const maxCP = 120;
+
+    let matchSeconds = 180;
+    let timerInterval = null;
+    let cpInterval = null;
+
     let gameOver = false;
     let busy = false;
     let gameStarted = false;
     let currentTurn = "A";
-
-    let audioMissile = null;
-    let audioBallistic = null;
-    let audioNuclear = null;
-    let audioSiren = null;
+    let actionCount = 0;
+    let audioCtx = null;
 
     const attackData = {
+      drone: {
+        label: "Drone Strike",
+        cost: 8,
+        min: 5,
+        max: 10,
+        cpDrain: 0,
+        explosionScale: 1.1,
+        flight: 700,
+        arc: 25,
+        shake: "light",
+        projectileClass: "drone",
+        explosionClass: "drone"
+      },
       missile: {
         label: "Missile",
+        cost: 14,
         min: 8,
         max: 15,
-        explosionScale: 1.7,
-        shake: 0,
-        missileClass: "missile-attack",
-        explosionClass: "missile-explosion",
-        totalDuration: 1700,
-        file: "missile.mp3"
+        cpDrain: 0,
+        explosionScale: 1.6,
+        flight: 900,
+        arc: 35,
+        shake: "light",
+        projectileClass: "missile",
+        explosionClass: "missile"
+      },
+      cruise: {
+        label: "Cruise Missile",
+        cost: 20,
+        min: 12,
+        max: 18,
+        cpDrain: 0,
+        explosionScale: 2.0,
+        flight: 1150,
+        arc: 45,
+        shake: "light",
+        projectileClass: "cruise",
+        explosionClass: "cruise"
       },
       ballistic: {
-        label: "Ballistic",
-        min: 12,
-        max: 22,
-        explosionScale: 2.9,
-        shake: 1,
-        missileClass: "ballistic-attack",
-        explosionClass: "ballistic-explosion",
-        totalDuration: 2000,
-        file: "ballistic.mp3"
+        label: "Ballistic Missile",
+        cost: 30,
+        min: 18,
+        max: 26,
+        cpDrain: 0,
+        explosionScale: 2.8,
+        flight: 1500,
+        arc: 75,
+        shake: "medium",
+        projectileClass: "ballistic",
+        explosionClass: "ballistic"
+      },
+      emp: {
+        label: "EMP Blast",
+        cost: 24,
+        min: 6,
+        max: 12,
+        cpDrain: 12,
+        explosionScale: 2.2,
+        flight: 1100,
+        arc: 30,
+        shake: "light",
+        projectileClass: "emp",
+        explosionClass: "emp"
       },
       nuclear: {
-        label: "Nuclear",
-        min: 18,
-        max: 35,
-        explosionScale: 4.8,
-        shake: 2,
-        missileClass: "nuclear-attack",
-        explosionClass: "nuclear-explosion",
-        totalDuration: 7000,
-        file: "nuclear.mp3"
+        label: "Nuclear Bomb",
+        cost: 55,
+        min: 30,
+        max: 42,
+        cpDrain: 0,
+        explosionScale: 4.4,
+        flight: 2600,
+        arc: 95,
+        shake: "heavy",
+        projectileClass: "nuclear",
+        explosionClass: "nuclear"
+      },
+      hydrogen: {
+        label: "Hydrogen Bomb",
+        cost: 80,
+        min: 42,
+        max: 60,
+        cpDrain: 0,
+        explosionScale: 5.8,
+        flight: 3400,
+        arc: 120,
+        shake: "heavy",
+        projectileClass: "hydrogen",
+        explosionClass: "hydrogen"
       }
     };
 
     const positions = {
-      A: { x: 300, y: 238 },
-      B: { x: 875, y: 232 }
+      A: { x: 290, y: 212 },
+      B: { x: 895, y: 220 }
     };
 
     function sanitizeName(name, fallback) {
@@ -802,24 +925,106 @@
       document.getElementById("levelSelect").disabled = mode !== "single";
     }
 
-    function setupAudio() {
-  audioMissile = new Audio(attackData.missile.file);
-  audioBallistic = new Audio(attackData.ballistic.file);
-  audioNuclear = new Audio(attackData.nuclear.file);
-  audioSiren = new Audio("siren.mp3");
+    function ensureAudio() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
 
-  audioMissile.preload = "auto";
-  audioBallistic.preload = "auto";
-  audioNuclear.preload = "auto";
-  audioSiren.preload = "auto";
-}
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume().catch(() => {});
+      }
+    }
+
+    function playTone(freq, duration, type = "sine", volume = 0.08, startDelay = 0) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime + startDelay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + duration + 0.03);
+    }
+
+    function playSweep(fromFreq, toFreq, duration, type = "sawtooth", volume = 0.12, startDelay = 0) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime + startDelay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(fromFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), now + duration);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start(now);
+      osc.stop(now + duration + 0.03);
+    }
+
+    function playSiren() {
+      ensureAudio();
+      playSweep(480, 820, 0.55, "triangle", 0.08, 0.0);
+      playSweep(820, 480, 0.55, "triangle", 0.08, 0.55);
+      playSweep(480, 820, 0.55, "triangle", 0.08, 1.1);
+    }
+
+    function playAttackSound(type) {
+      ensureAudio();
+      switch (type) {
+        case "drone":
+          playTone(900, 0.08, "square", 0.05, 0);
+          playTone(1200, 0.08, "square", 0.04, 0.05);
+          break;
+        case "missile":
+          playSweep(300, 120, 0.18, "triangle", 0.08, 0);
+          break;
+        case "cruise":
+          playSweep(500, 180, 0.22, "triangle", 0.08, 0);
+          playTone(140, 0.15, "sine", 0.03, 0.1);
+          break;
+        case "ballistic":
+          playSweep(220, 70, 0.28, "square", 0.11, 0);
+          playTone(55, 0.22, "sine", 0.05, 0.05);
+          break;
+        case "emp":
+          playTone(420, 0.05, "square", 0.06, 0);
+          playTone(860, 0.05, "square", 0.05, 0.06);
+          playTone(1400, 0.07, "triangle", 0.05, 0.12);
+          break;
+        case "nuclear":
+          playSweep(120, 35, 0.55, "sawtooth", 0.16, 0);
+          playTone(40, 0.45, "sine", 0.08, 0.08);
+          break;
+        case "hydrogen":
+          playSweep(150, 25, 0.8, "sawtooth", 0.22, 0);
+          playTone(32, 0.7, "sine", 0.12, 0.12);
+          playTone(18, 0.9, "triangle", 0.08, 0.16);
+          break;
+      }
+    }
 
     function startGame() {
+      ensureAudio();
+
       gameMode = document.getElementById("modeSelect").value;
       level = parseInt(document.getElementById("levelSelect").value, 10);
 
       playerCountry = sanitizeName(document.getElementById("countryAInput").value, "Blue Nation");
-
       if (gameMode === "single") {
         enemyCountry = sanitizeName(document.getElementById("singleEnemyInput").value, "Red Dominion");
       } else {
@@ -830,7 +1035,6 @@
       document.getElementById("setupPanel").classList.add("hidden");
       document.getElementById("gameArea").classList.remove("hidden");
 
-      setupAudio();
       applyNames();
       restartGame();
     }
@@ -856,11 +1060,21 @@
       return Math.max(min, Math.min(max, value));
     }
 
+    function formatTime(seconds) {
+      const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+      const s = String(seconds % 60).padStart(2, "0");
+      return m + ":" + s;
+    }
+
     function logMessage(message) {
       const log = document.getElementById("log");
       const entry = document.createElement("div");
       entry.textContent = message;
       log.prepend(entry);
+    }
+
+    function setStatus(text) {
+      document.getElementById("status").textContent = text;
     }
 
     function updateTurnLabel() {
@@ -873,32 +1087,62 @@
       document.getElementById("turnLabel").textContent = label;
     }
 
+    function currentActorCP() {
+      return currentTurn === "A" ? cpA : cpB;
+    }
+
+    function updateWeaponButtons() {
+      const disabledBase = gameOver || busy || !gameStarted || (gameMode === "single" && currentTurn !== "A");
+      const ids = {
+        drone: "btnDrone",
+        missile: "btnMissile",
+        cruise: "btnCruise",
+        ballistic: "btnBallistic",
+        emp: "btnEMP",
+        nuclear: "btnNuclear",
+        hydrogen: "btnHydrogen"
+      };
+
+      for (const [type, id] of Object.entries(ids)) {
+        const btn = document.getElementById(id);
+        const cost = attackData[type].cost;
+        btn.disabled = disabledBase || currentActorCP() < cost;
+      }
+    }
+
     function updateUI() {
-      document.getElementById("scoreA").textContent = scoreA;
-      document.getElementById("scoreB").textContent = scoreB;
-      document.getElementById("barA").style.width = scoreA + "%";
-      document.getElementById("barB").style.width = scoreB + "%";
-      document.getElementById("round").textContent = Math.min(round, maxRounds);
+      document.getElementById("scoreA").textContent = Math.round(healthA);
+      document.getElementById("scoreB").textContent = Math.round(healthB);
+      document.getElementById("cpA").textContent = Math.round(cpA);
+      document.getElementById("cpB").textContent = Math.round(cpB);
+
+      document.getElementById("barA").style.width = clamp((healthA / maxHealth) * 100, 0, 100) + "%";
+      document.getElementById("barB").style.width = clamp((healthB / maxHealth) * 100, 0, 100) + "%";
+      document.getElementById("cpBarA").style.width = clamp((cpA / maxCP) * 100, 0, 100) + "%";
+      document.getElementById("cpBarB").style.width = clamp((cpB / maxCP) * 100, 0, 100) + "%";
+
+      document.getElementById("timerLabel").textContent = formatTime(matchSeconds);
+      document.getElementById("actionCount").textContent = actionCount;
       updateTurnLabel();
-      disableAttackButtons(gameOver || busy || !gameStarted);
-    }
-
-    function disableAttackButtons(disabled) {
-      document.getElementById("btnMissile").disabled = disabled;
-      document.getElementById("btnBallistic").disabled = disabled;
-      document.getElementById("btnNuclear").disabled = disabled;
-    }
-
-    function setStatus(text) {
-      document.getElementById("status").textContent = text;
+      updateWeaponButtons();
     }
 
     function getLevelDamageBonus(type) {
       if (gameMode !== "single") return 0;
+      const scale = Math.max(0, level - 1);
+      if (type === "drone") return Math.floor(scale / 4);
+      if (type === "missile") return Math.floor(scale / 3);
+      if (type === "cruise") return Math.floor(scale / 3);
+      if (type === "ballistic") return Math.floor(scale / 2);
+      if (type === "emp") return Math.floor(scale / 3);
+      if (type === "nuclear") return Math.floor(scale / 2);
+      return Math.floor(scale / 1.8);
+    }
 
-      if (type === "missile") return Math.floor((level - 1) / 2);
-      if (type === "ballistic") return Math.floor(level / 2);
-      return Math.floor((level + 1) / 2);
+    function getCPRegen(side) {
+      if (gameMode === "multi") return 6;
+      if (side === "A") return 6;
+      return 5 + Math.floor(level / 2);
     }
 
     function calculateDamage(type, attacker) {
@@ -909,165 +1153,250 @@
         damage += getLevelDamageBonus(type);
       }
 
-      if (type === "nuclear") {
-        if (attacker === "A" && scoreA < 30) damage -= 3;
-        if (attacker === "B" && scoreB < 30) damage += 2;
+      if ((type === "nuclear" || type === "hydrogen") && attacker === "A" && healthA < 30) {
+        damage -= 3;
       }
 
-      return clamp(damage, 5, 50);
+      if ((type === "nuclear" || type === "hydrogen") && attacker === "B" && healthB < 30) {
+        damage += 2;
+      }
+
+      return clamp(damage, 1, 75);
     }
 
-    function aiChooseAttack() {
-      const lead = scoreB - scoreA;
-      const aggression = level / 9;
+    function chooseAIAttack() {
+      const affordable = Object.keys(attackData).filter(type => attackData[type].cost <= cpB);
+      if (affordable.length === 0) return null;
 
-      if (scoreB <= 26) {
-        return Math.random() < (0.45 + aggression * 0.35) ? "nuclear" : "ballistic";
+      const deficit = healthB - healthA;
+      const urgency = (100 - healthB) + (level * 4);
+
+      let best = affordable[0];
+      let bestScore = -Infinity;
+
+      for (const type of affordable) {
+        const w = attackData[type];
+        let score = w.max + w.cost * 0.18;
+
+        if (type === "hydrogen" || type === "nuclear") {
+          score += urgency > 45 ? 18 : 0;
+          score += deficit < -10 ? 12 : 0;
+        }
+
+        if (type === "emp" && cpA >= 32) {
+          score += 11;
+        }
+
+        if (type === "missile" || type === "drone") {
+          score += healthA < 18 ? 10 : 0;
+        }
+
+        score += Math.random() * 8;
+        score += getLevelDamageBonus(type);
+
+        if (level <= 3 && (type === "hydrogen" || type === "nuclear")) {
+          score -= 10;
+        }
+
+        if (score > bestScore) {
+          bestScore = score;
+          best = type;
+        }
       }
 
-      if (scoreA <= 20) {
-        return Math.random() < 0.65 ? "missile" : "ballistic";
-      }
-
-      if (lead < -15) {
-        return Math.random() < (0.45 + aggression * 0.4) ? "nuclear" : "ballistic";
-      }
-
-      if (lead > 15) {
-        return Math.random() < 0.6 ? "missile" : "ballistic";
-      }
-
-      const roll = Math.random();
-      if (level <= 3) {
-        if (roll < 0.5) return "missile";
-        if (roll < 0.85) return "ballistic";
-        return "nuclear";
-      }
-
-      if (level <= 6) {
-        if (roll < 0.35) return "missile";
-        if (roll < 0.72) return "ballistic";
-        return "nuclear";
-      }
-
-      if (roll < 0.24) return "missile";
-      if (roll < 0.56) return "ballistic";
-      return "nuclear";
+      return best;
     }
 
-    function triggerShake(levelShake) {
-      if (levelShake <= 0) return;
-      document.body.classList.remove("shake");
+    function triggerShake(kind) {
+      document.body.classList.remove("shake-light", "shake-medium", "shake-heavy");
       void document.body.offsetWidth;
-      document.body.classList.add("shake");
+      if (kind === "light") document.body.classList.add("shake-light");
+      if (kind === "medium") document.body.classList.add("shake-medium");
+      if (kind === "heavy") document.body.classList.add("shake-heavy");
     }
 
-    function playAudio(audioObj) {
-      if (!audioObj) return;
-      try {
-        audioObj.pause();
-        audioObj.currentTime = 0;
-        audioObj.play().catch(() => {});
-      } catch (e) {}
-    }
-     function playSiren() {
-      playAudio(audioSiren);
-    }
-    function playAttackSound(type) {
-      if (type === "missile") playAudio(audioMissile);
-      else if (type === "ballistic") playAudio(audioBallistic);
-      else playAudio(audioNuclear);
+    function createTrailDot(map, x, y, type) {
+      const dot = document.createElement("div");
+      dot.className = "trail-dot";
+      dot.style.left = x + "px";
+      dot.style.top = y + "px";
+
+      const colors = {
+        drone: "rgba(183,243,255,0.9)",
+        missile: "rgba(255,221,87,0.9)",
+        cruise: "rgba(110,247,216,0.9)",
+        ballistic: "rgba(179,136,255,0.9)",
+        emp: "rgba(106,247,255,0.95)",
+        nuclear: "rgba(255,110,110,0.95)",
+        hydrogen: "rgba(255,180,0,0.95)"
+      };
+
+      dot.style.background = colors[type] || "white";
+      map.appendChild(dot);
+      setTimeout(() => dot.remove(), 420);
     }
 
-    function createImpactRing(map, x, y, size, duration) {
+    function createImpactRing(map, x, y, size, duration, color = "rgba(255,235,180,0.85)") {
       const ring = document.createElement("div");
       ring.className = "impact-ring";
       ring.style.left = x + "px";
       ring.style.top = y + "px";
       ring.style.width = size + "px";
       ring.style.height = size + "px";
+      ring.style.borderColor = color;
       ring.style.animation = `ringExpand ${duration}ms ease-out forwards`;
       map.appendChild(ring);
       setTimeout(() => ring.remove(), duration + 50);
     }
 
-    function createMushroomCloud(map, x, y, duration) {
+    function createParticles(map, x, y, count, color, spread, life) {
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement("div");
+        p.className = "trail-dot";
+        p.style.background = color;
+        p.style.width = rand(6, 12) + "px";
+        p.style.height = p.style.width;
+        p.style.left = x + "px";
+        p.style.top = y + "px";
+        map.appendChild(p);
+
+        const dx = rand(-spread, spread);
+        const dy = rand(-spread, spread);
+        p.animate([
+          { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
+          { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.2)`, opacity: 0 }
+        ], {
+          duration: life,
+          easing: "ease-out",
+          fill: "forwards"
+        });
+
+        setTimeout(() => p.remove(), life + 20);
+      }
+    }
+
+    function createMushroomCloud(map, x, y, duration, scale = 1) {
       const cloud = document.createElement("div");
       cloud.className = "cloud";
       cloud.style.left = x + "px";
       cloud.style.top = y + "px";
+      cloud.style.transform = `translate(-50%, -50%) scale(${0.3 * scale})`;
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
       cloud.style.animation = `cloudRise ${duration}ms ease-out forwards`;
       map.appendChild(cloud);
       setTimeout(() => cloud.remove(), duration + 50);
     }
 
+    function spendCP(side, amount) {
+      if (side === "A") cpA = Math.max(0, cpA - amount);
+      else cpB = Math.max(0, cpB - amount);
+    }
+
+    function applyDamage(side, amount) {
+      if (side === "A") healthA = clamp(healthA - amount, 0, maxHealth);
+      else healthB = clamp(healthB - amount, 0, maxHealth);
+    }
+
+    function applyEMPDrain(side, amount) {
+      if (side === "A") cpA = clamp(cpA - amount, 0, maxCP);
+      else cpB = clamp(cpB - amount, 0, maxCP);
+    }
+
     function animateAttack(attacker, defender, type, callback) {
       const map = document.getElementById("map");
       const from = positions[attacker];
       const to = positions[defender];
-      const attack = attackData[type];
+      const weapon = attackData[type];
 
-      const missile = document.createElement("div");
-      missile.className = "missile " + attack.missileClass;
-      missile.style.left = from.x + "px";
-      missile.style.top = from.y + "px";
+      const projectile = document.createElement("div");
+      projectile.className = `projectile ${weapon.projectileClass}`;
+      projectile.style.left = from.x + "px";
+      projectile.style.top = from.y + "px";
+      map.appendChild(projectile);
 
-      const trail = document.createElement("div");
-      trail.className = "trail";
-      trail.style.left = from.x + "px";
-      trail.style.top = (from.y + 2) + "px";
+      playAttackSound(type);
 
-      const explosion = document.createElement("div");
-      explosion.className = "explosion " + attack.explosionClass;
-      explosion.style.left = to.x + "px";
-      explosion.style.top = to.y + "px";
-      explosion.style.setProperty("--scale", attack.explosionScale);
+      const start = performance.now();
+      let lastTrail = 0;
 
-      map.appendChild(trail);
-      map.appendChild(missile);
-      map.appendChild(explosion);
+      function frame(now) {
+        const progress = Math.min(1, (now - start) / weapon.flight);
+        const x = from.x + (to.x - from.x) * progress;
+        const baseY = from.y + (to.y - from.y) * progress;
+        const arc = Math.sin(Math.PI * progress) * weapon.arc;
+        const y = baseY - arc;
 
-      const isNuclear = type === "nuclear";
+        projectile.style.left = x + "px";
+        projectile.style.top = y + "px";
 
-      if (attacker === "A") {
-        missile.style.animation = isNuclear ? "fly-right 3.5s linear forwards" : "fly-right 0.9s linear forwards";
+        if (now - lastTrail > 55) {
+          createTrailDot(map, x, y, type);
+          lastTrail = now;
+        }
 
-        missile.style.animation = isNuclear ? "fly-right 3.5s linear forwards" : "fly-right 0.9s linear forwards";
-        trail.style.animation = isNuclear ? "trail-grow-right 3.3s linear forwards" : "trail-grow-right 0.85s linear forwards";
-      } else {
-        missile.style.animation = isNuclear ? "fly-left 3.5s linear forwards" : "fly-left 0.9s linear forwards";
-        trail.style.left = to.x + "px";
-        trail.style.top = (to.y + 2) + "px";
-        trail.style.transform = "rotate(180deg)";
-        trail.style.animation = isNuclear ? "trail-grow-left 3.3s linear forwards" : "trail-grow-left 0.85s linear forwards";
+        if (progress < 1) {
+          requestAnimationFrame(frame);
+        } else {
+          projectile.remove();
+          impact();
+        }
       }
 
-      const impactDelay = isNuclear ? 3500 : 820;
-      const explosionDuration = isNuclear ? 2500 : 780;
-      const ringDuration = isNuclear ? 2200 : 700;
-      const cloudDuration = isNuclear ? 3200 : 1600;
+      function impact() {
+        const explosion = document.createElement("div");
+        explosion.className = `explosion ${weapon.explosionClass}`;
+        explosion.style.left = to.x + "px";
+        explosion.style.top = to.y + "px";
+        explosion.style.setProperty("--scale", weapon.explosionScale);
+        explosion.style.animation = "boom 850ms ease-out forwards";
+        map.appendChild(explosion);
 
-      setTimeout(() => {
-        playAttackSound(type);
-        triggerShake(attack.shake);
-        explosion.style.animation = `boom ${explosionDuration}ms ease-out forwards`;
-        createImpactRing(map, to.x, to.y, isNuclear ? 120 : type === "ballistic" ? 65 : 42, ringDuration);
+        const ringColor = type === "emp" ? "rgba(106,247,255,0.9)" : "rgba(255,235,180,0.85)";
+        const ringSize =
+          type === "hydrogen" ? 150 :
+          type === "nuclear" ? 120 :
+          type === "ballistic" ? 80 :
+          type === "emp" ? 95 :
+          55;
 
-        if (isNuclear) {
-          createMushroomCloud(map, to.x, to.y - 4, cloudDuration);
+        createImpactRing(map, to.x, to.y, ringSize, type === "hydrogen" ? 1400 : 900, ringColor);
+
+        if (type === "emp") {
+          createImpactRing(map, to.x, to.y, 130, 1200, "rgba(106,247,255,0.8)");
+          createParticles(map, to.x, to.y, 18, "rgba(160,255,255,0.95)", 80, 700);
+        } else if (type === "nuclear") {
+          createMushroomCloud(map, to.x, to.y - 5, 2300, 1.0);
+          createParticles(map, to.x, to.y, 24, "rgba(255,170,50,0.95)", 95, 1000);
+        } else if (type === "hydrogen") {
+          createMushroomCloud(map, to.x, to.y - 8, 3200, 1.35);
+          createImpactRing(map, to.x, to.y, 190, 1600, "rgba(255,180,80,0.9)");
+          createParticles(map, to.x, to.y, 34, "rgba(255,210,110,0.95)", 120, 1200);
+        } else {
+          createParticles(
+            map,
+            to.x,
+            to.y,
+            type === "ballistic" ? 16 : type === "cruise" ? 12 : 8,
+            type === "cruise" ? "rgba(110,247,216,0.95)" : "rgba(255,200,110,0.95)",
+            type === "ballistic" ? 75 : 55,
+            700
+          );
         }
-      }, impactDelay);
 
-      setTimeout(() => {
-        missile.remove();
-        trail.remove();
-        explosion.remove();
-        callback();
-      }, attack.totalDuration);
+        triggerShake(weapon.shake);
+
+        setTimeout(() => {
+          explosion.remove();
+          callback();
+        }, type === "hydrogen" ? 1700 : type === "nuclear" ? 1200 : 900);
+      }
+
+      requestAnimationFrame(frame);
     }
 
     function finishTurnAfterAttack() {
+      actionCount += 1;
+
       if (checkEnd()) {
         busy = false;
         updateUI();
@@ -1077,98 +1406,140 @@
       if (gameMode === "single") {
         if (currentTurn === "A") {
           currentTurn = "B";
-          setStatus(enemyCountry + " is planning a response...");
-          updateUI();
-          setTimeout(aiTurn, 650);
-        } else {
-          currentTurn = "A";
-          round++;
-          setStatus("Your turn");
           busy = false;
           updateUI();
-
-          if (checkEnd()) {
-            updateUI();
-          }
-        }
-      } else {
-        if (currentTurn === "A") {
-          currentTurn = "B";
-          setStatus(enemyCountry + " turn");
+          setStatus(enemyCountry + " is choosing a strike...");
+          setTimeout(aiTurn, 700);
         } else {
           currentTurn = "A";
-          round++;
-          setStatus(playerCountry + " turn");
+          busy = false;
+          updateUI();
+          setStatus("Your turn");
         }
-
+      } else {
+        currentTurn = currentTurn === "A" ? "B" : "A";
         busy = false;
         updateUI();
-
-        if (checkEnd()) {
-          updateUI();
-        }
+        setStatus((currentTurn === "A" ? playerCountry : enemyCountry) + " turn");
       }
+    }
+
+    function doAttack(attacker, type) {
+      const defender = attacker === "A" ? "B" : "A";
+      const attackerName = attacker === "A" ? playerCountry : enemyCountry;
+      const defenderName = defender === "A" ? playerCountry : enemyCountry;
+      const weapon = attackData[type];
+      const attackerCP = attacker === "A" ? cpA : cpB;
+
+      if (attackerCP < weapon.cost) {
+        if (attacker === "A") {
+          setStatus("Not enough command points for " + weapon.label);
+        }
+        return false;
+      }
+
+      spendCP(attacker, weapon.cost);
+      busy = true;
+      updateUI();
+      setStatus(attackerName + " launching " + weapon.label + "...");
+
+      animateAttack(attacker, defender, type, () => {
+        const damage = calculateDamage(type, attacker);
+        applyDamage(defender, damage);
+
+        let log = attackerName + " used " + weapon.label + " and dealt " + damage + " damage to " + defenderName + ".";
+
+        if (type === "emp") {
+          const drain = clamp(weapon.cpDrain + (gameMode === "single" && attacker === "B" ? Math.floor(level / 2) : 0), 8, 26);
+          applyEMPDrain(defender, drain);
+          log += " " + defenderName + " also lost " + drain + " command points.";
+        }
+
+        logMessage(log);
+        updateUI();
+        finishTurnAfterAttack();
+      });
+
+      return true;
     }
 
     function humanAttack(type) {
       if (gameOver || busy || !gameStarted) return;
-
       if (gameMode === "single" && currentTurn !== "A") return;
-
-      busy = true;
-      updateUI();
-
-      const attacker = currentTurn;
-      const defender = attacker === "A" ? "B" : "A";
-      const attackerName = attacker === "A" ? playerCountry : enemyCountry;
-      const defenderName = defender === "A" ? playerCountry : enemyCountry;
-
-      setStatus(attackerName + " launching " + attackData[type].label + "...");
-
-      animateAttack(attacker, defender, type, () => {
-        const damage = calculateDamage(type, attacker);
-
-        if (defender === "A") {
-          scoreA = Math.max(0, scoreA - damage);
-        } else {
-          scoreB = Math.max(0, scoreB - damage);
-        }
-
-        logMessage(attackerName + " used " + attackData[type].label + " and dealt " + damage + " damage to " + defenderName + ".");
-        updateUI();
-        finishTurnAfterAttack();
-      });
+      doAttack(currentTurn, type);
     }
 
     function aiTurn() {
-      if (gameOver || gameMode !== "single" || currentTurn !== "B") return;
+      if (gameOver || gameMode !== "single" || currentTurn !== "B" || busy) return;
 
-      const type = aiChooseAttack();
-
-      animateAttack("B", "A", type, () => {
-        const damage = calculateDamage(type, "B");
-        scoreA = Math.max(0, scoreA - damage);
-
-        logMessage(enemyCountry + " used " + attackData[type].label + " and dealt " + damage + " damage to " + playerCountry + ".");
+      const type = chooseAIAttack();
+      if (!type) {
+        setStatus(enemyCountry + " is saving command points...");
+        logMessage(enemyCountry + " skipped the turn to save command points.");
+        currentTurn = "A";
         updateUI();
-        finishTurnAfterAttack();
-      });
+        setStatus("Your turn");
+        return;
+      }
+
+      doAttack("B", type);
+    }
+
+    function startResourceFlow() {
+      clearInterval(cpInterval);
+      cpInterval = setInterval(() => {
+        if (!gameStarted || gameOver) return;
+
+        cpA = clamp(cpA + getCPRegen("A"), 0, maxCP);
+        cpB = clamp(cpB + getCPRegen("B"), 0, maxCP);
+        updateUI();
+      }, 1000);
+    }
+
+    function startMatchTimer() {
+      clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (!gameStarted || gameOver) return;
+
+        matchSeconds = Math.max(0, matchSeconds - 1);
+        updateUI();
+
+        if (matchSeconds <= 0) {
+          endByTimer();
+        }
+      }, 1000);
+    }
+
+    function endByTimer() {
+      if (gameOver) return;
+      gameOver = true;
+      busy = false;
+      clearInterval(timerInterval);
+      clearInterval(cpInterval);
+
+      let resultText = "";
+      if (healthA > healthB) resultText = "🏆 " + playerCountry + " wins by higher health!";
+      else if (healthB > healthA) resultText = "🏆 " + enemyCountry + " wins by higher health!";
+      else if (cpA > cpB) resultText = "🏆 " + playerCountry + " wins by higher command points!";
+      else if (cpB > cpA) resultText = "🏆 " + enemyCountry + " wins by higher command points!";
+      else resultText = "🤝 Draw!";
+
+      document.getElementById("result").textContent = resultText;
+      setStatus("Match timer ended");
+      logMessage("Time is up — " + resultText);
+      updateUI();
     }
 
     function checkEnd() {
-      if (scoreA <= 0 || scoreB <= 0 || round > maxRounds) {
+      if (healthA <= 0 || healthB <= 0) {
         gameOver = true;
-        busy = false;
-        disableAttackButtons(true);
+        clearInterval(timerInterval);
+        clearInterval(cpInterval);
 
         let resultText = "";
-        if (scoreA > scoreB) {
-          resultText = "🏆 " + playerCountry + " wins!";
-        } else if (scoreB > scoreA) {
-          resultText = "🏆 " + enemyCountry + " wins!";
-        } else {
-          resultText = "🤝 Draw!";
-        }
+        if (healthA > healthB) resultText = "🏆 " + playerCountry + " wins!";
+        else if (healthB > healthA) resultText = "🏆 " + enemyCountry + " wins!";
+        else resultText = "🤝 Draw!";
 
         document.getElementById("result").textContent = resultText;
         setStatus("Game over");
@@ -1182,26 +1553,31 @@
     function restartGame() {
       if (!gameStarted) return;
 
-      scoreA = 100;
-      scoreB = 100;
-      round = 1;
+      ensureAudio();
+
+      healthA = 100;
+      healthB = 100;
+      cpA = 30;
+      cpB = 30;
+      matchSeconds = 180;
       gameOver = false;
       busy = false;
       currentTurn = "A";
+      actionCount = 0;
+
+      clearInterval(timerInterval);
+      clearInterval(cpInterval);
 
       document.getElementById("result").textContent = "";
       document.getElementById("log").innerHTML = "";
 
       applyNames();
-
-      if (gameMode === "single") {
-        setStatus("Your turn");
-      } else {
-        setStatus(playerCountry + " turn");
-      }
-playSiren();
-updateUI();
-logMessage("New game started: " + playerCountry + " vs " + enemyCountry + ".");
+      playSiren();
+      setStatus(gameMode === "single" ? "Your turn" : playerCountry + " turn");
+      logMessage("New match started: " + playerCountry + " vs " + enemyCountry + ".");
+      updateUI();
+      startResourceFlow();
+      startMatchTimer();
     }
 
     toggleModeFields();
