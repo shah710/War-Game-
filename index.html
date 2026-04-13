@@ -917,8 +917,7 @@
       update,
       onValue,
       get,
-      remove,
-      off
+      remove
     } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const firebaseConfig = {
@@ -1137,14 +1136,14 @@
     }
 
     function setupCustomAudio() {
-      customAudio.missile = new Audio("missile.mp3");
-      customAudio.ballistic = new Audio("ballistic.mp3");
-      customAudio.nuclear = new Audio("nuclear.mp3");
-      customAudio.siren = new Audio("siren.mp3");
-      customAudio.pink = new Audio("pink.mp3");
+      if (!customAudio.missile) customAudio.missile = new Audio("missile.mp3");
+      if (!customAudio.ballistic) customAudio.ballistic = new Audio("ballistic.mp3");
+      if (!customAudio.nuclear) customAudio.nuclear = new Audio("nuclear.mp3");
+      if (!customAudio.siren) customAudio.siren = new Audio("siren.mp3");
+      if (!customAudio.pink) customAudio.pink = new Audio("pink.mp3");
 
       Object.values(customAudio).forEach(a => {
-        a.preload = "auto";
+        if (a) a.preload = "auto";
       });
     }
 
@@ -1317,7 +1316,13 @@
     }
 
     function updateWeaponButtons() {
-      const disabledBase = state.gameOver || busy || !gameStarted || (mode === "single" && state.currentTurn !== "A") || (mode === "online" && state.currentTurn !== playerSlot);
+      const disabledBase =
+        state.gameOver ||
+        busy ||
+        !gameStarted ||
+        (mode === "single" && state.currentTurn !== "A") ||
+        (mode === "online" && state.currentTurn !== playerSlot);
+
       const ids = {
         drone: "btnDrone",
         missile: "btnMissile",
@@ -1710,8 +1715,6 @@
     }
 
     function finishTurnAfterAttack() {
-      updateUI();
-
       if (checkEnd()) return;
 
       if (mode === "single") {
@@ -1722,14 +1725,14 @@
           aiPending = setTimeout(aiTurn, 700);
         } else {
           busy = false;
-          updateUI();
           setStatus("Your turn");
+          updateUI();
         }
       } else {
         busy = false;
-        updateUI();
         const activeName = state.currentTurn === "A" ? playerCountry : enemyCountry;
         setStatus(activeName + " turn");
+        updateUI();
         syncOnlineState();
       }
     }
@@ -2028,6 +2031,13 @@
         } catch {}
       }
     });
+
+    window.startSinglePlayer = startSinglePlayer;
+    window.createOnlineRoom = createOnlineRoom;
+    window.joinOnlineRoom = joinOnlineRoom;
+    window.humanAttack = humanAttack;
+    window.restartGame = restartGame;
+    window.toggleModeFields = toggleModeFields;
 
     toggleModeFields();
   </script>
