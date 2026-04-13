@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>War Game Beta v0.4</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    :root {
+      --bg1: #091321;
+      --bg2: #12263d;
+      --bg3: #1d3d61;
+      --panel: rgba(255,255,255,0.08);
+      --panel-border: rgba(255,255,255,0.12);
+      --soft: #dce8f6;
+      --blue1: #2f7de1;
+      --blue2: #7fc2ff;
+      --red1: #c62828;
+      --red2: #ff8d8d;
+      --pink1: #ff4fd8;
+      --pink2: #ffc0ef;
+      --gold: #ffd166;
+      --teal1: #00c2a8;
+      --teal2: #6ef7d8;
+      --violet1: #7b2cbf;
+      --violet2: #c8a8ff;
+      --green1: #22c55e;
+      --green2: #86efac;
+      --orange1: #f97316;
+      --orange2: #fdba74;
+      --shieldBlue: rgba(90, 190, 255, 0.35);
+      --shieldRed: rgba(255, 110, 110, 0.35);
+      --cloud: rgba(255,255,255,0.18);
+      --cloud2: rgba(255,255,255,0.1);
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+      background: radial-gradient(circle at top, #24486f 0%, var(--bg2) 32%, var(--bg1) 72%, #03070c 100%);
+      perspective: 1200px;
+    }
+
+    body.shake-light { animation: shakeLight 0.22s linear; }
+    body.shake-medium { animation: shakeMedium 0.34s linear; }
+    body.shake-heavy { animation: shakeHeavy 0.58s linear; }
+
+    @keyframes shakeLight {
+      0% { transform: translate(0,0); }
+      25% { transform: translate(-3px,2px); }
+      50% { transform: translate(3px,-2px); }
+      75% { transform: translate(-2px,-1px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes shakeMedium {
+      0% { transform: translate(0,0); }
+      20% { transform: translate(-6px,3px); }
+      40% { transform: translate(6px,-3px); }
+      60% { transform: translate(-4px,-4px); }
+      80% { transform: translate(4px,3px); }
+      100% { transform: translate(0,0); }
+    }
+    @keyframes shakeHeavy {
+      0% { transform: translate(0,0); }
+      15% { transform: translate(-10px,6px); }
+      30% { transform: translate(10px,-6px); }
+      45% { transform: translate(-8px,-7px); }
+      60% { transform: translate(8px,6px); }
+      75% { transform: translate(-6px,4px); }
+      100% { transform: translate(0,0); }
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 { margin: 0 0 8px; }
+
+    .beta {
+      display: inline-block;
+      background: var(--gold);
+      color: #111;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      color: var(--soft);
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--panel-border);
+      border-radius: 20px;
+      box-shadow: 0 14px 30px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
+      padding: 16px;
+    }
+
+    .setup-panel {
+      max-width: 980px;
+      margin: 0 auto 22px;
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .setup-full { grid-column: 1 / -1; }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: var(--soft);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.07);
+      color: white;
+      font-size: 16px;
+      outline: none;
+    }
+
+    option { color: black; }
+
+    .button-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; filter: none; }
+
+    .btn-start, .btn-restart { background: #2a9d8f; }
+    .btn-economy { background: #16a34a; }
+    .btn-shield { background: linear-gradient(135deg, #2563eb, #60a5fa); }
+    .btn-interceptor { background: linear-gradient(135deg, #7c3aed, #c4b5fd); }
+
+    .top-row {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      color: var(--soft);
+      font-weight: bold;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .country-name {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .blue-text { color: #8ac8ff; }
+    .red-text { color: #ff9c9c; }
+
+    .section-label {
+      font-size: 13px;
+      color: #cbd8eb;
+      text-align: left;
+      margin: 6px 0 4px;
+    }
+
+    .bar-wrap {
+      background: rgba(255,255,255,0.12);
+      height: 24px;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 8px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
+    }
+
+    .bar {
+      height: 100%;
+      width: 100%;
+      transition: width 0.35s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 60%);
+      pointer-events: none;
+    }
+
+    .bar.health-blue { background: linear-gradient(90deg, var(--blue1), var(--blue2)); }
+    .bar.health-red { background: linear-gradient(90deg, var(--red1), var(--red2)); }
+    .bar.cp-blue { background: linear-gradient(90deg, #14b8a6, #8ff5e8); }
+    .bar.cp-red { background: linear-gradient(90deg, #ff8a00, #ffd166); }
+    .bar.money-blue { background: linear-gradient(90deg, var(--green1), var(--green2)); }
+    .bar.money-red { background: linear-gradient(90deg, var(--orange1), var(--orange2)); }
+    .bar.pop-blue { background: linear-gradient(90deg, #60a5fa, #bfdbfe); }
+    .bar.pop-red { background: linear-gradient(90deg, #f87171, #fecaca); }
+    .bar.shield-blue { background: linear-gradient(90deg, #0ea5e9, #bfdbfe); }
+    .bar.shield-red { background: linear-gradient(90deg, #ef4444, #fecaca); }
+
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 13px;
+      color: #d8e1ea;
+      flex-wrap: wrap;
+    }
+
+    .economy-panel { margin-bottom: 18px; }
+
+    .economy-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .eco-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 12px;
+      text-align: left;
+    }
+
+    .eco-card b { display: block; margin-bottom: 6px; }
+
+    .eco-meta {
+      color: #d5e1f0;
+      font-size: 13px;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .map-shell {
+      position: relative;
+      margin: 22px 0;
+      transform-style: preserve-3d;
+    }
+
+    .globe-backdrop {
+      position: absolute;
+      inset: 30px 15% 40px 15%;
+      border-radius: 50%;
+      z-index: 0;
+      opacity: 0.45;
+      transform: rotateX(70deg) translateZ(-60px);
+      background: radial-gradient(circle at 50% 45%, rgba(90,150,220,0.22), rgba(0,0,0,0) 55%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%);
+      filter: blur(2px);
+    }
+
+    .globe-backdrop::before,
+    .globe-backdrop::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+
+    .globe-backdrop::before {
+      background: repeating-linear-gradient(to right, rgba(255,255,255,0.08) 0 1px, transparent 1px 36px), repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 30px);
+      animation: globeSpin 20s linear infinite;
+      opacity: 0.65;
+    }
+
+    .globe-backdrop::after {
+      background: radial-gradient(circle at 25% 38%, rgba(90,180,110,0.35) 0 12%, transparent 13%), radial-gradient(circle at 40% 58%, rgba(90,180,110,0.32) 0 10%, transparent 11%), radial-gradient(circle at 64% 40%, rgba(90,180,110,0.33) 0 13%, transparent 14%), radial-gradient(circle at 74% 64%, rgba(90,180,110,0.3) 0 9%, transparent 10%);
+      animation: globeSpin 26s linear infinite reverse;
+      filter: blur(1px);
+      opacity: 0.7;
+    }
+
+    @keyframes globeSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .map {
+      position: relative;
+      height: 540px;
+      border-radius: 24px;
+      overflow: hidden;
+      background: url("https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74218/world.topo.bathy.200412.3x5400x2700.jpg") center / cover no-repeat;
+      border: 1px solid rgba(255,255,255,0.15);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.7), inset 0 2px 0 rgba(255,255,255,0.1);
+      transform: rotateX(10deg);
+      cursor: crosshair;
+    }
+
+    .map.satellite-zoom { animation: satelliteZoom 2.4s ease-in-out; }
+
+    @keyframes satelliteZoom {
+      0% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
+      25% { transform: rotateX(8deg) scale(1.06); filter: saturate(1.1) brightness(1.05); }
+      50% { transform: rotateX(8deg) scale(1.18); filter: saturate(1.25) brightness(1.12); }
+      75% { transform: rotateX(8deg) scale(1.08); filter: saturate(1.1) brightness(1.04); }
+      100% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
+    }
+
+    .grid-lines::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px), repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px);
+      opacity: 0.35;
+      z-index: 1;
+    }
+
+    .stars {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 12% 16%, rgba(255,255,255,0.7) 0 1px, transparent 2px), radial-gradient(circle at 22% 8%, rgba(255,255,255,0.45) 0 1px, transparent 2px), radial-gradient(circle at 37% 12%, rgba(255,255,255,0.5) 0 1px, transparent 2px), radial-gradient(circle at 52% 18%, rgba(255,255,255,0.4) 0 1px, transparent 2px), radial-gradient(circle at 66% 10%, rgba(255,255,255,0.55) 0 1px, transparent 2px), radial-gradient(circle at 79% 15%, rgba(255,255,255,0.5) 0 1px, transparent 2px), radial-gradient(circle at 88% 9%, rgba(255,255,255,0.6) 0 1px, transparent 2px);
+      opacity: 0.55;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .world-map-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .continent {
+      fill: #4d7a4f;
+      stroke: rgba(255,255,255,0.08);
+      stroke-width: 2;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.22));
+    }
+
+    .weather-layer, .city-layer, .target-layer, .defense-layer, .projectile-layer {
+      position: absolute;
+      inset: 0;
+    }
+
+    .weather-layer { z-index: 5; pointer-events: none; }
+    .city-layer { z-index: 6; }
+    .target-layer { z-index: 10; pointer-events: none; }
+    .defense-layer { z-index: 8; pointer-events: none; }
+    .projectile-layer { z-index: 9; pointer-events: none; }
+
+    .city-node {
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      margin-left: -11px;
+      margin-top: -11px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.9);
+      box-shadow: 0 0 18px rgba(255,255,255,0.65);
+      cursor: pointer;
+      transition: transform 0.14s ease, filter 0.14s ease;
+    }
+
+    .city-node:hover { transform: scale(1.08); filter: brightness(1.08); }
+    .city-node.player { background: #8ecaff; }
+    .city-node.enemy { background: #ff9c9c; }
+    .city-node.safe { box-shadow: 0 0 14px rgba(86, 255, 155, 0.65); }
+    .city-node.threatened { box-shadow: 0 0 16px rgba(255, 209, 102, 0.9); }
+    .city-node.attack { box-shadow: 0 0 22px rgba(255, 99, 99, 1); animation: pulseAttack 0.9s infinite; }
+
+    .city-label {
+      position: absolute;
+      transform: translate(-50%, 10px);
+      color: #eef6ff;
+      font-size: 13px;
+      font-weight: bold;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.75);
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    .city-meta {
+      position: absolute;
+      transform: translate(-50%, 28px);
+      color: #dbeafe;
+      font-size: 11px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+
+    @keyframes pulseAttack {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+      100% { transform: scale(1); }
+    }
+
+    .reticle {
+      position: absolute;
+      width: 54px;
+      height: 54px;
+      border: 2px solid rgba(255,255,255,0.92);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 16px rgba(255,255,255,0.65);
+      animation: reticlePulse 1.1s infinite;
+    }
+
+    .reticle::before,
+    .reticle::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      background: rgba(255,255,255,0.92);
+      transform: translate(-50%, -50%);
+    }
+
+    .reticle::before { width: 2px; height: 74px; }
+    .reticle::after { width: 74px; height: 2px; }
+
+    @keyframes reticlePulse {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.08); opacity: 0.82; }
+    }
+
+    .target-hint {
+      position: absolute;
+      transform: translate(-50%, -72px);
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.14);
+      border-radius: 10px;
+      padding: 8px 10px;
+      color: white;
+      font-size: 12px;
+      min-width: 160px;
+    }
+
+    .shield-dome {
+      position: absolute;
+      width: 92px;
+      height: 92px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      border: 2px solid rgba(255,255,255,0.45);
+      box-shadow: 0 0 28px rgba(120,200,255,0.35), inset 0 0 18px rgba(255,255,255,0.12);
+      backdrop-filter: blur(1px);
+      animation: shieldPulse 2s infinite ease-in-out;
+    }
+
+    .shield-dome.player {
+      background: radial-gradient(circle, rgba(110, 195, 255, 0.18), transparent 65%);
+      border-color: rgba(110, 195, 255, 0.7);
+    }
+    .shield-dome.enemy {
+      background: radial-gradient(circle, rgba(255, 115, 115, 0.18), transparent 65%);
+      border-color: rgba(255, 115, 115, 0.7);
+    }
+
+    @keyframes shieldPulse {
+      0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
+      50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.06); }
+    }
+
+    .interceptor-arc {
+      position: absolute;
+      height: 3px;
+      transform-origin: left center;
+      background: linear-gradient(90deg, rgba(160,255,255,0.15), rgba(160,255,255,0.95));
+      box-shadow: 0 0 12px rgba(160,255,255,0.95);
+      border-radius: 999px;
+      animation: interceptorFade 0.9s linear forwards;
+    }
+
+    @keyframes interceptorFade {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .cloud-band {
+      position: absolute;
+      width: 220px;
+      height: 90px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 50%, var(--cloud) 0 35%, transparent 36%), radial-gradient(circle at 50% 40%, var(--cloud) 0 38%, transparent 39%), radial-gradient(circle at 70% 54%, var(--cloud2) 0 30%, transparent 31%), linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+      filter: blur(4px);
+      opacity: 0.55;
+      animation: driftCloud linear infinite;
+    }
+
+    @keyframes driftCloud {
+      from { transform: translateX(-260px); }
+      to { transform: translateX(1320px); }
+    }
+
+    .projectile {
+      position: absolute;
+      z-index: 7;
+      border-radius: 999px;
+      pointer-events: none;
+      box-shadow: 0 0 12px rgba(255,255,255,0.8);
+      transform: translate(-50%, -50%);
+    }
+
+    .projectile.drone { width: 12px; height: 12px; background: radial-gradient(circle, #ffffff 10%, #b7f3ff 80%); box-shadow: 0 0 10px rgba(183,243,255,0.9); }
+    .projectile.missile { width: 18px; height: 8px; background: linear-gradient(90deg, #ffffff, #ffdd57); }
+    .projectile.pink { width: 22px; height: 9px; background: linear-gradient(90deg, #fff, var(--pink2), var(--pink1)); box-shadow: 0 0 18px rgba(255,79,216,0.95); }
+    .projectile.cruise { width: 24px; height: 9px; background: linear-gradient(90deg, #ffffff, #6ef7d8); box-shadow: 0 0 14px rgba(110,247,216,0.9); }
+    .projectile.ballistic { width: 28px; height: 10px; background: linear-gradient(90deg, #ffffff, var(--violet2)); box-shadow: 0 0 16px rgba(179,136,255,0.9); }
+    .projectile.emp { width: 22px; height: 22px; background: radial-gradient(circle, rgba(180,255,255,0.95), rgba(0,255,240,0.2)); box-shadow: 0 0 18px rgba(120,255,255,0.95); border-radius: 50%; }
+    .projectile.nuclear { width: 38px; height: 13px; background: linear-gradient(90deg, #ffffff, #ff6b6b); box-shadow: 0 0 20px rgba(255,120,120,0.95); }
+    .projectile.hydrogen { width: 62px; height: 18px; background: linear-gradient(90deg, #ffffff, #fff0b3, #ff6a00, #ff2f2f); box-shadow: 0 0 34px rgba(255,150,40,1); }
+    .projectile.ship { width: 40px; height: 16px; border-radius: 8px 8px 5px 5px; background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 40%, #475569 100%); box-shadow: 0 0 18px rgba(203,213,225,0.65); }
+    .projectile.ship::before { content: ""; position: absolute; width: 14px; height: 6px; left: 12px; top: -4px; border-radius: 4px; background: #f8fafc; box-shadow: 0 0 8px rgba(255,255,255,0.5); }
+    .projectile.ground { width: 26px; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #f59e0b, #7c2d12); box-shadow: 0 0 16px rgba(245,158,11,0.7); }
+    .projectile.interceptor { width: 14px; height: 14px; background: radial-gradient(circle, #fff, #9cf); box-shadow: 0 0 18px rgba(180,230,255,1); }
+
+    .trail-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 6;
+      transform: translate(-50%, -50%);
+      animation: fadeTrail 0.45s linear forwards;
+    }
+
+    .wake-dot {
+      position: absolute;
+      width: 14px;
+      height: 6px;
+      border-radius: 999px;
+      pointer-events: none;
+      z-index: 6;
+      transform: translate(-50%, -50%);
+      background: rgba(220, 240, 255, 0.85);
+      box-shadow: 0 0 8px rgba(220,240,255,0.65);
+      animation: fadeWake 0.55s linear forwards;
+    }
+
+    .sea-splash {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 8;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(170,220,255,0.8) 45%, rgba(170,220,255,0.05) 100%);
+      animation: splashUp 0.8s ease-out forwards;
+    }
+
+    @keyframes fadeTrail {
+      from { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+    }
+
+    @keyframes fadeWake {
+      from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      to { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
+    }
+
+    @keyframes splashUp {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+      40% { opacity: 0.95; transform: translate(-50%, calc(-50% - 10px)) scale(1.05); }
+      100% { opacity: 0; transform: translate(-50%, calc(-50% - 18px)) scale(1.35); }
+    }
+
+    .explosion {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 8;
+      transform: translate(-50%, -50%) scale(0.2);
+      --scale: 1.6;
+    }
+
+    .explosion.drone { background: radial-gradient(circle, #ffffff 0%, #9ef7ff 40%, rgba(0,180,255,0.18) 100%); }
+    .explosion.missile { background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb8500 65%, rgba(255,115,0,0.15) 100%); }
+    .explosion.pink { background: radial-gradient(circle, #fff 0%, #ffd3f4 28%, #ff7add 58%, rgba(255,79,216,0.22) 100%); box-shadow: 0 0 24px rgba(255,79,216,0.85); }
+    .explosion.cruise { background: radial-gradient(circle, #ffffff 0%, #7df4d9 30%, #14b8a6 62%, rgba(20,184,166,0.2) 100%); }
+    .explosion.ballistic { background: radial-gradient(circle, #ffffff 0%, #ffd166 25%, #ff7b00 55%, #d62828 80%, rgba(214,40,40,0.22) 100%); }
+    .explosion.emp { background: radial-gradient(circle, #e8ffff 0%, #6af7ff 35%, #00d4ff 65%, rgba(0,200,255,0.18) 100%); box-shadow: 0 0 28px rgba(0,200,255,0.65); }
+    .explosion.nuclear { background: radial-gradient(circle, #ffffff 0%, #fff3b0 18%, #ffb703 35%, #fb5607 58%, #d00000 78%, rgba(208,0,0,0.26) 100%); box-shadow: 0 0 40px rgba(255,140,0,0.8); }
+    .explosion.hydrogen { background: radial-gradient(circle, #ffffff 0%, #fff8d9 10%, #ffe066 20%, #ffbf69 34%, #ff922b 48%, #ff3b3b 68%, #8b0000 90%, rgba(139,0,0,0.38) 100%); box-shadow: 0 0 85px rgba(255,170,0,1); }
+    .explosion.ship { background: radial-gradient(circle, #ffffff 0%, #cbd5e1 20%, #64748b 60%, rgba(100,116,139,0.22) 100%); box-shadow: 0 0 26px rgba(203,213,225,0.8); }
+    .explosion.ground { background: radial-gradient(circle, #fff 0%, #fdba74 25%, #f97316 60%, rgba(249,115,22,0.22) 100%); box-shadow: 0 0 28px rgba(249,115,22,0.85); }
+
+    .impact-ring {
+      position: absolute;
+      border: 3px solid rgba(255,235,180,0.85);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0.3);
+      opacity: 0;
+      z-index: 7;
+      pointer-events: none;
+    }
+
+    .cloud {
+      position: absolute;
+      pointer-events: none;
+      z-index: 9;
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.3);
+    }
+
+    .cloud .cap, .cloud .stem { position: absolute; border-radius: 50%; }
+    .cloud .cap {
+      width: 120px;
+      height: 80px;
+      left: -60px;
+      top: -70px;
+      background: radial-gradient(circle, rgba(255,244,200,0.95) 0%, rgba(255,161,60,0.85) 45%, rgba(170,45,20,0.45) 100%);
+      box-shadow: -36px 10px 0 8px rgba(255,153,51,0.35), 36px 10px 0 8px rgba(255,153,51,0.35), 0 20px 0 12px rgba(255,153,51,0.28);
+    }
+    .cloud .stem {
+      width: 44px;
+      height: 95px;
+      left: -22px;
+      top: -8px;
+      border-radius: 40px;
+      background: linear-gradient(180deg, rgba(255,200,120,0.9), rgba(180,70,30,0.45));
+    }
+
+    .target-panel {
+      margin: 12px 0 18px;
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .target-summary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+      color: #d8e1ea;
+      font-weight: bold;
+    }
+
+    .target-badge {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 10px 12px;
+      min-width: 180px;
+    }
+
+    .weapons-toolbar {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(90px, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .weapon-tile {
+      min-height: 84px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .weapon-tile.active {
+      outline: 2px solid rgba(255,255,255,0.75);
+      transform: translateY(-2px);
+    }
+
+    .weapon-icon { font-size: 22px; line-height: 1; }
+    .weapon-name { font-size: 12px; }
+    .weapon-cost { font-size: 11px; color: #d5e1f0; }
+
+    .controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+
+    .w-drone { background: #2d9cdb; }
+    .w-missile { background: #2f7de1; }
+    .w-pink { background: linear-gradient(135deg, #ff59da, #ff8fe9); }
+    .w-cruise { background: #14b8a6; }
+    .w-ballistic { background: var(--violet1); }
+    .w-emp { background: #0ea5e9; }
+    .w-nuclear { background: #c62828; }
+    .w-hydrogen { background: #7f1d1d; }
+    .w-ship { background: #64748b; }
+    .w-ground { background: #b45309; }
+
+    .info-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+      color: #d8e1ea;
+      font-weight: bold;
+    }
+
+    .status { min-height: 24px; }
+
+    #log {
+      margin-top: 16px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px;
+      padding: 14px;
+      height: 260px;
+      overflow-y: auto;
+      text-align: left;
+    }
+
+    #log div {
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 14px;
+    }
+
+    #result {
+      font-size: 30px;
+      font-weight: bold;
+      margin-top: 12px;
+      min-height: 40px;
+    }
+
+    .hidden { display: none; }
+
+    @keyframes boom {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.18); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1)); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.7)); }
+    }
+
+    @keyframes ringExpand {
+      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
+    }
+
+    @keyframes cloudRise {
+      0% { opacity: 0.05; transform: translate(-50%, -30%) scale(0.35); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -95%) scale(1.3); }
+    }
+
+    @media (max-width: 1100px) {
+      .setup-grid, .hud, .economy-grid, .target-panel { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: repeat(3, minmax(120px, 1fr)); }
+      .weapons-toolbar { grid-template-columns: repeat(4, minmax(90px, 1fr)); }
+    }
+
+    @media (max-width: 980px) {
+      .setup-grid, .hud, .economy-grid { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
+      .weapons-toolbar { grid-template-columns: repeat(3, minmax(90px, 1fr)); }
+      .map { height: 430px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>War Game: Nations at War</h1>
+    <div class="beta">⚠️ Trial Version — Beta v0.4</div>
+    <div class="subtitle">Real-time war simulator with satellite map, cities, targeting, defense shields, interceptors, economy, and simultaneous attacks.</div>
+
+    <div class="panel setup-panel" id="setupPanel">
+      <div><b>Game Setup</b></div>
+      <div class="setup-grid">
+        <div class="setup-full">
+          <label for="modeSelect">Mode</label>
+          <select id="modeSelect" onchange="toggleModeFields()">
+            <option value="single">Single Player</option>
+            <option value="online">Online Multiplayer (disabled in this refined v0.4 build)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="countryAInput">Your Country Name</label>
+          <input id="countryAInput" type="text" maxlength="24" placeholder="Enter your country name">
+        </div>
+
+        <div id="singleEnemyField">
+          <label for="singleEnemyInput">Computer Country Name</label>
+          <input id="singleEnemyInput" type="text" maxlength="24" value="Red Dominion" />
+        </div>
+
+        <div class="setup-full">
+          <label for="levelSelect">Level</label>
+          <select id="levelSelect">
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+            <option value="4">Level 4</option>
+            <option value="5" selected>Level 5</option>
+            <option value="6">Level 6</option>
+            <option value="7">Level 7</option>
+            <option value="8">Level 8</option>
+            <option value="9">Level 9</option>
+          </select>
+        </div>
+
+        <div class="setup-full button-row">
+          <button class="btn-start" onclick="startSinglePlayer()">Start Single Player</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="gameArea" class="hidden">
+      <div class="top-row">
+        <div>Mode: <span id="modeLabel">Single Player</span></div>
+        <div>Level: <span id="levelLabel">5</span></div>
+        <div>Timer: <span id="timerLabel">06:00</span></div>
+        <div>Combat: <span id="turnLabel">Real-Time</span></div>
+        <div>Actions: <span id="actionCount">0</span></div>
+        <div>Player Cooldown: <span id="cooldownLabel">Ready</span></div>
+      </div>
+
+      <div class="hud">
+        <div class="panel">
+          <div class="country-name blue-text" id="hudNameA">Country A</div>
+          <div class="section-label">Health</div>
+          <div class="bar-wrap"><div id="barA" class="bar health-blue"></div></div>
+          <div class="section-label">Population</div>
+          <div class="bar-wrap"><div id="popBarA" class="bar pop-blue"></div></div>
+          <div class="section-label">Command Points</div>
+          <div class="bar-wrap"><div id="cpBarA" class="bar cp-blue"></div></div>
+          <div class="section-label">Money</div>
+          <div class="bar-wrap"><div id="moneyBarA" class="bar money-blue"></div></div>
+          <div class="section-label">Defense Shield</div>
+          <div class="bar-wrap"><div id="shieldBarA" class="bar shield-blue"></div></div>
+          <div class="stats">
+            <span>Health: <span id="scoreA">180</span></span>
+            <span>Pop: <span id="popA">200M</span></span>
+            <span>CP: <span id="cpA">30</span></span>
+            <span>Money: $<span id="moneyA">150</span>M</span>
+            <span>Shield: <span id="shieldA">55</span></span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="country-name red-text" id="hudNameB">Country B</div>
+          <div class="section-label">Health</div>
+          <div class="bar-wrap"><div id="barB" class="bar health-red"></div></div>
+          <div class="section-label">Population</div>
+          <div class="bar-wrap"><div id="popBarB" class="bar pop-red"></div></div>
+          <div class="section-label">Command Points</div>
+          <div class="bar-wrap"><div id="cpBarB" class="bar cp-red"></div></div>
+          <div class="section-label">Money</div>
+          <div class="bar-wrap"><div id="moneyBarB" class="bar money-red"></div></div>
+          <div class="section-label">Defense Shield</div>
+          <div class="bar-wrap"><div id="shieldBarB" class="bar shield-red"></div></div>
+          <div class="stats">
+            <span>Health: <span id="scoreB">180</span></span>
+            <span>Pop: <span id="popB">200M</span></span>
+            <span>CP: <span id="cpB">30</span></span>
+            <span>Money: $<span id="moneyB">150</span>M</span>
+            <span>Shield: <span id="shieldB">55</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel target-panel">
+        <div class="target-summary">
+          <div class="target-badge">Selected Weapon: <span id="selectedWeaponLabel">None</span></div>
+          <div class="target-badge">Target: <span id="selectedTargetLabel">Enemy Capital</span></div>
+          <div class="target-badge">Coords: <span id="selectedCoordsLabel">895, 220</span></div>
+          <div class="target-badge">Threat: <span id="threatLabel">Low</span></div>
+        </div>
+        <div class="button-row" style="margin-top:0; align-items:center;">
+          <button class="btn-shield" onclick="activatePlayerShield()">Raise Shield<br>18 CP / $20</button>
+          <button class="btn-interceptor" onclick="activateInterceptors()">Interceptor Net<br>22 CP / $26</button>
+        </div>
+      </div>
+
+      <div class="panel economy-panel">
+        <div class="button-row">
+          <button class="btn-economy" onclick="toggleEconomy()">Business / Economy</button>
+          <div style="align-self:center;color:#dce8f6;font-weight:bold;">Income/sec: $<span id="incomeLabel">8</span>M</div>
+        </div>
+
+        <div id="economyPanel" class="economy-grid hidden">
+          <div class="eco-card"><b>Factory</b><div class="eco-meta">Cost: $60M<br>+5 income/sec</div><button onclick="buyBusiness('factory')">Build Factory</button></div>
+          <div class="eco-card"><b>Bank</b><div class="eco-meta">Cost: $90M<br>+8 income/sec</div><button onclick="buyBusiness('bank')">Build Bank</button></div>
+          <div class="eco-card"><b>Mine</b><div class="eco-meta">Cost: $75M<br>+6 income/sec</div><button onclick="buyBusiness('mine')">Open Mine</button></div>
+          <div class="eco-card"><b>Port</b><div class="eco-meta">Cost: $110M<br>+9 income/sec<br>Boosts ship attack damage</div><button onclick="buyBusiness('port')">Build Port</button></div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div style="font-weight:bold; margin-bottom:10px;">Icon Weapon Selector</div>
+        <div class="weapons-toolbar" id="weaponToolbar"></div>
+      </div>
+
+      <div class="map-shell">
+        <div class="globe-backdrop"></div>
+        <div class="map grid-lines" id="map" onclick="mapClicked(event)">
+          <div class="stars"></div>
+          <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+            <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
+            <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
+            <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
+            <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
+            <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
+            <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
+          </svg>
+          <div class="weather-layer" id="weatherLayer"></div>
+          <div class="city-layer" id="cityLayer"></div>
+          <div class="defense-layer" id="defenseLayer"></div>
+          <div class="projectile-layer" id="projectileLayer"></div>
+          <div class="target-layer" id="targetLayer"></div>
+        </div>
+      </div>
+
+      <div class="info-row"><div class="status" id="status">Battle ready</div></div>
+
+      <div class="controls">
+        <button class="w-drone" id="btnDrone" onclick="quickFire('drone')">Drone<br>8 CP / $12</button>
+        <button class="w-missile" id="btnMissile" onclick="quickFire('missile')">Missile<br>14 CP / $18</button>
+        <button class="w-pink" id="btnPink" onclick="quickFire('pink')">Pink Missile<br>18 CP / $24</button>
+        <button class="w-cruise" id="btnCruise" onclick="quickFire('cruise')">Cruise<br>20 CP / $28</button>
+        <button class="w-ballistic" id="btnBallistic" onclick="quickFire('ballistic')">Ballistic<br>30 CP / $42</button>
+        <button class="w-ship" id="btnShip" onclick="quickFire('ship')">Ship Attack<br>24 CP / $34</button>
+        <button class="w-ground" id="btnGround" onclick="quickFire('ground')">Ground Invasion<br>28 CP / $38</button>
+        <button class="w-emp" id="btnEMP" onclick="quickFire('emp')">EMP<br>24 CP / $32</button>
+        <button class="w-nuclear" id="btnNuclear" onclick="quickFire('nuclear')">Nuclear<br>55 CP / $90</button>
+        <button class="w-hydrogen" id="btnHydrogen" onclick="quickFire('hydrogen')">Hydrogen<br>80 CP / $140</button>
+        <button class="btn-restart" onclick="restartGame()">Restart</button>
+      </div>
+
+      <div id="result"></div>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <script>
+    let mode = "single";
+    let level = 5;
+    let playerCountry = "Blue Nation";
+    let enemyCountry = "Red Dominion";
+
+    const MAX_HEALTH = 180;
+    const MAX_CP = 120;
+    const MAX_MONEY = 600;
+    const START_POP = 200;
+    const MATCH_SECONDS = 360;
+    const MAX_SHIELD = 100;
+
+    let unlockedLevel = parseInt(localStorage.getItem("warGameUnlockedLevel") || "1", 10);
+
+    let state = {};
+    let gameStarted = false;
+    let timerInterval = null;
+    let resourceInterval = null;
+    let aiInterval = null;
+    let weatherInterval = null;
+    let threatInterval = null;
+    let audioCtx = null;
+
+    let selectedWeapon = null;
+    let selectedTarget = null;
+    let cloudsSeeded = false;
+
+    let customAudio = { missile: null, ballistic: null, nuclear: null, siren: null, pink: null };
+
+    const businesses = {
+      factory: { cost: 60, income: 5, key: "factories", label: "Factory" },
+      bank: { cost: 90, income: 8, key: "banks", label: "Bank" },
+      mine: { cost: 75, income: 6, key: "mines", label: "Mine" },
+      port: { cost: 110, income: 9, key: "ports", label: "Port" }
+    };
+
+    const ATTACKS = {
+      drone: { icon: "🛸", label: "Drone Strike", costCP: 8, costMoney: 12, min: 4, max: 8, cooldown: 3, cpDrain: 0, explosionScale: 1.1, flight: 700, arc: 25, shake: "light", projectileClass: "drone", explosionClass: "drone", splashSelf: 0, popFactor: 0.25 },
+      missile: { icon: "🚀", label: "Missile", costCP: 14, costMoney: 18, min: 7, max: 12, cooldown: 4, cpDrain: 0, explosionScale: 1.6, flight: 900, arc: 35, shake: "light", projectileClass: "missile", explosionClass: "missile", splashSelf: 0, popFactor: 0.34, customKey: "missile" },
+      pink: { icon: "💗", label: "Pink Missile", costCP: 18, costMoney: 24, min: 9, max: 14, cooldown: 4, cpDrain: 0, explosionScale: 2.0, flight: 1050, arc: 40, shake: "light", projectileClass: "pink", explosionClass: "pink", splashSelf: 0, popFactor: 0.38, customKey: "pink" },
+      cruise: { icon: "✈️", label: "Cruise Missile", costCP: 20, costMoney: 28, min: 10, max: 15, cooldown: 5, cpDrain: 0, explosionScale: 2.0, flight: 1150, arc: 45, shake: "light", projectileClass: "cruise", explosionClass: "cruise", splashSelf: 0, popFactor: 0.42 },
+      ballistic: { icon: "☄️", label: "Ballistic Missile", costCP: 30, costMoney: 42, min: 13, max: 19, cooldown: 6, cpDrain: 0, explosionScale: 2.9, flight: 1500, arc: 75, shake: "medium", projectileClass: "ballistic", explosionClass: "ballistic", splashSelf: 0, popFactor: 0.56, customKey: "ballistic" },
+      ship: { icon: "🚢", label: "Naval Strike", costCP: 24, costMoney: 34, min: 11, max: 17, cooldown: 5, cpDrain: 0, explosionScale: 2.2, flight: 1500, arc: 10, shake: "medium", projectileClass: "ship", explosionClass: "ship", splashSelf: 0, popFactor: 0.44 },
+      ground: { icon: "🪖", label: "Ground Invasion", costCP: 28, costMoney: 38, min: 12, max: 18, cooldown: 6, cpDrain: 0, explosionScale: 2.3, flight: 1600, arc: 6, shake: "medium", projectileClass: "ground", explosionClass: "ground", splashSelf: 0, popFactor: 0.7 },
+      emp: { icon: "⚡", label: "EMP Blast", costCP: 24, costMoney: 32, min: 4, max: 8, cooldown: 6, cpDrain: 10, explosionScale: 2.2, flight: 1100, arc: 30, shake: "light", projectileClass: "emp", explosionClass: "emp", splashSelf: 0, popFactor: 0.12 },
+      nuclear: { icon: "☢️", label: "Nuclear Bomb", costCP: 55, costMoney: 90, min: 20, max: 30, cooldown: 10, cpDrain: 0, explosionScale: 4.5, flight: 2600, arc: 95, shake: "heavy", projectileClass: "nuclear", explosionClass: "nuclear", splashSelf: 4, popFactor: 1.3, customKey: "nuclear" },
+      hydrogen: { icon: "💥", label: "Hydrogen Bomb", costCP: 80, costMoney: 140, min: 26, max: 40, cooldown: 15, cpDrain: 0, explosionScale: 9.5, flight: 3600, arc: 125, shake: "heavy", projectileClass: "hydrogen", explosionClass: "hydrogen", splashSelf: 8, popFactor: 2.2 }
+    };
+
+    const positions = { A: { x: 290, y: 212 }, B: { x: 895, y: 220 } };
+
+    const cities = {
+      playerCapital: { id: "playerCapital", side: "A", name: "Capital A", x: 290, y: 212, population: 48 },
+      playerPort: { id: "playerPort", side: "A", name: "Harbor A", x: 220, y: 280, population: 20 },
+      playerIndustry: { id: "playerIndustry", side: "A", name: "Industry A", x: 340, y: 165, population: 25 },
+      enemyCapital: { id: "enemyCapital", side: "B", name: "Capital B", x: 895, y: 220, population: 50 },
+      enemyPort: { id: "enemyPort", side: "B", name: "Harbor B", x: 965, y: 280, population: 22 },
+      enemyIndustry: { id: "enemyIndustry", side: "B", name: "Industry B", x: 835, y: 165, population: 26 }
+    };
+
+    const $ = (id) => document.getElementById(id);
+
+    function sanitizeName(name, fallback) {
+      const cleaned = name.replace(/[<>]/g, "").trim();
+      return cleaned.length ? cleaned : fallback;
+    }
+
+    function toggleModeFields() {
+      mode = $("modeSelect").value;
+      if (mode === "online") {
+        alert("Online mode is disabled in this refined v0.4 build. Use Single Player.");
+        $("modeSelect").value = "single";
+        mode = "single";
+      }
+    }
+
+    function updateLevelLocks() {
+      const select = $("levelSelect");
+      if (!select) return;
+      for (let i = 0; i < select.options.length; i++) {
+        const lvl = i + 1;
+        const option = select.options[i];
+        option.disabled = lvl > unlockedLevel;
+        option.textContent = lvl > unlockedLevel ? `Level ${lvl} 🔒` : `Level ${lvl}`;
+      }
+      if (parseInt(select.value, 10) > unlockedLevel) select.value = String(unlockedLevel);
+    }
+
+    function unlockNextLevelIfNeeded() {
+      if (level === unlockedLevel && unlockedLevel < 9) {
+        unlockedLevel += 1;
+        localStorage.setItem("warGameUnlockedLevel", String(unlockedLevel));
+        updateLevelLocks();
+        logMessage(`🔓 Level ${unlockedLevel} unlocked.`);
+      }
+    }
+
+    function ensureAudio() {
+      if (!audioCtx) {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
+      }
+      if (audioCtx && audioCtx.state === "suspended") audioCtx.resume().catch(() => {});
+    }
+
+    function setupCustomAudio() {
+      if (!customAudio.missile) customAudio.missile = new Audio("missile.mp3");
+      if (!customAudio.ballistic) customAudio.ballistic = new Audio("ballistic.mp3");
+      if (!customAudio.nuclear) customAudio.nuclear = new Audio("nuclear.mp3");
+      if (!customAudio.siren) customAudio.siren = new Audio("siren.mp3");
+      if (!customAudio.pink) customAudio.pink = new Audio("pink.mp3");
+      Object.values(customAudio).forEach(a => { if (a) a.preload = "auto"; });
+    }
+
+    function playCustomAudio(key) {
+      const a = customAudio[key];
+      if (!a) return false;
+      try { a.pause(); a.currentTime = 0; a.play().catch(() => {}); return true; } catch { return false; }
+    }
+
+    function playTone(freq, duration, type = "sine", volume = 0.08, startDelay = 0) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime + startDelay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, now);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + duration + 0.03);
+    }
+
+    function playSweep(fromFreq, toFreq, duration, type = "sawtooth", volume = 0.12, startDelay = 0) {
+      if (!audioCtx) return;
+      const now = audioCtx.currentTime + startDelay;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(fromFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), now + duration);
+      gain.gain.setValueAtTime(0.0001, now);
+      gain
