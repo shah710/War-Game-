@@ -714,6 +714,7 @@
     let audioMissile = null;
     let audioBallistic = null;
     let audioNuclear = null;
+    let audioSiren = null;
 
     const attackData = {
       missile: {
@@ -769,14 +770,16 @@
     }
 
     function setupAudio() {
-      audioMissile = new Audio(attackData.missile.file);
-      audioBallistic = new Audio(attackData.ballistic.file);
-      audioNuclear = new Audio(attackData.nuclear.file);
+  audioMissile = new Audio(attackData.missile.file);
+  audioBallistic = new Audio(attackData.ballistic.file);
+  audioNuclear = new Audio(attackData.nuclear.file);
+  audioSiren = new Audio("siren.mp3");
 
-      audioMissile.preload = "auto";
-      audioBallistic.preload = "auto";
-      audioNuclear.preload = "auto";
-    }
+  audioMissile.preload = "auto";
+  audioBallistic.preload = "auto";
+  audioNuclear.preload = "auto";
+  audioSiren.preload = "auto";
+}
 
     function startGame() {
       gameMode = document.getElementById("modeSelect").value;
@@ -934,7 +937,9 @@
         audioObj.play().catch(() => {});
       } catch (e) {}
     }
-
+     function playSiren() {
+      playAudio(audioSiren);
+    }
     function playAttackSound(type) {
       if (type === "missile") playAudio(audioMissile);
       else if (type === "ballistic") playAudio(audioBallistic);
@@ -1161,9 +1166,9 @@
       } else {
         setStatus(playerCountry + " turn");
       }
-
-      updateUI();
-      logMessage("New game started: " + playerCountry + " vs " + enemyCountry + ".");
+playSiren();
+updateUI();
+logMessage("New game started: " + playerCountry + " vs " + enemyCountry + ".");
     }
 
     toggleModeFields();
