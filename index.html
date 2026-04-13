@@ -3,67 +3,77 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>War Game Beta v0.2</title>
+  <title>War Game Beta v0.4</title>
   <style>
     * { box-sizing: border-box; }
 
     :root {
-      --blue1: #2f7de1;
-      --blue2: #64b5ff;
-      --red1: #c62828;
-      --red2: #ff6b6b;
-      --gold: #ffd166;
+      --bg1: #091321;
+      --bg2: #12263d;
+      --bg3: #1d3d61;
       --panel: rgba(255,255,255,0.08);
       --panel-border: rgba(255,255,255,0.12);
+      --soft: #dce8f6;
+      --blue1: #2f7de1;
+      --blue2: #7fc2ff;
+      --red1: #c62828;
+      --red2: #ff8d8d;
+      --pink1: #ff4fd8;
+      --pink2: #ffc0ef;
+      --gold: #ffd166;
+      --teal1: #00c2a8;
+      --teal2: #6ef7d8;
+      --violet1: #7b2cbf;
+      --violet2: #c8a8ff;
     }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, #1d3557 0%, #0b1320 45%, #05080f 100%);
       color: white;
       text-align: center;
       overflow-x: hidden;
+      background:
+        radial-gradient(circle at top, #24486f 0%, var(--bg2) 32%, var(--bg1) 72%, #03070c 100%);
+      perspective: 1200px;
     }
 
-    body.shake-light { animation: screenShakeLight 0.22s linear; }
-    body.shake-medium { animation: screenShakeMedium 0.32s linear; }
-    body.shake-heavy { animation: screenShakeHeavy 0.48s linear; }
+    body.shake-light { animation: shakeLight 0.22s linear; }
+    body.shake-medium { animation: shakeMedium 0.34s linear; }
+    body.shake-heavy { animation: shakeHeavy 0.58s linear; }
 
-    @keyframes screenShakeLight {
-      0% { transform: translate(0, 0); }
-      25% { transform: translate(-3px, 2px); }
-      50% { transform: translate(3px, -2px); }
-      75% { transform: translate(-2px, -1px); }
-      100% { transform: translate(0, 0); }
+    @keyframes shakeLight {
+      0% { transform: translate(0,0); }
+      25% { transform: translate(-3px,2px); }
+      50% { transform: translate(3px,-2px); }
+      75% { transform: translate(-2px,-1px); }
+      100% { transform: translate(0,0); }
     }
-
-    @keyframes screenShakeMedium {
-      0% { transform: translate(0, 0); }
-      20% { transform: translate(-5px, 3px); }
-      40% { transform: translate(5px, -2px); }
-      60% { transform: translate(-4px, -3px); }
-      80% { transform: translate(4px, 2px); }
-      100% { transform: translate(0, 0); }
+    @keyframes shakeMedium {
+      0% { transform: translate(0,0); }
+      20% { transform: translate(-6px,3px); }
+      40% { transform: translate(6px,-3px); }
+      60% { transform: translate(-4px,-4px); }
+      80% { transform: translate(4px,3px); }
+      100% { transform: translate(0,0); }
     }
-
-    @keyframes screenShakeHeavy {
-      0% { transform: translate(0, 0); }
-      15% { transform: translate(-8px, 4px); }
-      30% { transform: translate(8px, -4px); }
-      45% { transform: translate(-7px, -5px); }
-      60% { transform: translate(7px, 4px); }
-      75% { transform: translate(-5px, 3px); }
-      100% { transform: translate(0, 0); }
+    @keyframes shakeHeavy {
+      0% { transform: translate(0,0); }
+      15% { transform: translate(-10px,6px); }
+      30% { transform: translate(10px,-6px); }
+      45% { transform: translate(-8px,-7px); }
+      60% { transform: translate(8px,6px); }
+      75% { transform: translate(-6px,4px); }
+      100% { transform: translate(0,0); }
     }
 
     .container {
-      max-width: 1180px;
+      max-width: 1240px;
       margin: 0 auto;
       padding: 20px;
     }
 
-    h1 { margin-bottom: 8px; }
+    h1 { margin: 0 0 8px; }
 
     .beta {
       display: inline-block;
@@ -76,20 +86,23 @@
     }
 
     .subtitle {
-      color: #d7e3f4;
-      margin-bottom: 18px;
+      color: var(--soft);
+      margin-bottom: 20px;
     }
 
     .panel {
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      border-radius: 20px;
+      box-shadow:
+        0 14px 30px rgba(0,0,0,0.26),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      backdrop-filter: blur(10px);
       padding: 16px;
     }
 
     .setup-panel {
-      max-width: 900px;
+      max-width: 980px;
       margin: 0 auto 22px;
     }
 
@@ -109,15 +122,15 @@
       text-align: left;
       margin-bottom: 6px;
       font-size: 14px;
-      color: #d7e3f4;
+      color: var(--soft);
     }
 
     input, select {
       width: 100%;
       padding: 13px 14px;
       border-radius: 12px;
-      border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.07);
       color: white;
       font-size: 16px;
       outline: none;
@@ -125,13 +138,40 @@
 
     option { color: black; }
 
+    .button-row {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+    }
+
+    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; filter: none; }
+
+    .btn-start { background: #2a9d8f; }
+    .btn-online { background: #2563eb; }
+    .btn-restart { background: #2a9d8f; }
+
     .top-row {
       display: flex;
       justify-content: center;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
       margin-bottom: 14px;
-      color: #d7e3f4;
+      color: var(--soft);
       font-weight: bold;
     }
 
@@ -151,8 +191,15 @@
       text-overflow: ellipsis;
     }
 
-    .blue-text { color: #7fc2ff; }
-    .red-text { color: #ff8d8d; }
+    .blue-text { color: #8ac8ff; }
+    .red-text { color: #ff9c9c; }
+
+    .section-label {
+      font-size: 13px;
+      color: #cbd8eb;
+      text-align: left;
+      margin: 6px 0 4px;
+    }
 
     .bar-wrap {
       background: rgba(255,255,255,0.12);
@@ -160,29 +207,29 @@
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 8px;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.3);
     }
 
     .bar {
       height: 100%;
       width: 100%;
       transition: width 0.35s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .bar.blue {
-      background: linear-gradient(90deg, var(--blue1), var(--blue2));
+    .bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 60%);
+      pointer-events: none;
     }
 
-    .bar.red {
-      background: linear-gradient(90deg, var(--red1), var(--red2));
-    }
-
-    .cp-bar.blue {
-      background: linear-gradient(90deg, #15b8a6, #8ff5e8);
-    }
-
-    .cp-bar.red {
-      background: linear-gradient(90deg, #ff8a00, #ffd166);
-    }
+    .bar.health-blue { background: linear-gradient(90deg, var(--blue1), var(--blue2)); }
+    .bar.health-red { background: linear-gradient(90deg, var(--red1), var(--red2)); }
+    .bar.cp-blue { background: linear-gradient(90deg, #14b8a6, #8ff5e8); }
+    .bar.cp-red { background: linear-gradient(90deg, #ff8a00, #ffd166); }
 
     .stats {
       display: flex;
@@ -193,26 +240,86 @@
       flex-wrap: wrap;
     }
 
-    .section-label {
-      font-size: 13px;
-      color: #cbd8eb;
-      text-align: left;
-      margin: 6px 0 4px;
+    .map-shell {
+      position: relative;
+      margin: 22px 0;
+      transform-style: preserve-3d;
+    }
+
+    .globe-backdrop {
+      position: absolute;
+      inset: 30px 15% 40px 15%;
+      border-radius: 50%;
+      z-index: 0;
+      opacity: 0.45;
+      transform: rotateX(70deg) translateZ(-60px);
+      background:
+        radial-gradient(circle at 50% 45%, rgba(90,150,220,0.22), rgba(0,0,0,0) 55%),
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%);
+      filter: blur(2px);
+    }
+
+    .globe-backdrop::before,
+    .globe-backdrop::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+    }
+
+    .globe-backdrop::before {
+      background:
+        repeating-linear-gradient(to right, rgba(255,255,255,0.08) 0 1px, transparent 1px 36px),
+        repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 30px);
+      transform: rotate(0deg);
+      animation: globeSpin 20s linear infinite;
+      opacity: 0.65;
+    }
+
+    .globe-backdrop::after {
+      background:
+        radial-gradient(circle at 25% 38%, rgba(90,180,110,0.35) 0 12%, transparent 13%),
+        radial-gradient(circle at 40% 58%, rgba(90,180,110,0.32) 0 10%, transparent 11%),
+        radial-gradient(circle at 64% 40%, rgba(90,180,110,0.33) 0 13%, transparent 14%),
+        radial-gradient(circle at 74% 64%, rgba(90,180,110,0.3) 0 9%, transparent 10%);
+      animation: globeSpin 26s linear infinite reverse;
+      filter: blur(1px);
+      opacity: 0.7;
+    }
+
+    @keyframes globeSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
     }
 
     .map {
       position: relative;
-      height: 470px;
-      margin: 22px 0;
-      border-radius: 22px;
+      height: 500px;
+      border-radius: 24px;
       overflow: hidden;
       background:
         radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05), transparent 20%),
         radial-gradient(circle at 75% 30%, rgba(255,255,255,0.04), transparent 18%),
         radial-gradient(circle at 60% 70%, rgba(255,255,255,0.04), transparent 16%),
-        linear-gradient(180deg, #16324f 0%, #0d2238 100%);
+        linear-gradient(180deg, #1a3553 0%, #0e2137 100%);
       border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: 0 14px 30px rgba(0,0,0,0.3);
+      box-shadow:
+        0 18px 40px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.06);
+      transform: rotateX(8deg);
+      transform-style: preserve-3d;
+    }
+
+    .map.satellite-zoom {
+      animation: satelliteZoom 2.4s ease-in-out;
+    }
+
+    @keyframes satelliteZoom {
+      0% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
+      25% { transform: rotateX(8deg) scale(1.06); filter: saturate(1.1) brightness(1.05); }
+      50% { transform: rotateX(8deg) scale(1.18); filter: saturate(1.25) brightness(1.12); }
+      75% { transform: rotateX(8deg) scale(1.08); filter: saturate(1.1) brightness(1.04); }
+      100% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
     }
 
     .grid-lines::before {
@@ -224,6 +331,7 @@
         repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px),
         repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px);
       opacity: 0.35;
+      z-index: 1;
     }
 
     .stars {
@@ -239,6 +347,7 @@
         radial-gradient(circle at 88% 9%, rgba(255,255,255,0.6) 0 1px, transparent 2px);
       opacity: 0.55;
       pointer-events: none;
+      z-index: 0;
     }
 
     .world-map-bg {
@@ -247,7 +356,7 @@
       width: 100%;
       height: 100%;
       z-index: 1;
-      opacity: 0.9;
+      opacity: 0.92;
       pointer-events: none;
     }
 
@@ -260,33 +369,41 @@
 
     .country-shape {
       position: absolute;
-      z-index: 2;
+      z-index: 3;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
       padding: 12px;
       font-weight: bold;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
-      box-shadow: 0 0 18px rgba(255,255,255,0.12);
+      text-shadow: 0 2px 6px rgba(0,0,0,0.65);
       border: 2px solid rgba(255,255,255,0.22);
+      box-shadow:
+        0 14px 24px rgba(0,0,0,0.22),
+        inset 0 8px 18px rgba(255,255,255,0.12),
+        inset 0 -8px 16px rgba(0,0,0,0.22);
+      transform: translateZ(18px);
     }
 
     .country-shape.a {
       left: 90px;
       top: 120px;
-      width: 250px;
-      height: 190px;
-      background: linear-gradient(135deg, rgba(47,125,225,0.92), rgba(30,80,160,0.92));
+      width: 260px;
+      height: 196px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.22), transparent 26%),
+        linear-gradient(135deg, rgba(47,125,225,0.96), rgba(18,74,141,0.96));
       clip-path: polygon(6% 30%, 28% 8%, 62% 7%, 88% 20%, 96% 44%, 88% 70%, 70% 88%, 42% 95%, 16% 82%, 4% 58%);
     }
 
     .country-shape.b {
       right: 90px;
       top: 145px;
-      width: 250px;
-      height: 185px;
-      background: linear-gradient(135deg, rgba(198,40,40,0.92), rgba(120,15,15,0.92));
+      width: 260px;
+      height: 188px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.2), transparent 26%),
+        linear-gradient(135deg, rgba(198,40,40,0.96), rgba(104,17,17,0.96));
       clip-path: polygon(8% 22%, 30% 8%, 68% 10%, 90% 24%, 98% 48%, 90% 74%, 72% 90%, 42% 96%, 16% 84%, 4% 56%);
     }
 
@@ -307,7 +424,7 @@
       border-radius: 50%;
       border: 2px solid white;
       box-shadow: 0 0 18px rgba(255,255,255,0.75);
-      z-index: 3;
+      z-index: 4;
     }
 
     .capital.a {
@@ -326,7 +443,7 @@
       position: absolute;
       font-size: 14px;
       color: #eef6ff;
-      z-index: 3;
+      z-index: 4;
     }
 
     .label.a {
@@ -341,7 +458,7 @@
 
     .projectile {
       position: absolute;
-      z-index: 6;
+      z-index: 7;
       border-radius: 999px;
       pointer-events: none;
       box-shadow: 0 0 12px rgba(255,255,255,0.8);
@@ -349,8 +466,8 @@
     }
 
     .projectile.drone {
-      width: 10px;
-      height: 10px;
+      width: 12px;
+      height: 12px;
       background: radial-gradient(circle, #ffffff 10%, #b7f3ff 80%);
       box-shadow: 0 0 10px rgba(183,243,255,0.9);
     }
@@ -359,6 +476,13 @@
       width: 18px;
       height: 8px;
       background: linear-gradient(90deg, #ffffff, #ffdd57);
+    }
+
+    .projectile.pink {
+      width: 22px;
+      height: 9px;
+      background: linear-gradient(90deg, #fff, var(--pink2), var(--pink1));
+      box-shadow: 0 0 18px rgba(255,79,216,0.95);
     }
 
     .projectile.cruise {
@@ -371,7 +495,7 @@
     .projectile.ballistic {
       width: 28px;
       height: 10px;
-      background: linear-gradient(90deg, #ffffff, #b388ff);
+      background: linear-gradient(90deg, #ffffff, var(--violet2));
       box-shadow: 0 0 16px rgba(179,136,255,0.9);
     }
 
@@ -391,10 +515,10 @@
     }
 
     .projectile.hydrogen {
-      width: 48px;
-      height: 16px;
-      background: linear-gradient(90deg, #ffffff, #ff3b3b);
-      box-shadow: 0 0 28px rgba(255,100,100,1);
+      width: 62px;
+      height: 18px;
+      background: linear-gradient(90deg, #ffffff, #fff0b3, #ff6a00, #ff2f2f);
+      box-shadow: 0 0 34px rgba(255,150,40,1);
     }
 
     .trail-dot {
@@ -403,24 +527,24 @@
       height: 8px;
       border-radius: 50%;
       pointer-events: none;
-      z-index: 5;
+      z-index: 6;
       transform: translate(-50%, -50%);
-      animation: fadeTrail 0.4s linear forwards;
+      animation: fadeTrail 0.45s linear forwards;
     }
 
     @keyframes fadeTrail {
-      from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
+      from { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
     }
 
     .explosion {
       position: absolute;
-      width: 28px;
-      height: 28px;
+      width: 30px;
+      height: 30px;
       border-radius: 50%;
       pointer-events: none;
       opacity: 0;
-      z-index: 7;
+      z-index: 8;
       transform: translate(-50%, -50%) scale(0.2);
       --scale: 1.6;
     }
@@ -433,6 +557,11 @@
       background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb8500 65%, rgba(255,115,0,0.15) 100%);
     }
 
+    .explosion.pink {
+      background: radial-gradient(circle, #fff 0%, #ffd3f4 28%, #ff7add 58%, rgba(255,79,216,0.22) 100%);
+      box-shadow: 0 0 24px rgba(255,79,216,0.85);
+    }
+
     .explosion.cruise {
       background: radial-gradient(circle, #ffffff 0%, #7df4d9 30%, #14b8a6 62%, rgba(20,184,166,0.2) 100%);
     }
@@ -443,16 +572,17 @@
 
     .explosion.emp {
       background: radial-gradient(circle, #e8ffff 0%, #6af7ff 35%, #00d4ff 65%, rgba(0,200,255,0.18) 100%);
+      box-shadow: 0 0 28px rgba(0,200,255,0.65);
     }
 
     .explosion.nuclear {
       background: radial-gradient(circle, #ffffff 0%, #fff3b0 18%, #ffb703 35%, #fb5607 58%, #d00000 78%, rgba(208,0,0,0.26) 100%);
-      box-shadow: 0 0 34px rgba(255,140,0,0.75);
+      box-shadow: 0 0 40px rgba(255,140,0,0.8);
     }
 
     .explosion.hydrogen {
-      background: radial-gradient(circle, #ffffff 0%, #fff8d9 14%, #ffe066 25%, #ff922b 45%, #ff3b3b 68%, #8b0000 88%, rgba(139,0,0,0.35) 100%);
-      box-shadow: 0 0 46px rgba(255,180,0,0.9);
+      background: radial-gradient(circle, #ffffff 0%, #fff8d9 10%, #ffe066 20%, #ffbf69 34%, #ff922b 48%, #ff3b3b 68%, #8b0000 90%, rgba(139,0,0,0.38) 100%);
+      box-shadow: 0 0 85px rgba(255,170,0,1);
     }
 
     .impact-ring {
@@ -461,14 +591,14 @@
       border-radius: 50%;
       transform: translate(-50%, -50%) scale(0.3);
       opacity: 0;
-      z-index: 6;
+      z-index: 7;
       pointer-events: none;
     }
 
     .cloud {
       position: absolute;
       pointer-events: none;
-      z-index: 8;
+      z-index: 9;
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.3);
     }
@@ -507,32 +637,11 @@
       margin: 18px 0;
     }
 
-    button {
-      border: none;
-      border-radius: 12px;
-      padding: 14px 10px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-      color: white;
-      transition: transform 0.15s ease, opacity 0.15s ease;
-      box-shadow: 0 8px 18px rgba(0,0,0,0.25);
-    }
-
-    button:hover { transform: translateY(-2px); }
-
-    button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .btn-start { background: #2a9d8f; }
-    .btn-restart { background: #2a9d8f; }
     .w-drone { background: #2d9cdb; }
     .w-missile { background: #2f7de1; }
+    .w-pink { background: linear-gradient(135deg, #ff59da, #ff8fe9); }
     .w-cruise { background: #14b8a6; }
-    .w-ballistic { background: #7b2cbf; }
+    .w-ballistic { background: var(--violet1); }
     .w-emp { background: #0ea5e9; }
     .w-nuclear { background: #c62828; }
     .w-hydrogen { background: #7f1d1d; }
@@ -547,9 +656,7 @@
       font-weight: bold;
     }
 
-    .status {
-      min-height: 24px;
-    }
+    .status { min-height: 24px; }
 
     #log {
       margin-top: 16px;
@@ -557,7 +664,7 @@
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 16px;
       padding: 14px;
-      height: 250px;
+      height: 260px;
       overflow-y: auto;
       text-align: left;
     }
@@ -578,9 +685,9 @@
     .hidden { display: none; }
 
     @keyframes boom {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.2); }
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.18); }
       60% { opacity: 1; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1)); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.6)); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.7)); }
     }
 
     @keyframes ringExpand {
@@ -604,7 +711,7 @@
       }
 
       .map {
-        height: 390px;
+        height: 400px;
       }
 
       .country-shape.a {
@@ -650,37 +757,37 @@
 <body>
   <div class="container">
     <h1>War Game: Nations at War</h1>
-    <div class="beta">⚠️ Trial Version — Beta v0.2</div>
-    <div class="subtitle">Choose a mode, set names, choose a level, and fight for survival.</div>
+    <div class="beta">⚠️ Trial Version — Beta v0.3</div>
+    <div class="subtitle">Single player works immediately. Online rooms work after you add Firebase config below.</div>
 
     <div class="panel setup-panel" id="setupPanel">
       <div><b>Game Setup</b></div>
       <div class="setup-grid">
         <div class="setup-full">
-          <label for="modeSelect">Game Mode</label>
+          <label for="modeSelect">Mode</label>
           <select id="modeSelect" onchange="toggleModeFields()">
             <option value="single">Single Player</option>
-            <option value="multi">Local Multiplayer</option>
+            <option value="online">Online Multiplayer</option>
           </select>
         </div>
 
         <div>
-          <label for="countryAInput">Player 1 Country Name</label>
-          <input id="countryAInput" type="text" maxlength="24" placeholder="Enter first country name">
+          <label for="countryAInput">Your Country Name</label>
+          <input id="countryAInput" type="text" maxlength="24" placeholder="Enter your country name">
         </div>
 
         <div id="singleEnemyField">
           <label for="singleEnemyInput">Computer Country Name</label>
-          <input id="singleEnemyInput" type="text" maxlength="24" placeholder="Enemy country name" value="Red Dominion">
+          <input id="singleEnemyInput" type="text" maxlength="24" value="Red Dominion" />
         </div>
 
-        <div id="multiCountryField" class="hidden">
-          <label for="countryBInput">Player 2 Country Name</label>
-          <input id="countryBInput" type="text" maxlength="24" placeholder="Enter second country name">
+        <div id="onlineRoomField" class="hidden">
+          <label for="roomCodeInput">Room Code</label>
+          <input id="roomCodeInput" type="text" maxlength="12" placeholder="Room code for online mode">
         </div>
 
         <div class="setup-full">
-          <label for="levelSelect">Level (Single Player only)</label>
+          <label for="levelSelect">Level (single player only)</label>
           <select id="levelSelect">
             <option value="1">Level 1</option>
             <option value="2">Level 2</option>
@@ -694,8 +801,13 @@
           </select>
         </div>
 
-        <div class="setup-full">
-          <button class="btn-start" onclick="startGame()">Start Game</button>
+        <div class="setup-full button-row" id="singleButtons">
+          <button class="btn-start" onclick="startSinglePlayer()">Start Single Player</button>
+        </div>
+
+        <div class="setup-full button-row hidden" id="onlineButtons">
+          <button class="btn-online" onclick="createOnlineRoom()">Create Online Room</button>
+          <button class="btn-online" onclick="joinOnlineRoom()">Join Online Room</button>
         </div>
       </div>
     </div>
@@ -707,6 +819,7 @@
         <div>Timer: <span id="timerLabel">03:00</span></div>
         <div>Turn: <span id="turnLabel">Player 1</span></div>
         <div>Actions: <span id="actionCount">0</span></div>
+        <div>Room: <span id="roomLabel">-</span></div>
       </div>
 
       <div class="hud">
@@ -714,10 +827,10 @@
           <div class="country-name blue-text" id="hudNameA">Country A</div>
 
           <div class="section-label">Health</div>
-          <div class="bar-wrap"><div id="barA" class="bar blue"></div></div>
+          <div class="bar-wrap"><div id="barA" class="bar health-blue"></div></div>
 
           <div class="section-label">Command Points</div>
-          <div class="bar-wrap"><div id="cpBarA" class="bar cp-bar blue"></div></div>
+          <div class="bar-wrap"><div id="cpBarA" class="bar cp-blue"></div></div>
 
           <div class="stats">
             <span>Health: <span id="scoreA">100</span></span>
@@ -730,10 +843,10 @@
           <div class="country-name red-text" id="hudNameB">Country B</div>
 
           <div class="section-label">Health</div>
-          <div class="bar-wrap"><div id="barB" class="bar red"></div></div>
+          <div class="bar-wrap"><div id="barB" class="bar health-red"></div></div>
 
           <div class="section-label">Command Points</div>
-          <div class="bar-wrap"><div id="cpBarB" class="bar cp-bar red"></div></div>
+          <div class="bar-wrap"><div id="cpBarB" class="bar cp-red"></div></div>
 
           <div class="stats">
             <span>Health: <span id="scoreB">100</span></span>
@@ -743,31 +856,35 @@
         </div>
       </div>
 
-      <div class="map grid-lines" id="map">
-        <div class="stars"></div>
+      <div class="map-shell">
+        <div class="globe-backdrop"></div>
 
-        <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
-          <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
-          <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
-          <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
-          <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
-          <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
-          <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
-        </svg>
+        <div class="map grid-lines" id="map">
+          <div class="stars"></div>
 
-        <div class="country-shape a" id="countryABox">
-          <span class="country-text" id="countryAText">Country A</span>
+          <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+            <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
+            <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
+            <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
+            <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
+            <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
+            <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
+          </svg>
+
+          <div class="country-shape a">
+            <span class="country-text" id="countryAText">Country A</span>
+          </div>
+
+          <div class="country-shape b">
+            <span class="country-text" id="countryBText">Country B</span>
+          </div>
+
+          <div class="capital a"></div>
+          <div class="capital b"></div>
+
+          <div class="label a" id="capitalALabel">Capital A</div>
+          <div class="label b" id="capitalBLabel">Capital B</div>
         </div>
-
-        <div class="country-shape b" id="countryBBox">
-          <span class="country-text" id="countryBText">Country B</span>
-        </div>
-
-        <div class="capital a"></div>
-        <div class="capital b"></div>
-
-        <div class="label a" id="capitalALabel">Capital A</div>
-        <div class="label b" id="capitalBLabel">Capital B</div>
       </div>
 
       <div class="info-row">
@@ -777,6 +894,7 @@
       <div class="controls">
         <button class="w-drone" id="btnDrone" onclick="humanAttack('drone')">Drone<br>(8 CP)</button>
         <button class="w-missile" id="btnMissile" onclick="humanAttack('missile')">Missile<br>(14 CP)</button>
+        <button class="w-pink" id="btnPink" onclick="humanAttack('pink')">Pink Missile<br>(18 CP)</button>
         <button class="w-cruise" id="btnCruise" onclick="humanAttack('cruise')">Cruise<br>(20 CP)</button>
         <button class="w-ballistic" id="btnBallistic" onclick="humanAttack('ballistic')">Ballistic<br>(30 CP)</button>
         <button class="w-emp" id="btnEMP" onclick="humanAttack('emp')">EMP<br>(24 CP)</button>
@@ -790,31 +908,85 @@
     </div>
   </div>
 
-  <script>
-    let gameMode = "single";
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getDatabase,
+      ref,
+      set,
+      update,
+      onValue,
+      get,
+      remove,
+      off
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "",
+      authDomain: "",
+      databaseURL: "",
+      projectId: "",
+      storageBucket: "",
+      messagingSenderId: "",
+      appId: ""
+    };
+
+    let firebaseApp = null;
+    let db = null;
+
+    function firebaseReady() {
+      return Object.values(firebaseConfig).every(Boolean);
+    }
+
+    if (firebaseReady()) {
+      firebaseApp = initializeApp(firebaseConfig);
+      db = getDatabase(firebaseApp);
+    }
+
+    let mode = "single";
+    let level = 5;
     let playerCountry = "Blue Nation";
     let enemyCountry = "Red Dominion";
-    let level = 5;
+    let playerSlot = "A";
+    let roomCode = "";
+    let roomRef = null;
+    let roomUnsub = null;
+    let isHost = false;
 
-    let healthA = 100;
-    let healthB = 100;
-    let cpA = 30;
-    let cpB = 30;
-    const maxHealth = 100;
-    const maxCP = 120;
+    const MAX_HEALTH = 100;
+    const MAX_CP = 120;
+    const MATCH_SECONDS = 180;
 
-    let matchSeconds = 180;
+    let state = {
+      healthA: 100,
+      healthB: 100,
+      cpA: 30,
+      cpB: 30,
+      currentTurn: "A",
+      timer: MATCH_SECONDS,
+      gameOver: false,
+      actionCount: 0,
+      started: false,
+      endReason: "",
+      hostTickAt: Date.now()
+    };
+
+    let gameStarted = false;
+    let busy = false;
     let timerInterval = null;
     let cpInterval = null;
+    let aiPending = null;
 
-    let gameOver = false;
-    let busy = false;
-    let gameStarted = false;
-    let currentTurn = "A";
-    let actionCount = 0;
     let audioCtx = null;
+    let customAudio = {
+      missile: null,
+      ballistic: null,
+      nuclear: null,
+      siren: null,
+      pink: null
+    };
 
-    const attackData = {
+    const ATTACKS = {
       drone: {
         label: "Drone Strike",
         cost: 8,
@@ -826,7 +998,8 @@
         arc: 25,
         shake: "light",
         projectileClass: "drone",
-        explosionClass: "drone"
+        explosionClass: "drone",
+        splashSelf: 0
       },
       missile: {
         label: "Missile",
@@ -839,7 +1012,24 @@
         arc: 35,
         shake: "light",
         projectileClass: "missile",
-        explosionClass: "missile"
+        explosionClass: "missile",
+        splashSelf: 0,
+        customKey: "missile"
+      },
+      pink: {
+        label: "Pink Missile",
+        cost: 18,
+        min: 11,
+        max: 18,
+        cpDrain: 0,
+        explosionScale: 2.0,
+        flight: 1050,
+        arc: 40,
+        shake: "light",
+        projectileClass: "pink",
+        explosionClass: "pink",
+        splashSelf: 0,
+        customKey: "pink"
       },
       cruise: {
         label: "Cruise Missile",
@@ -852,7 +1042,8 @@
         arc: 45,
         shake: "light",
         projectileClass: "cruise",
-        explosionClass: "cruise"
+        explosionClass: "cruise",
+        splashSelf: 0
       },
       ballistic: {
         label: "Ballistic Missile",
@@ -860,12 +1051,14 @@
         min: 18,
         max: 26,
         cpDrain: 0,
-        explosionScale: 2.8,
+        explosionScale: 2.9,
         flight: 1500,
         arc: 75,
         shake: "medium",
         projectileClass: "ballistic",
-        explosionClass: "ballistic"
+        explosionClass: "ballistic",
+        splashSelf: 0,
+        customKey: "ballistic"
       },
       emp: {
         label: "EMP Blast",
@@ -878,7 +1071,8 @@
         arc: 30,
         shake: "light",
         projectileClass: "emp",
-        explosionClass: "emp"
+        explosionClass: "emp",
+        splashSelf: 0
       },
       nuclear: {
         label: "Nuclear Bomb",
@@ -886,25 +1080,28 @@
         min: 30,
         max: 42,
         cpDrain: 0,
-        explosionScale: 4.4,
+        explosionScale: 4.5,
         flight: 2600,
         arc: 95,
         shake: "heavy",
         projectileClass: "nuclear",
-        explosionClass: "nuclear"
+        explosionClass: "nuclear",
+        splashSelf: 6,
+        customKey: "nuclear"
       },
       hydrogen: {
         label: "Hydrogen Bomb",
         cost: 80,
-        min: 42,
-        max: 60,
+        min: 40,
+        max: 62,
         cpDrain: 0,
-        explosionScale: 5.8,
-        flight: 3400,
-        arc: 120,
+        explosionScale: 9.5,
+        flight: 3600,
+        arc: 125,
         shake: "heavy",
         projectileClass: "hydrogen",
-        explosionClass: "hydrogen"
+        explosionClass: "hydrogen",
+        splashSelf: 12
       }
     };
 
@@ -913,28 +1110,54 @@
       B: { x: 895, y: 220 }
     };
 
+    const $ = (id) => document.getElementById(id);
+
     function sanitizeName(name, fallback) {
       const cleaned = name.replace(/[<>]/g, "").trim();
       return cleaned.length ? cleaned : fallback;
     }
 
     function toggleModeFields() {
-      const mode = document.getElementById("modeSelect").value;
-      document.getElementById("singleEnemyField").classList.toggle("hidden", mode !== "single");
-      document.getElementById("multiCountryField").classList.toggle("hidden", mode !== "multi");
-      document.getElementById("levelSelect").disabled = mode !== "single";
+      mode = $("modeSelect").value;
+      $("singleEnemyField").classList.toggle("hidden", mode !== "single");
+      $("onlineRoomField").classList.toggle("hidden", mode !== "online");
+      $("levelSelect").disabled = mode !== "single";
+      $("singleButtons").classList.toggle("hidden", mode !== "single");
+      $("onlineButtons").classList.toggle("hidden", mode !== "online");
     }
 
     function ensureAudio() {
       if (!audioCtx) {
-        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-        if (AudioContextClass) {
-          audioCtx = new AudioContextClass();
-        }
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (AC) audioCtx = new AC();
       }
-
       if (audioCtx && audioCtx.state === "suspended") {
         audioCtx.resume().catch(() => {});
+      }
+    }
+
+    function setupCustomAudio() {
+      customAudio.missile = new Audio("missile.mp3");
+      customAudio.ballistic = new Audio("ballistic.mp3");
+      customAudio.nuclear = new Audio("nuclear.mp3");
+      customAudio.siren = new Audio("siren.mp3");
+      customAudio.pink = new Audio("pink.mp3");
+
+      Object.values(customAudio).forEach(a => {
+        a.preload = "auto";
+      });
+    }
+
+    function playCustomAudio(key) {
+      const a = customAudio[key];
+      if (!a) return false;
+      try {
+        a.pause();
+        a.currentTime = 0;
+        a.play().catch(() => {});
+        return true;
+      } catch {
+        return false;
       }
     }
 
@@ -976,8 +1199,24 @@
       osc.stop(now + duration + 0.03);
     }
 
+    function fallbackMiyapa() {
+      if ("speechSynthesis" in window) {
+        const u = new SpeechSynthesisUtterance("miyapa");
+        u.pitch = 2;
+        u.rate = 1.25;
+        u.volume = 0.9;
+        speechSynthesis.cancel();
+        speechSynthesis.speak(u);
+      } else {
+        playTone(900, 0.08, "triangle", 0.05, 0);
+        playTone(1200, 0.08, "triangle", 0.05, 0.08);
+        playTone(700, 0.1, "triangle", 0.05, 0.16);
+      }
+    }
+
     function playSiren() {
       ensureAudio();
+      if (playCustomAudio("siren")) return;
       playSweep(480, 820, 0.55, "triangle", 0.08, 0.0);
       playSweep(820, 480, 0.55, "triangle", 0.08, 0.55);
       playSweep(480, 820, 0.55, "triangle", 0.08, 1.1);
@@ -985,6 +1224,10 @@
 
     function playAttackSound(type) {
       ensureAudio();
+
+      const customKey = ATTACKS[type].customKey;
+      if (customKey && playCustomAudio(customKey)) return;
+
       switch (type) {
         case "drone":
           playTone(900, 0.08, "square", 0.05, 0);
@@ -992,6 +1235,9 @@
           break;
         case "missile":
           playSweep(300, 120, 0.18, "triangle", 0.08, 0);
+          break;
+        case "pink":
+          fallbackMiyapa();
           break;
         case "cruise":
           playSweep(500, 180, 0.22, "triangle", 0.08, 0);
@@ -1011,53 +1257,11 @@
           playTone(40, 0.45, "sine", 0.08, 0.08);
           break;
         case "hydrogen":
-          playSweep(150, 25, 0.8, "sawtooth", 0.22, 0);
-          playTone(32, 0.7, "sine", 0.12, 0.12);
-          playTone(18, 0.9, "triangle", 0.08, 0.16);
+          playSweep(150, 25, 0.9, "sawtooth", 0.25, 0);
+          playTone(28, 0.9, "triangle", 0.12, 0.1);
+          playTone(18, 1.05, "sine", 0.09, 0.18);
           break;
       }
-    }
-
-    function startGame() {
-      ensureAudio();
-
-      gameMode = document.getElementById("modeSelect").value;
-      level = parseInt(document.getElementById("levelSelect").value, 10);
-
-      playerCountry = sanitizeName(document.getElementById("countryAInput").value, "Blue Nation");
-      if (gameMode === "single") {
-        enemyCountry = sanitizeName(document.getElementById("singleEnemyInput").value, "Red Dominion");
-      } else {
-        enemyCountry = sanitizeName(document.getElementById("countryBInput").value, "Red Nation");
-      }
-
-      gameStarted = true;
-      document.getElementById("setupPanel").classList.add("hidden");
-      document.getElementById("gameArea").classList.remove("hidden");
-
-      applyNames();
-      restartGame();
-    }
-
-    function applyNames() {
-      document.getElementById("hudNameA").textContent = playerCountry;
-      document.getElementById("hudNameB").textContent = enemyCountry;
-      document.getElementById("countryAText").textContent = playerCountry;
-      document.getElementById("countryBText").textContent = enemyCountry;
-      document.getElementById("capitalALabel").textContent = playerCountry + " Capital";
-      document.getElementById("capitalBLabel").textContent = enemyCountry + " Capital";
-      document.getElementById("modeLabel").textContent = gameMode === "single" ? "Single Player" : "Local Multiplayer";
-      document.getElementById("levelLabel").textContent = gameMode === "single" ? level : "-";
-      document.getElementById("roleA").textContent = "Player 1";
-      document.getElementById("roleB").textContent = gameMode === "single" ? "Computer" : "Player 2";
-    }
-
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    function clamp(value, min, max) {
-      return Math.max(min, Math.min(max, value));
     }
 
     function formatTime(seconds) {
@@ -1066,36 +1270,58 @@
       return m + ":" + s;
     }
 
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function rand(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
     function logMessage(message) {
-      const log = document.getElementById("log");
       const entry = document.createElement("div");
       entry.textContent = message;
-      log.prepend(entry);
+      $("log").prepend(entry);
+    }
+
+    function applyNames() {
+      $("hudNameA").textContent = playerCountry;
+      $("hudNameB").textContent = enemyCountry;
+      $("countryAText").textContent = playerCountry;
+      $("countryBText").textContent = enemyCountry;
+      $("capitalALabel").textContent = playerCountry + " Capital";
+      $("capitalBLabel").textContent = enemyCountry + " Capital";
+      $("modeLabel").textContent = mode === "single" ? "Single Player" : "Online Multiplayer";
+      $("levelLabel").textContent = mode === "single" ? level : "-";
+      $("roleA").textContent = mode === "online" ? "Online Player A" : "Player 1";
+      $("roleB").textContent = mode === "online" ? "Online Player B" : "Computer";
+      $("roomLabel").textContent = roomCode || "-";
     }
 
     function setStatus(text) {
-      document.getElementById("status").textContent = text;
+      $("status").textContent = text;
+    }
+
+    function currentActorCP() {
+      return state.currentTurn === "A" ? state.cpA : state.cpB;
     }
 
     function updateTurnLabel() {
       let label = "";
-      if (currentTurn === "A") {
-        label = gameMode === "single" ? playerCountry : playerCountry + " (Player 1)";
+      if (state.currentTurn === "A") {
+        label = mode === "single" ? playerCountry : playerCountry + " (A)";
       } else {
-        label = gameMode === "single" ? enemyCountry + " AI" : enemyCountry + " (Player 2)";
+        label = mode === "single" ? enemyCountry + " AI" : enemyCountry + " (B)";
       }
-      document.getElementById("turnLabel").textContent = label;
-    }
-
-    function currentActorCP() {
-      return currentTurn === "A" ? cpA : cpB;
+      $("turnLabel").textContent = label;
     }
 
     function updateWeaponButtons() {
-      const disabledBase = gameOver || busy || !gameStarted || (gameMode === "single" && currentTurn !== "A");
+      const disabledBase = state.gameOver || busy || !gameStarted || (mode === "single" && state.currentTurn !== "A") || (mode === "online" && state.currentTurn !== playerSlot);
       const ids = {
         drone: "btnDrone",
         missile: "btnMissile",
+        pink: "btnPink",
         cruise: "btnCruise",
         ballistic: "btnBallistic",
         emp: "btnEMP",
@@ -1104,34 +1330,33 @@
       };
 
       for (const [type, id] of Object.entries(ids)) {
-        const btn = document.getElementById(id);
-        const cost = attackData[type].cost;
-        btn.disabled = disabledBase || currentActorCP() < cost;
+        const btn = $(id);
+        btn.disabled = disabledBase || currentActorCP() < ATTACKS[type].cost;
       }
     }
 
     function updateUI() {
-      document.getElementById("scoreA").textContent = Math.round(healthA);
-      document.getElementById("scoreB").textContent = Math.round(healthB);
-      document.getElementById("cpA").textContent = Math.round(cpA);
-      document.getElementById("cpB").textContent = Math.round(cpB);
+      $("scoreA").textContent = Math.round(state.healthA);
+      $("scoreB").textContent = Math.round(state.healthB);
+      $("cpA").textContent = Math.round(state.cpA);
+      $("cpB").textContent = Math.round(state.cpB);
+      $("timerLabel").textContent = formatTime(state.timer);
+      $("actionCount").textContent = state.actionCount;
 
-      document.getElementById("barA").style.width = clamp((healthA / maxHealth) * 100, 0, 100) + "%";
-      document.getElementById("barB").style.width = clamp((healthB / maxHealth) * 100, 0, 100) + "%";
-      document.getElementById("cpBarA").style.width = clamp((cpA / maxCP) * 100, 0, 100) + "%";
-      document.getElementById("cpBarB").style.width = clamp((cpB / maxCP) * 100, 0, 100) + "%";
+      $("barA").style.width = clamp((state.healthA / MAX_HEALTH) * 100, 0, 100) + "%";
+      $("barB").style.width = clamp((state.healthB / MAX_HEALTH) * 100, 0, 100) + "%";
+      $("cpBarA").style.width = clamp((state.cpA / MAX_CP) * 100, 0, 100) + "%";
+      $("cpBarB").style.width = clamp((state.cpB / MAX_CP) * 100, 0, 100) + "%";
 
-      document.getElementById("timerLabel").textContent = formatTime(matchSeconds);
-      document.getElementById("actionCount").textContent = actionCount;
       updateTurnLabel();
       updateWeaponButtons();
     }
 
     function getLevelDamageBonus(type) {
-      if (gameMode !== "single") return 0;
       const scale = Math.max(0, level - 1);
       if (type === "drone") return Math.floor(scale / 4);
       if (type === "missile") return Math.floor(scale / 3);
+      if (type === "pink") return Math.floor(scale / 3);
       if (type === "cruise") return Math.floor(scale / 3);
       if (type === "ballistic") return Math.floor(scale / 2);
       if (type === "emp") return Math.floor(scale / 3);
@@ -1140,71 +1365,23 @@
     }
 
     function getCPRegen(side) {
-      if (gameMode === "multi") return 6;
+      if (mode === "online") return 6;
       if (side === "A") return 6;
       return 5 + Math.floor(level / 2);
     }
 
     function calculateDamage(type, attacker) {
-      const attack = attackData[type];
-      let damage = rand(attack.min, attack.max);
+      const w = ATTACKS[type];
+      let damage = rand(w.min, w.max);
 
-      if (gameMode === "single" && attacker === "B") {
+      if (mode === "single" && attacker === "B") {
         damage += getLevelDamageBonus(type);
       }
 
-      if ((type === "nuclear" || type === "hydrogen") && attacker === "A" && healthA < 30) {
-        damage -= 3;
-      }
+      if ((type === "nuclear" || type === "hydrogen") && attacker === "A" && state.healthA < 30) damage -= 3;
+      if ((type === "nuclear" || type === "hydrogen") && attacker === "B" && state.healthB < 30) damage += 2;
 
-      if ((type === "nuclear" || type === "hydrogen") && attacker === "B" && healthB < 30) {
-        damage += 2;
-      }
-
-      return clamp(damage, 1, 75);
-    }
-
-    function chooseAIAttack() {
-      const affordable = Object.keys(attackData).filter(type => attackData[type].cost <= cpB);
-      if (affordable.length === 0) return null;
-
-      const deficit = healthB - healthA;
-      const urgency = (100 - healthB) + (level * 4);
-
-      let best = affordable[0];
-      let bestScore = -Infinity;
-
-      for (const type of affordable) {
-        const w = attackData[type];
-        let score = w.max + w.cost * 0.18;
-
-        if (type === "hydrogen" || type === "nuclear") {
-          score += urgency > 45 ? 18 : 0;
-          score += deficit < -10 ? 12 : 0;
-        }
-
-        if (type === "emp" && cpA >= 32) {
-          score += 11;
-        }
-
-        if (type === "missile" || type === "drone") {
-          score += healthA < 18 ? 10 : 0;
-        }
-
-        score += Math.random() * 8;
-        score += getLevelDamageBonus(type);
-
-        if (level <= 3 && (type === "hydrogen" || type === "nuclear")) {
-          score -= 10;
-        }
-
-        if (score > bestScore) {
-          bestScore = score;
-          best = type;
-        }
-      }
-
-      return best;
+      return clamp(damage, 1, 80);
     }
 
     function triggerShake(kind) {
@@ -1224,6 +1401,7 @@
       const colors = {
         drone: "rgba(183,243,255,0.9)",
         missile: "rgba(255,221,87,0.9)",
+        pink: "rgba(255,150,235,0.95)",
         cruise: "rgba(110,247,216,0.9)",
         ballistic: "rgba(179,136,255,0.9)",
         emp: "rgba(106,247,255,0.95)",
@@ -1284,29 +1462,41 @@
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
       cloud.style.animation = `cloudRise ${duration}ms ease-out forwards`;
       map.appendChild(cloud);
-      setTimeout(() => cloud.remove(), duration + 50);
+      setTimeout(() => cloud.remove(), duration + 80);
+    }
+
+    function runSatelliteZoom() {
+      const map = $("map");
+      map.classList.remove("satellite-zoom");
+      void map.offsetWidth;
+      map.classList.add("satellite-zoom");
+      setTimeout(() => map.classList.remove("satellite-zoom"), 2400);
     }
 
     function spendCP(side, amount) {
-      if (side === "A") cpA = Math.max(0, cpA - amount);
-      else cpB = Math.max(0, cpB - amount);
+      if (side === "A") state.cpA = Math.max(0, state.cpA - amount);
+      else state.cpB = Math.max(0, state.cpB - amount);
     }
 
     function applyDamage(side, amount) {
-      if (side === "A") healthA = clamp(healthA - amount, 0, maxHealth);
-      else healthB = clamp(healthB - amount, 0, maxHealth);
+      if (side === "A") state.healthA = clamp(state.healthA - amount, 0, MAX_HEALTH);
+      else state.healthB = clamp(state.healthB - amount, 0, MAX_HEALTH);
     }
 
     function applyEMPDrain(side, amount) {
-      if (side === "A") cpA = clamp(cpA - amount, 0, maxCP);
-      else cpB = clamp(cpB - amount, 0, maxCP);
+      if (side === "A") state.cpA = clamp(state.cpA - amount, 0, MAX_CP);
+      else state.cpB = clamp(state.cpB - amount, 0, MAX_CP);
     }
 
     function animateAttack(attacker, defender, type, callback) {
-      const map = document.getElementById("map");
+      const map = $("map");
       const from = positions[attacker];
       const to = positions[defender];
-      const weapon = attackData[type];
+      const weapon = ATTACKS[type];
+
+      if (type === "hydrogen") {
+        runSatelliteZoom();
+      }
 
       const projectile = document.createElement("div");
       projectile.className = `projectile ${weapon.projectileClass}`;
@@ -1348,29 +1538,37 @@
         explosion.style.left = to.x + "px";
         explosion.style.top = to.y + "px";
         explosion.style.setProperty("--scale", weapon.explosionScale);
-        explosion.style.animation = "boom 850ms ease-out forwards";
+        explosion.style.animation = type === "hydrogen" ? "boom 1600ms ease-out forwards" : "boom 900ms ease-out forwards";
         map.appendChild(explosion);
 
-        const ringColor = type === "emp" ? "rgba(106,247,255,0.9)" : "rgba(255,235,180,0.85)";
+        const ringColor = type === "emp" ? "rgba(106,247,255,0.9)" :
+                          type === "pink" ? "rgba(255,150,235,0.9)" :
+                          "rgba(255,235,180,0.85)";
+
         const ringSize =
-          type === "hydrogen" ? 150 :
+          type === "hydrogen" ? 260 :
           type === "nuclear" ? 120 :
           type === "ballistic" ? 80 :
           type === "emp" ? 95 :
+          type === "pink" ? 68 :
           55;
 
-        createImpactRing(map, to.x, to.y, ringSize, type === "hydrogen" ? 1400 : 900, ringColor);
+        createImpactRing(map, to.x, to.y, ringSize, type === "hydrogen" ? 2200 : 900, ringColor);
 
-        if (type === "emp") {
+        if (type === "pink") {
+          createParticles(map, to.x, to.y, 16, "rgba(255,180,235,0.95)", 70, 900);
+        } else if (type === "emp") {
           createImpactRing(map, to.x, to.y, 130, 1200, "rgba(106,247,255,0.8)");
           createParticles(map, to.x, to.y, 18, "rgba(160,255,255,0.95)", 80, 700);
         } else if (type === "nuclear") {
           createMushroomCloud(map, to.x, to.y - 5, 2300, 1.0);
           createParticles(map, to.x, to.y, 24, "rgba(255,170,50,0.95)", 95, 1000);
+          createImpactRing(map, from.x, from.y, 60, 700, "rgba(255,140,80,0.65)");
         } else if (type === "hydrogen") {
-          createMushroomCloud(map, to.x, to.y - 8, 3200, 1.35);
-          createImpactRing(map, to.x, to.y, 190, 1600, "rgba(255,180,80,0.9)");
-          createParticles(map, to.x, to.y, 34, "rgba(255,210,110,0.95)", 120, 1200);
+          createMushroomCloud(map, to.x, to.y - 10, 3600, 1.6);
+          createImpactRing(map, to.x, to.y, 340, 2600, "rgba(255,180,80,0.96)");
+          createParticles(map, to.x, to.y, 40, "rgba(255,220,130,0.98)", 145, 1400);
+          createImpactRing(map, from.x, from.y, 110, 1000, "rgba(255,180,80,0.72)");
         } else {
           createParticles(
             map,
@@ -1388,197 +1586,448 @@
         setTimeout(() => {
           explosion.remove();
           callback();
-        }, type === "hydrogen" ? 1700 : type === "nuclear" ? 1200 : 900);
+        }, type === "hydrogen" ? 2000 : type === "nuclear" ? 1300 : 950);
       }
 
       requestAnimationFrame(frame);
     }
 
-    function finishTurnAfterAttack() {
-      actionCount += 1;
-
-      if (checkEnd()) {
-        busy = false;
-        updateUI();
-        return;
-      }
-
-      if (gameMode === "single") {
-        if (currentTurn === "A") {
-          currentTurn = "B";
-          busy = false;
-          updateUI();
-          setStatus(enemyCountry + " is choosing a strike...");
-          setTimeout(aiTurn, 700);
-        } else {
-          currentTurn = "A";
-          busy = false;
-          updateUI();
-          setStatus("Your turn");
-        }
-      } else {
-        currentTurn = currentTurn === "A" ? "B" : "A";
-        busy = false;
-        updateUI();
-        setStatus((currentTurn === "A" ? playerCountry : enemyCountry) + " turn");
-      }
+    function getAttackerCP(side) {
+      return side === "A" ? state.cpA : state.cpB;
     }
 
-    function doAttack(attacker, type) {
-      const defender = attacker === "A" ? "B" : "A";
-      const attackerName = attacker === "A" ? playerCountry : enemyCountry;
-      const defenderName = defender === "A" ? playerCountry : enemyCountry;
-      const weapon = attackData[type];
-      const attackerCP = attacker === "A" ? cpA : cpB;
+    function getAIChoice() {
+      const affordable = Object.keys(ATTACKS).filter(type => ATTACKS[type].cost <= state.cpB);
+      if (!affordable.length) return null;
 
-      if (attackerCP < weapon.cost) {
-        if (attacker === "A") {
-          setStatus("Not enough command points for " + weapon.label);
-        }
-        return false;
-      }
+      const deficit = state.healthB - state.healthA;
+      const urgency = (100 - state.healthB) + (level * 4);
 
-      spendCP(attacker, weapon.cost);
-      busy = true;
-      updateUI();
-      setStatus(attackerName + " launching " + weapon.label + "...");
+      let best = affordable[0];
+      let bestScore = -Infinity;
 
-      animateAttack(attacker, defender, type, () => {
-        const damage = calculateDamage(type, attacker);
-        applyDamage(defender, damage);
+      for (const type of affordable) {
+        const w = ATTACKS[type];
+        let score = w.max + w.cost * 0.18;
 
-        let log = attackerName + " used " + weapon.label + " and dealt " + damage + " damage to " + defenderName + ".";
-
-        if (type === "emp") {
-          const drain = clamp(weapon.cpDrain + (gameMode === "single" && attacker === "B" ? Math.floor(level / 2) : 0), 8, 26);
-          applyEMPDrain(defender, drain);
-          log += " " + defenderName + " also lost " + drain + " command points.";
+        if (type === "hydrogen" || type === "nuclear") {
+          score += urgency > 45 ? 18 : 0;
+          score += deficit < -10 ? 12 : 0;
         }
 
-        logMessage(log);
-        updateUI();
-        finishTurnAfterAttack();
-      });
+        if (type === "emp" && state.cpA >= 32) score += 11;
+        if (type === "pink") score += Math.random() * 6;
+        if (type === "missile" || type === "drone") score += state.healthA < 18 ? 10 : 0;
 
-      return true;
-    }
+        score += Math.random() * 8;
+        score += getLevelDamageBonus(type);
 
-    function humanAttack(type) {
-      if (gameOver || busy || !gameStarted) return;
-      if (gameMode === "single" && currentTurn !== "A") return;
-      doAttack(currentTurn, type);
-    }
+        if (level <= 3 && (type === "hydrogen" || type === "nuclear")) score -= 10;
 
-    function aiTurn() {
-      if (gameOver || gameMode !== "single" || currentTurn !== "B" || busy) return;
-
-      const type = chooseAIAttack();
-      if (!type) {
-        setStatus(enemyCountry + " is saving command points...");
-        logMessage(enemyCountry + " skipped the turn to save command points.");
-        currentTurn = "A";
-        updateUI();
-        setStatus("Your turn");
-        return;
+        if (score > bestScore) {
+          bestScore = score;
+          best = type;
+        }
       }
 
-      doAttack("B", type);
+      return best;
     }
 
-    function startResourceFlow() {
-      clearInterval(cpInterval);
-      cpInterval = setInterval(() => {
-        if (!gameStarted || gameOver) return;
-
-        cpA = clamp(cpA + getCPRegen("A"), 0, maxCP);
-        cpB = clamp(cpB + getCPRegen("B"), 0, maxCP);
-        updateUI();
-      }, 1000);
-    }
-
-    function startMatchTimer() {
-      clearInterval(timerInterval);
-      timerInterval = setInterval(() => {
-        if (!gameStarted || gameOver) return;
-
-        matchSeconds = Math.max(0, matchSeconds - 1);
-        updateUI();
-
-        if (matchSeconds <= 0) {
-          endByTimer();
-        }
-      }, 1000);
-    }
-
-    function endByTimer() {
-      if (gameOver) return;
-      gameOver = true;
+    function endMatch(resultText, statusText) {
+      state.gameOver = true;
       busy = false;
       clearInterval(timerInterval);
       clearInterval(cpInterval);
-
-      let resultText = "";
-      if (healthA > healthB) resultText = "🏆 " + playerCountry + " wins by higher health!";
-      else if (healthB > healthA) resultText = "🏆 " + enemyCountry + " wins by higher health!";
-      else if (cpA > cpB) resultText = "🏆 " + playerCountry + " wins by higher command points!";
-      else if (cpB > cpA) resultText = "🏆 " + enemyCountry + " wins by higher command points!";
-      else resultText = "🤝 Draw!";
-
-      document.getElementById("result").textContent = resultText;
-      setStatus("Match timer ended");
-      logMessage("Time is up — " + resultText);
+      if (aiPending) clearTimeout(aiPending);
+      $("result").textContent = resultText;
+      setStatus(statusText);
       updateUI();
     }
 
-    function checkEnd() {
-      if (healthA <= 0 || healthB <= 0) {
-        gameOver = true;
-        clearInterval(timerInterval);
-        clearInterval(cpInterval);
+    function evaluateWinnerByTime() {
+      if (state.healthA > state.healthB) return "🏆 " + playerCountry + " wins by higher health!";
+      if (state.healthB > state.healthA) return "🏆 " + enemyCountry + " wins by higher health!";
+      if (state.cpA > state.cpB) return "🏆 " + playerCountry + " wins by higher command points!";
+      if (state.cpB > state.cpA) return "🏆 " + enemyCountry + " wins by higher command points!";
+      return "🤝 Draw!";
+    }
 
+    function checkEnd() {
+      if (state.healthA <= 0 || state.healthB <= 0) {
         let resultText = "";
-        if (healthA > healthB) resultText = "🏆 " + playerCountry + " wins!";
-        else if (healthB > healthA) resultText = "🏆 " + enemyCountry + " wins!";
+        if (state.healthA > state.healthB) resultText = "🏆 " + playerCountry + " wins!";
+        else if (state.healthB > state.healthA) resultText = "🏆 " + enemyCountry + " wins!";
         else resultText = "🤝 Draw!";
 
-        document.getElementById("result").textContent = resultText;
-        setStatus("Game over");
         logMessage("Game Over — " + resultText);
+        endMatch(resultText, "Game over");
+        syncOnlineState();
+        return true;
+      }
+
+      if (state.timer <= 0) {
+        const resultText = evaluateWinnerByTime();
+        logMessage("Time is up — " + resultText);
+        endMatch(resultText, "Match timer ended");
+        syncOnlineState();
         return true;
       }
 
       return false;
     }
 
-    function restartGame() {
-      if (!gameStarted) return;
+    function advanceTurn() {
+      state.actionCount += 1;
+      state.currentTurn = state.currentTurn === "A" ? "B" : "A";
+    }
 
-      ensureAudio();
+    function applyAttackResult(attacker, type) {
+      const defender = attacker === "A" ? "B" : "A";
+      const attackerName = attacker === "A" ? playerCountry : enemyCountry;
+      const defenderName = defender === "A" ? playerCountry : enemyCountry;
+      const weapon = ATTACKS[type];
 
-      healthA = 100;
-      healthB = 100;
-      cpA = 30;
-      cpB = 30;
-      matchSeconds = 180;
-      gameOver = false;
-      busy = false;
-      currentTurn = "A";
-      actionCount = 0;
+      spendCP(attacker, weapon.cost);
 
+      const damage = calculateDamage(type, attacker);
+      applyDamage(defender, damage);
+
+      let log = attackerName + " used " + weapon.label + " and dealt " + damage + " damage to " + defenderName + ".";
+
+      if (type === "emp") {
+        const drain = clamp(weapon.cpDrain + (mode === "single" && attacker === "B" ? Math.floor(level / 2) : 0), 8, 26);
+        applyEMPDrain(defender, drain);
+        log += " " + defenderName + " also lost " + drain + " command points.";
+      }
+
+      if (weapon.splashSelf > 0) {
+        applyDamage(attacker, weapon.splashSelf);
+        log += " Shockwave also damaged " + attackerName + " for " + weapon.splashSelf + ".";
+      }
+
+      logMessage(log);
+      advanceTurn();
+    }
+
+    function finishTurnAfterAttack() {
+      updateUI();
+
+      if (checkEnd()) return;
+
+      if (mode === "single") {
+        if (state.currentTurn === "B") {
+          busy = false;
+          updateUI();
+          setStatus(enemyCountry + " is choosing a strike...");
+          aiPending = setTimeout(aiTurn, 700);
+        } else {
+          busy = false;
+          updateUI();
+          setStatus("Your turn");
+        }
+      } else {
+        busy = false;
+        updateUI();
+        const activeName = state.currentTurn === "A" ? playerCountry : enemyCountry;
+        setStatus(activeName + " turn");
+        syncOnlineState();
+      }
+    }
+
+    function humanAttack(type) {
+      if (!gameStarted || state.gameOver || busy) return;
+      if (mode === "single" && state.currentTurn !== "A") return;
+      if (mode === "online" && state.currentTurn !== playerSlot) return;
+
+      const actor = state.currentTurn;
+      if (getAttackerCP(actor) < ATTACKS[type].cost) {
+        setStatus("Not enough command points for " + ATTACKS[type].label);
+        return;
+      }
+
+      busy = true;
+      updateUI();
+
+      const attackerName = actor === "A" ? playerCountry : enemyCountry;
+      setStatus(attackerName + " launching " + ATTACKS[type].label + "...");
+
+      animateAttack(actor, actor === "A" ? "B" : "A", type, () => {
+        applyAttackResult(actor, type);
+        finishTurnAfterAttack();
+      });
+    }
+
+    function aiTurn() {
+      if (mode !== "single" || state.gameOver || busy || state.currentTurn !== "B") return;
+
+      const type = getAIChoice();
+      if (!type) {
+        logMessage(enemyCountry + " skipped the turn to save command points.");
+        advanceTurn();
+        busy = false;
+        updateUI();
+        setStatus("Your turn");
+        return;
+      }
+
+      busy = true;
+      updateUI();
+      setStatus(enemyCountry + " launching " + ATTACKS[type].label + "...");
+
+      animateAttack("B", "A", type, () => {
+        applyAttackResult("B", type);
+        finishTurnAfterAttack();
+      });
+    }
+
+    function tickResources() {
+      if (!gameStarted || state.gameOver) return;
+      state.cpA = clamp(state.cpA + getCPRegen("A"), 0, MAX_CP);
+      state.cpB = clamp(state.cpB + getCPRegen("B"), 0, MAX_CP);
+      updateUI();
+      if (mode === "online") syncOnlineState();
+    }
+
+    function tickTimer() {
+      if (!gameStarted || state.gameOver) return;
+      state.timer = Math.max(0, state.timer - 1);
+      updateUI();
+      checkEnd();
+      if (mode === "online") syncOnlineState();
+    }
+
+    function startLoops() {
       clearInterval(timerInterval);
       clearInterval(cpInterval);
-
-      document.getElementById("result").textContent = "";
-      document.getElementById("log").innerHTML = "";
-
-      applyNames();
-      playSiren();
-      setStatus(gameMode === "single" ? "Your turn" : playerCountry + " turn");
-      logMessage("New match started: " + playerCountry + " vs " + enemyCountry + ".");
-      updateUI();
-      startResourceFlow();
-      startMatchTimer();
+      timerInterval = setInterval(tickTimer, 1000);
+      cpInterval = setInterval(tickResources, 1000);
     }
+
+    function stopLoops() {
+      clearInterval(timerInterval);
+      clearInterval(cpInterval);
+      if (aiPending) clearTimeout(aiPending);
+    }
+
+    function resetState() {
+      state = {
+        healthA: 100,
+        healthB: 100,
+        cpA: 30,
+        cpB: 30,
+        currentTurn: "A",
+        timer: MATCH_SECONDS,
+        gameOver: false,
+        actionCount: 0,
+        started: true,
+        endReason: "",
+        hostTickAt: Date.now()
+      };
+    }
+
+    function showGameArea() {
+      $("setupPanel").classList.add("hidden");
+      $("gameArea").classList.remove("hidden");
+      applyNames();
+      updateUI();
+    }
+
+    function startSinglePlayer() {
+      ensureAudio();
+      setupCustomAudio();
+
+      mode = "single";
+      level = parseInt($("levelSelect").value, 10);
+      playerCountry = sanitizeName($("countryAInput").value, "Blue Nation");
+      enemyCountry = sanitizeName($("singleEnemyInput").value, "Red Dominion");
+      roomCode = "";
+      gameStarted = true;
+      busy = false;
+      resetState();
+
+      showGameArea();
+      playSiren();
+      setStatus("Your turn");
+      $("log").innerHTML = "";
+      $("result").textContent = "";
+      logMessage("New single-player match started: " + playerCountry + " vs " + enemyCountry + ".");
+      startLoops();
+    }
+
+    async function createOnlineRoom() {
+      if (!firebaseReady() || !db) {
+        alert("Add your Firebase config first to use online multiplayer.");
+        return;
+      }
+
+      ensureAudio();
+      setupCustomAudio();
+
+      mode = "online";
+      playerCountry = sanitizeName($("countryAInput").value, "Blue Nation");
+      enemyCountry = "Waiting...";
+      roomCode = Math.random().toString(36).slice(2, 8).toUpperCase();
+      playerSlot = "A";
+      isHost = true;
+      roomRef = ref(db, "warRooms/" + roomCode);
+
+      resetState();
+      state.started = false;
+
+      await set(roomRef, {
+        players: {
+          A: { name: playerCountry, joined: true },
+          B: { name: "", joined: false }
+        },
+        state
+      });
+
+      attachRoomListener();
+      showGameArea();
+      $("log").innerHTML = "";
+      $("result").textContent = "";
+      setStatus("Room created. Share code: " + roomCode);
+      logMessage("Online room created: " + roomCode);
+    }
+
+    async function joinOnlineRoom() {
+      if (!firebaseReady() || !db) {
+        alert("Add your Firebase config first to use online multiplayer.");
+        return;
+      }
+
+      ensureAudio();
+      setupCustomAudio();
+
+      const code = $("roomCodeInput").value.trim().toUpperCase();
+      if (!code) {
+        alert("Enter a room code.");
+        return;
+      }
+
+      const joinRef = ref(db, "warRooms/" + code);
+      const snap = await get(joinRef);
+
+      if (!snap.exists()) {
+        alert("Room not found.");
+        return;
+      }
+
+      const data = snap.val();
+      if (data.players?.B?.joined) {
+        alert("Room already has 2 players.");
+        return;
+      }
+
+      mode = "online";
+      roomCode = code;
+      roomRef = joinRef;
+      playerSlot = "B";
+      isHost = false;
+      playerCountry = sanitizeName($("countryAInput").value, "Red Nation");
+      enemyCountry = data.players?.A?.name || "Blue Nation";
+
+      await update(roomRef, {
+        "players/B": { name: playerCountry, joined: true }
+      });
+
+      attachRoomListener();
+      showGameArea();
+      $("log").innerHTML = "";
+      $("result").textContent = "";
+      setStatus("Joined room " + roomCode + ". Waiting for sync...");
+      logMessage("Joined online room: " + roomCode);
+    }
+
+    function attachRoomListener() {
+      if (!roomRef) return;
+      if (roomUnsub) roomUnsub();
+
+      roomUnsub = onValue(roomRef, async (snap) => {
+        const data = snap.val();
+        if (!data) return;
+
+        const players = data.players || {};
+        const roomState = data.state || state;
+
+        if (players.A?.name) playerCountry = playerSlot === "A" ? players.A.name : playerCountry;
+        if (players.B?.name) enemyCountry = playerSlot === "A" ? players.B.name : players.A?.name || enemyCountry;
+
+        if (playerSlot === "B" && players.B?.name) playerCountry = players.B.name;
+        if (playerSlot === "A" && players.B?.name) enemyCountry = players.B.name;
+        if (playerSlot === "B" && players.A?.name) enemyCountry = players.A.name;
+
+        state = roomState;
+        gameStarted = true;
+        showGameArea();
+        updateUI();
+
+        if (players.A?.joined && players.B?.joined && !state.started && isHost) {
+          resetState();
+          await update(roomRef, {
+            "state": state
+          });
+          playSiren();
+          setStatus("Online match started");
+          logMessage("Online match started: " + (players.A.name || "A") + " vs " + (players.B.name || "B") + ".");
+          startLoops();
+        } else if (state.started) {
+          if (isHost && !timerInterval) startLoops();
+          if (!isHost) stopLoops();
+          setStatus(state.gameOver ? "Game over" : ((state.currentTurn === playerSlot) ? "Your turn" : "Opponent turn"));
+        }
+
+        if (state.gameOver && $("result").textContent === "") {
+          const resultText = evaluateWinnerByTime();
+          $("result").textContent = resultText;
+        }
+      });
+    }
+
+    async function syncOnlineState() {
+      if (mode !== "online" || !roomRef || !db) return;
+      try {
+        await update(roomRef, { state });
+      } catch {}
+    }
+
+    function restartGame() {
+      ensureAudio();
+      setupCustomAudio();
+      stopLoops();
+
+      if (mode === "single") {
+        startSinglePlayer();
+      } else if (mode === "online") {
+        if (!roomRef) return;
+        if (!isHost) {
+          setStatus("Only Player A can restart the online room.");
+          return;
+        }
+        resetState();
+        $("result").textContent = "";
+        $("log").innerHTML = "";
+        playSiren();
+        setStatus("Online room restarted");
+        logMessage("Online room restarted.");
+        syncOnlineState();
+        startLoops();
+      }
+    }
+
+    window.addEventListener("beforeunload", async () => {
+      if (mode === "online" && roomRef && db) {
+        try {
+          if (playerSlot === "A" && isHost) {
+            await remove(roomRef);
+          } else if (playerSlot === "B") {
+            await update(roomRef, {
+              "players/B": { name: "", joined: false }
+            });
+          }
+        } catch {}
+      }
+    });
 
     toggleModeFields();
   </script>
