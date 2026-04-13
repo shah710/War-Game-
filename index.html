@@ -1062,7 +1062,7 @@
         <button class="w-ship" id="btnShip" onclick="humanAttack('ship')">Ship Attack<br>24 CP / $34</button>
         <button class="w-ground" id="btnGround" onclick="humanAttack('ground')">Ground Invasion<br>28 CP / $38</button>
         <button class="w-emp" id="btnEMP" onclick="humanAttack('emp')">EMP<br>24 CP / $32</button>
-        <button class="w-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear<br>55 CP / $ 55 CP / $90</button>
+        <button class="w-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear<br>55 CP / $90</button>
 <button class="w-hydrogen" id="btnHydrogen" onclick="humanAttack('hydrogen')">Hydrogen<br>80 CP / $140</button>
 <button class="btn-restart" onclick="restartGame()">Restart</button>
 </div>
@@ -1721,7 +1721,7 @@
       cloud.style.top = y + "px";
       cloud.style.transform = `translate(-50%, -50%) scale(${0.3 * scale})`;
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
-      cloud.style.animation = `cloudRise ${duration ms ease-out forwards`;
+     cloud.style.animation = `cloudRise ${duration}ms ease-out forwards`;
       map.appendChild(cloud);
       setTimeout(() => cloud.remove(), duration + 80);
     }
