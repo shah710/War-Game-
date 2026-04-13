@@ -12,23 +12,21 @@
       --blue2: #64b5ff;
       --red1: #c62828;
       --red2: #ff6b6b;
-      --bg1: #1d3557;
-      --bg2: #0b1320;
-      --bg3: #05080f;
-      --panel: rgba(255,255,255,0.08);
-      --panel-border: rgba(255,255,255,0.12);
+      --gold: #ffd166;
     }
 
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: radial-gradient(circle at top, var(--bg1) 0%, var(--bg2) 45%, var(--bg3) 100%);
+      background: radial-gradient(circle at top, #1d3557 0%, #0b1320 45%, #05080f 100%);
       color: white;
       text-align: center;
       overflow-x: hidden;
     }
 
-    body.shake { animation: screenShake 0.35s linear; }
+    body.shake {
+      animation: screenShake 0.35s linear;
+    }
 
     @keyframes screenShake {
       0% { transform: translate(0, 0); }
@@ -40,21 +38,23 @@
     }
 
     .container {
-      max-width: 1120px;
+      max-width: 1160px;
       margin: 0 auto;
       padding: 20px;
     }
 
-    h1 { margin-bottom: 8px; }
+    h1 {
+      margin-bottom: 8px;
+    }
 
     .beta {
       display: inline-block;
-      background: #ffd166;
+      background: var(--gold);
       color: #111;
       padding: 8px 14px;
       border-radius: 999px;
       font-weight: bold;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .subtitle {
@@ -62,30 +62,41 @@
       margin-bottom: 18px;
     }
 
-    .start-panel, .panel {
-      background: var(--panel);
-      border: 1px solid var(--panel-border);
+    .panel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 18px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      padding: 16px;
     }
 
-    .start-panel {
-      max-width: 620px;
+    .setup-panel {
+      max-width: 820px;
       margin: 0 auto 22px;
-      padding: 18px;
     }
 
-    .start-row {
-      display: flex;
-      gap: 10px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin-top: 10px;
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 14px;
     }
 
-    input {
-      min-width: 260px;
-      padding: 14px;
+    .setup-full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      text-align: left;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #d7e3f4;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px 14px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.18);
       background: rgba(255,255,255,0.08);
@@ -94,7 +105,9 @@
       outline: none;
     }
 
-    input::placeholder { color: #c8d4e4; }
+    option {
+      color: black;
+    }
 
     .hud {
       display: grid;
@@ -102,8 +115,6 @@
       gap: 16px;
       margin-bottom: 18px;
     }
-
-    .panel { padding: 14px; }
 
     .country-name {
       font-size: 22px;
@@ -131,8 +142,13 @@
       transition: width 0.45s ease;
     }
 
-    .bar.blue { background: linear-gradient(90deg, var(--blue1), var(--blue2)); }
-    .bar.red { background: linear-gradient(90deg, var(--red1), var(--red2)); }
+    .bar.blue {
+      background: linear-gradient(90deg, var(--blue1), var(--blue2));
+    }
+
+    .bar.red {
+      background: linear-gradient(90deg, var(--red1), var(--red2));
+    }
 
     .stats {
       display: flex;
@@ -140,6 +156,16 @@
       gap: 12px;
       font-size: 15px;
       color: #d8e1ea;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+      color: #d7e3f4;
+      font-weight: bold;
     }
 
     .map {
@@ -217,7 +243,6 @@
       padding: 14px;
       font-size: 26px;
       font-weight: bold;
-      letter-spacing: 0.5px;
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
       border: 2px solid rgba(255,255,255,0.25);
       box-shadow: inset 0 0 30px rgba(255,255,255,0.07), 0 10px 20px rgba(0,0,0,0.25);
@@ -346,28 +371,27 @@
       z-index: 7;
       opacity: 0;
       transform: translate(-50%, -50%) scale(0.3);
-      filter: blur(0.4px);
     }
 
-    .cloud.nuclear-cloud .cap,
-    .cloud.nuclear-cloud .stem {
+    .cloud .cap,
+    .cloud .stem {
       position: absolute;
-      background: radial-gradient(circle, rgba(255,244,200,0.95) 0%, rgba(255,161,60,0.85) 45%, rgba(170,45,20,0.45) 100%);
       border-radius: 50%;
     }
 
-    .cloud.nuclear-cloud .cap {
+    .cloud .cap {
       width: 120px;
       height: 80px;
       left: -60px;
       top: -70px;
+      background: radial-gradient(circle, rgba(255,244,200,0.95) 0%, rgba(255,161,60,0.85) 45%, rgba(170,45,20,0.45) 100%);
       box-shadow:
         -36px 10px 0 8px rgba(255,153,51,0.35),
         36px 10px 0 8px rgba(255,153,51,0.35),
         0 20px 0 12px rgba(255,153,51,0.28);
     }
 
-    .cloud.nuclear-cloud .stem {
+    .cloud .stem {
       width: 44px;
       height: 95px;
       left: -22px;
@@ -406,7 +430,9 @@
       box-shadow: 0 8px 18px rgba(0,0,0,0.25);
     }
 
-    button:hover { transform: translateY(-2px); }
+    button:hover {
+      transform: translateY(-2px);
+    }
 
     button:disabled {
       opacity: 0.55;
@@ -427,10 +453,10 @@
       gap: 16px;
       margin-bottom: 12px;
       color: #d8e1ea;
+      font-weight: bold;
     }
 
     .status {
-      font-weight: bold;
       min-height: 24px;
     }
 
@@ -458,7 +484,9 @@
       min-height: 40px;
     }
 
-    .hidden { display: none; }
+    .hidden {
+      display: none;
+    }
 
     @keyframes fly-right {
       0% { opacity: 1; transform: translate(0, 0) rotate(0deg); }
@@ -498,52 +526,140 @@
     }
 
     @media (max-width: 900px) {
-      .hud { grid-template-columns: 1fr; }
-      .map { height: 390px; }
-      .country { width: 160px; height: 120px; font-size: 20px; }
-      .country.a { left: 38px; top: 160px; }
-      .country.b { right: 28px; top: 155px; }
-      .land1 { width: 210px; height: 145px; left: 25px; }
-      .land2 { width: 220px; height: 150px; right: 18px; }
-      .capital.a { left: 155px; top: 223px; }
-      .capital.b { right: 145px; top: 220px; }
-      .label.a { left: 180px; top: 220px; }
-      .label.b { right: 28px; top: 216px; }
-      input { min-width: 220px; }
+      .setup-grid, .hud {
+        grid-template-columns: 1fr;
+      }
+
+      .map {
+        height: 390px;
+      }
+
+      .country {
+        width: 160px;
+        height: 120px;
+        font-size: 20px;
+      }
+
+      .country.a {
+        left: 38px;
+        top: 160px;
+      }
+
+      .country.b {
+        right: 28px;
+        top: 155px;
+      }
+
+      .land1 {
+        width: 210px;
+        height: 145px;
+        left: 25px;
+      }
+
+      .land2 {
+        width: 220px;
+        height: 150px;
+        right: 18px;
+      }
+
+      .capital.a {
+        left: 155px;
+        top: 223px;
+      }
+
+      .capital.b {
+        right: 145px;
+        top: 220px;
+      }
+
+      .label.a {
+        left: 180px;
+        top: 220px;
+      }
+
+      .label.b {
+        right: 28px;
+        top: 216px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>War Game: Custom Nation vs Computer Nation</h1>
+    <h1>War Game: Nations at War</h1>
     <div class="beta">⚠️ Trial Version — Beta v0.1</div>
-    <div class="subtitle">Name your country, then battle the computer on the world map.</div>
+    <div class="subtitle">Choose a mode, set names, choose a level, and fight.</div>
 
-    <div class="start-panel" id="startPanel">
-      <div><b>Create your country</b></div>
-      <div class="start-row">
-        <input id="countryNameInput" type="text" maxlength="24" placeholder="Enter your country name" />
-        <button class="btn-start" onclick="startGame()">Start Game</button>
+    <div class="panel setup-panel" id="setupPanel">
+      <div><b>Game Setup</b></div>
+      <div class="setup-grid">
+        <div class="setup-full">
+          <label for="modeSelect">Game Mode</label>
+          <select id="modeSelect" onchange="toggleModeFields()">
+            <option value="single">Single Player</option>
+            <option value="multi">Local Multiplayer</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="countryAInput">Player 1 Country Name</label>
+          <input id="countryAInput" type="text" maxlength="24" placeholder="Enter first country name">
+        </div>
+
+        <div id="singleEnemyField">
+          <label for="singleEnemyInput">Computer Country Name</label>
+          <input id="singleEnemyInput" type="text" maxlength="24" placeholder="Enemy country name" value="Red Dominion">
+        </div>
+
+        <div id="multiCountryField" class="hidden">
+          <label for="countryBInput">Player 2 Country Name</label>
+          <input id="countryBInput" type="text" maxlength="24" placeholder="Enter second country name">
+        </div>
+
+        <div class="setup-full">
+          <label for="levelSelect">Level (Single Player only)</label>
+          <select id="levelSelect">
+            <option value="1">Level 1</option>
+            <option value="2">Level 2</option>
+            <option value="3">Level 3</option>
+            <option value="4">Level 4</option>
+            <option value="5" selected>Level 5</option>
+            <option value="6">Level 6</option>
+            <option value="7">Level 7</option>
+            <option value="8">Level 8</option>
+            <option value="9">Level 9</option>
+          </select>
+        </div>
+
+        <div class="setup-full">
+          <button class="btn-start" onclick="startGame()">Start Game</button>
+        </div>
       </div>
     </div>
 
     <div id="gameArea" class="hidden">
+      <div class="top-row">
+        <div>Mode: <span id="modeLabel">Single Player</span></div>
+        <div>Level: <span id="levelLabel">5</span></div>
+        <div>Current Turn: <span id="turnLabel">Player 1</span></div>
+      </div>
+
       <div class="hud">
         <div class="panel">
-          <div class="country-name blue-text" id="hudNameA">Your Country</div>
+          <div class="country-name blue-text" id="hudNameA">Country A</div>
           <div class="bar-wrap"><div id="barA" class="bar blue"></div></div>
           <div class="stats">
             <span>Points: <span id="scoreA">100</span></span>
-            <span>Player</span>
+            <span id="roleA">Player 1</span>
           </div>
         </div>
 
         <div class="panel">
-          <div class="country-name red-text" id="hudNameB">Computer Nation</div>
+          <div class="country-name red-text" id="hudNameB">Country B</div>
           <div class="bar-wrap"><div id="barB" class="bar red"></div></div>
           <div class="stats">
             <span>Points: <span id="scoreB">100</span></span>
-            <span>Computer AI</span>
+            <span id="roleB">Computer</span>
           </div>
         </div>
       </div>
@@ -553,25 +669,25 @@
         <div class="land land1"></div>
         <div class="land land2"></div>
 
-        <div class="country a" id="countryABox">Your Country</div>
-        <div class="country b" id="countryBBox">Computer</div>
+        <div class="country a" id="countryABox">Country A</div>
+        <div class="country b" id="countryBBox">Country B</div>
 
         <div class="capital a"></div>
         <div class="capital b"></div>
 
-        <div class="label a" id="capitalALabel">Capital</div>
-        <div class="label b">Enemy Capital</div>
+        <div class="label a" id="capitalALabel">Capital A</div>
+        <div class="label b" id="capitalBLabel">Capital B</div>
       </div>
 
       <div class="info-row">
-        <div>Round: <b id="round">1</b> / 10</div>
+        <div>Round: <span id="round">1</span> / 10</div>
         <div class="status" id="status">Your turn</div>
       </div>
 
       <div class="controls">
-        <button class="btn-missile" id="btnMissile" onclick="playerAttack('missile')">Missile</button>
-        <button class="btn-ballistic" id="btnBallistic" onclick="playerAttack('ballistic')">Ballistic</button>
-        <button class="btn-nuclear" id="btnNuclear" onclick="playerAttack('nuclear')">Nuclear</button>
+        <button class="btn-missile" id="btnMissile" onclick="humanAttack('missile')">Missile</button>
+        <button class="btn-ballistic" id="btnBallistic" onclick="humanAttack('ballistic')">Ballistic</button>
+        <button class="btn-nuclear" id="btnNuclear" onclick="humanAttack('nuclear')">Nuclear</button>
         <button class="btn-restart" onclick="restartGame()">Restart</button>
       </div>
 
@@ -581,8 +697,10 @@
   </div>
 
   <script>
+    let gameMode = "single";
     let playerCountry = "Blue Nation";
     let enemyCountry = "Red Dominion";
+    let level = 5;
 
     let scoreA = 100;
     let scoreB = 100;
@@ -591,6 +709,11 @@
     let gameOver = false;
     let busy = false;
     let gameStarted = false;
+    let currentTurn = "A";
+
+    let audioMissile = null;
+    let audioBallistic = null;
+    let audioNuclear = null;
 
     const attackData = {
       missile: {
@@ -601,7 +724,8 @@
         shake: 0,
         missileClass: "missile-attack",
         explosionClass: "missile-explosion",
-        totalDuration: 1700
+        totalDuration: 1700,
+        file: "missile.mp3"
       },
       ballistic: {
         label: "Ballistic",
@@ -611,7 +735,8 @@
         shake: 1,
         missileClass: "ballistic-attack",
         explosionClass: "ballistic-explosion",
-        totalDuration: 2000
+        totalDuration: 2000,
+        file: "ballistic.mp3"
       },
       nuclear: {
         label: "Nuclear",
@@ -622,7 +747,7 @@
         missileClass: "nuclear-attack",
         explosionClass: "nuclear-explosion",
         totalDuration: 7000,
-        audioFile: "nuclear.mp3"
+        file: "nuclear.mp3"
       }
     };
 
@@ -631,29 +756,47 @@
       B: { x: 875, y: 232 }
     };
 
-    let nuclearAudio = null;
-
-    function sanitizeCountryName(name) {
+    function sanitizeName(name, fallback) {
       const cleaned = name.replace(/[<>]/g, "").trim();
-      return cleaned.length ? cleaned : "Blue Nation";
+      return cleaned.length ? cleaned : fallback;
+    }
+
+    function toggleModeFields() {
+      const mode = document.getElementById("modeSelect").value;
+      document.getElementById("singleEnemyField").classList.toggle("hidden", mode !== "single");
+      document.getElementById("multiCountryField").classList.toggle("hidden", mode !== "multi");
+      document.getElementById("levelSelect").disabled = mode !== "single";
     }
 
     function setupAudio() {
-      nuclearAudio = new Audio(attackData.nuclear.audioFile);
-      nuclearAudio.preload = "auto";
+      audioMissile = new Audio(attackData.missile.file);
+      audioBallistic = new Audio(attackData.ballistic.file);
+      audioNuclear = new Audio(attackData.nuclear.file);
+
+      audioMissile.preload = "auto";
+      audioBallistic.preload = "auto";
+      audioNuclear.preload = "auto";
     }
 
     function startGame() {
-      const input = document.getElementById("countryNameInput").value;
-      playerCountry = sanitizeCountryName(input);
-      gameStarted = true;
+      gameMode = document.getElementById("modeSelect").value;
+      level = parseInt(document.getElementById("levelSelect").value, 10);
 
-      document.getElementById("startPanel").classList.add("hidden");
+      playerCountry = sanitizeName(document.getElementById("countryAInput").value, "Blue Nation");
+
+      if (gameMode === "single") {
+        enemyCountry = sanitizeName(document.getElementById("singleEnemyInput").value, "Red Dominion");
+      } else {
+        enemyCountry = sanitizeName(document.getElementById("countryBInput").value, "Red Nation");
+      }
+
+      gameStarted = true;
+      document.getElementById("setupPanel").classList.add("hidden");
       document.getElementById("gameArea").classList.remove("hidden");
 
-      applyNames();
       setupAudio();
-      restartGame(true);
+      applyNames();
+      restartGame();
     }
 
     function applyNames() {
@@ -662,6 +805,11 @@
       document.getElementById("countryABox").textContent = playerCountry;
       document.getElementById("countryBBox").textContent = enemyCountry;
       document.getElementById("capitalALabel").textContent = playerCountry + " Capital";
+      document.getElementById("capitalBLabel").textContent = enemyCountry + " Capital";
+      document.getElementById("modeLabel").textContent = gameMode === "single" ? "Single Player" : "Local Multiplayer";
+      document.getElementById("levelLabel").textContent = gameMode === "single" ? level : "-";
+      document.getElementById("roleA").textContent = "Player 1";
+      document.getElementById("roleB").textContent = gameMode === "single" ? "Computer" : "Player 2";
     }
 
     function rand(min, max) {
@@ -679,12 +827,23 @@
       log.prepend(entry);
     }
 
+    function updateTurnLabel() {
+      let label = "";
+      if (currentTurn === "A") {
+        label = gameMode === "single" ? playerCountry : playerCountry + " (Player 1)";
+      } else {
+        label = gameMode === "single" ? enemyCountry + " AI" : enemyCountry + " (Player 2)";
+      }
+      document.getElementById("turnLabel").textContent = label;
+    }
+
     function updateUI() {
       document.getElementById("scoreA").textContent = scoreA;
       document.getElementById("scoreB").textContent = scoreB;
       document.getElementById("barA").style.width = scoreA + "%";
       document.getElementById("barB").style.width = scoreB + "%";
       document.getElementById("round").textContent = Math.min(round, maxRounds);
+      updateTurnLabel();
       disableAttackButtons(gameOver || busy || !gameStarted);
     }
 
@@ -698,55 +857,88 @@
       document.getElementById("status").textContent = text;
     }
 
+    function getLevelDamageBonus(type) {
+      if (gameMode !== "single") return 0;
+
+      if (type === "missile") return Math.floor((level - 1) / 2);
+      if (type === "ballistic") return Math.floor(level / 2);
+      return Math.floor((level + 1) / 2);
+    }
+
     function calculateDamage(type, attacker) {
       const attack = attackData[type];
       let damage = rand(attack.min, attack.max);
 
-      if (attacker === "B") damage += aiBonus(type);
+      if (gameMode === "single" && attacker === "B") {
+        damage += getLevelDamageBonus(type);
+      }
 
       if (type === "nuclear") {
         if (attacker === "A" && scoreA < 30) damage -= 3;
         if (attacker === "B" && scoreB < 30) damage += 2;
       }
 
-      return clamp(damage, 5, 42);
+      return clamp(damage, 5, 50);
     }
 
     function aiChooseAttack() {
       const lead = scoreB - scoreA;
+      const aggression = level / 9;
 
-      if (scoreB <= 24) return Math.random() < 0.68 ? "nuclear" : "ballistic";
-      if (scoreA <= 20) return Math.random() < 0.62 ? "missile" : "ballistic";
-      if (lead < -18) return Math.random() < 0.72 ? "nuclear" : "ballistic";
-      if (lead > 16) return Math.random() < 0.65 ? "missile" : "ballistic";
+      if (scoreB <= 26) {
+        return Math.random() < (0.45 + aggression * 0.35) ? "nuclear" : "ballistic";
+      }
+
+      if (scoreA <= 20) {
+        return Math.random() < 0.65 ? "missile" : "ballistic";
+      }
+
+      if (lead < -15) {
+        return Math.random() < (0.45 + aggression * 0.4) ? "nuclear" : "ballistic";
+      }
+
+      if (lead > 15) {
+        return Math.random() < 0.6 ? "missile" : "ballistic";
+      }
 
       const roll = Math.random();
-      if (roll < 0.40) return "missile";
-      if (roll < 0.76) return "ballistic";
+      if (level <= 3) {
+        if (roll < 0.5) return "missile";
+        if (roll < 0.85) return "ballistic";
+        return "nuclear";
+      }
+
+      if (level <= 6) {
+        if (roll < 0.35) return "missile";
+        if (roll < 0.72) return "ballistic";
+        return "nuclear";
+      }
+
+      if (roll < 0.24) return "missile";
+      if (roll < 0.56) return "ballistic";
       return "nuclear";
     }
 
-    function aiBonus(type) {
-      if (type === "missile") return rand(0, 2);
-      if (type === "ballistic") return rand(1, 3);
-      return rand(2, 4);
-    }
-
-    function triggerShake(level) {
-      if (level <= 0) return;
+    function triggerShake(levelShake) {
+      if (levelShake <= 0) return;
       document.body.classList.remove("shake");
       void document.body.offsetWidth;
       document.body.classList.add("shake");
     }
 
+    function playAudio(audioObj) {
+      if (!audioObj) return;
+      try {
+        audioObj.pause();
+        audioObj.currentTime = 0;
+        audioObj.play().catch(() => {});
+      } catch (e) {}
+    }
+
     function playAttackSound(type) {
-      if (type === "nuclear" && nuclearAudio) {
-        try {
-          nuclearAudio.pause();
-          nuclearAudio.currentTime = 0;
-          nuclearAudio.play().catch(() => {});
-        } catch (e) {}
-      }
+      if (type === "missile") playAudio(audioMissile);
+      else if (type === "ballistic") playAudio(audioBallistic);
+      else playAudio(audioNuclear);
     }
 
     function createImpactRing(map, x, y, size, duration) {
@@ -763,7 +955,7 @@
 
     function createMushroomCloud(map, x, y, duration) {
       const cloud = document.createElement("div");
-      cloud.className = "cloud nuclear-cloud";
+      cloud.className = "cloud";
       cloud.style.left = x + "px";
       cloud.style.top = y + "px";
       cloud.innerHTML = '<div class="cap"></div><div class="stem"></div>';
@@ -801,22 +993,16 @@
       const isNuclear = type === "nuclear";
 
       if (attacker === "A") {
-        missile.style.animation = isNuclear
-          ? "fly-right 3.5s linear forwards"
-          : "fly-right 0.9s linear forwards";
-        trail.style.animation = isNuclear
-          ? "trail-grow-right 3.3s linear forwards"
-          : "trail-grow-right 0.85s linear forwards";
+        missile.style.animation = isNuclear ? "fly-right 3.5s linear forwards" : "fly-right 0.9s linear forwards";
+
+        missile.style.animation = isNuclear ? "fly-right 3.5s linear forwards" : "fly-right 0.9s linear forwards";
+        trail.style.animation = isNuclear ? "trail-grow-right 3.3s linear forwards" : "trail-grow-right 0.85s linear forwards";
       } else {
-        missile.style.animation = isNuclear
-          ? "fly-left 3.5s linear forwards"
-          : "fly-left 0.9s linear forwards";
+        missile.style.animation = isNuclear ? "fly-left 3.5s linear forwards" : "fly-left 0.9s linear forwards";
         trail.style.left = to.x + "px";
         trail.style.top = (to.y + 2) + "px";
         trail.style.transform = "rotate(180deg)";
-        trail.style.animation = isNuclear
-          ? "trail-grow-left 3.3s linear forwards"
-          : "trail-grow-left 0.85s linear forwards";
+        trail.style.animation = isNuclear ? "trail-grow-left 3.3s linear forwards" : "trail-grow-left 0.85s linear forwards";
       }
 
       const impactDelay = isNuclear ? 3500 : 820;
@@ -843,33 +1029,81 @@
       }, attack.totalDuration);
     }
 
-    function playerAttack(type) {
-      if (gameOver || busy || !gameStarted) return;
+    function finishTurnAfterAttack() {
+      if (checkEnd()) {
+        busy = false;
+        updateUI();
+        return;
+      }
 
-      busy = true;
-      updateUI();
-      setStatus(type === "nuclear" ? "Launching Nuclear strike..." : "Launching " + attackData[type].label + "...");
+      if (gameMode === "single") {
+        if (currentTurn === "A") {
+          currentTurn = "B";
+          setStatus(enemyCountry + " is planning a response...");
+          updateUI();
+          setTimeout(aiTurn, 650);
+        } else {
+          currentTurn = "A";
+          round++;
+          setStatus("Your turn");
+          busy = false;
+          updateUI();
 
-      animateAttack("A", "B", type, () => {
-        const damage = calculateDamage(type, "A");
-        scoreB = Math.max(0, scoreB - damage);
+          if (checkEnd()) {
+            updateUI();
+          }
+        }
+      } else {
+        if (currentTurn === "A") {
+          currentTurn = "B";
+          setStatus(enemyCountry + " turn");
+        } else {
+          currentTurn = "A";
+          round++;
+          setStatus(playerCountry + " turn");
+        }
 
-        logMessage(playerCountry + " used " + attackData[type].label + " and dealt " + damage + " damage to " + enemyCountry + ".");
+        busy = false;
         updateUI();
 
         if (checkEnd()) {
-          busy = false;
           updateUI();
-          return;
+        }
+      }
+    }
+
+    function humanAttack(type) {
+      if (gameOver || busy || !gameStarted) return;
+
+      if (gameMode === "single" && currentTurn !== "A") return;
+
+      busy = true;
+      updateUI();
+
+      const attacker = currentTurn;
+      const defender = attacker === "A" ? "B" : "A";
+      const attackerName = attacker === "A" ? playerCountry : enemyCountry;
+      const defenderName = defender === "A" ? playerCountry : enemyCountry;
+
+      setStatus(attackerName + " launching " + attackData[type].label + "...");
+
+      animateAttack(attacker, defender, type, () => {
+        const damage = calculateDamage(type, attacker);
+
+        if (defender === "A") {
+          scoreA = Math.max(0, scoreA - damage);
+        } else {
+          scoreB = Math.max(0, scoreB - damage);
         }
 
-        setStatus(enemyCountry + " is planning a response...");
-        setTimeout(aiTurn, 650);
+        logMessage(attackerName + " used " + attackData[type].label + " and dealt " + damage + " damage to " + defenderName + ".");
+        updateUI();
+        finishTurnAfterAttack();
       });
     }
 
     function aiTurn() {
-      if (gameOver) return;
+      if (gameOver || gameMode !== "single" || currentTurn !== "B") return;
 
       const type = aiChooseAttack();
 
@@ -878,55 +1112,61 @@
         scoreA = Math.max(0, scoreA - damage);
 
         logMessage(enemyCountry + " used " + attackData[type].label + " and dealt " + damage + " damage to " + playerCountry + ".");
-        round++;
-        busy = false;
         updateUI();
-
-        if (checkEnd()) {
-          updateUI();
-          return;
-        }
-
-        setStatus("Your turn");
-        updateUI();
+        finishTurnAfterAttack();
       });
     }
 
     function checkEnd() {
       if (scoreA <= 0 || scoreB <= 0 || round > maxRounds) {
         gameOver = true;
+        busy = false;
         disableAttackButtons(true);
 
         let resultText = "";
-        if (scoreA > scoreB) resultText = "🏆 " + playerCountry + " wins!";
-        else if (scoreB > scoreA) resultText = "💀 " + enemyCountry + " wins!";
-        else resultText = "🤝 Draw!";
+        if (scoreA > scoreB) {
+          resultText = "🏆 " + playerCountry + " wins!";
+        } else if (scoreB > scoreA) {
+          resultText = "🏆 " + enemyCountry + " wins!";
+        } else {
+          resultText = "🤝 Draw!";
+        }
 
         document.getElementById("result").textContent = resultText;
         setStatus("Game over");
         logMessage("Game Over — " + resultText);
         return true;
       }
+
       return false;
     }
 
-    function restartGame(fromStart = false) {
-      if (!gameStarted && !fromStart) return;
+    function restartGame() {
+      if (!gameStarted) return;
 
       scoreA = 100;
       scoreB = 100;
       round = 1;
       gameOver = false;
       busy = false;
+      currentTurn = "A";
 
       document.getElementById("result").textContent = "";
       document.getElementById("log").innerHTML = "";
-      setStatus("Your turn");
 
       applyNames();
+
+      if (gameMode === "single") {
+        setStatus("Your turn");
+      } else {
+        setStatus(playerCountry + " turn");
+      }
+
       updateUI();
       logMessage("New game started: " + playerCountry + " vs " + enemyCountry + ".");
     }
+
+    toggleModeFields();
   </script>
 </body>
 </html>
