@@ -665,20 +665,28 @@
       </div>
 
       <div class="map grid-lines" id="map">
-        <div class="stars"></div>
-        <div class="land land1"></div>
-        <div class="land land2"></div>
+  <div class="stars"></div>
 
-        <div class="country a" id="countryABox">Country A</div>
-        <div class="country b" id="countryBBox">Country B</div>
+  <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
+    <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
+    <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
 
-        <div class="capital a"></div>
-        <div class="capital b"></div>
+    <path class="continent" d="M470,145 L535,122 L610,128 L690,140 L760,165 L805,205 L792,245 L742,258 L690,248 L655,225 L625,230 L605,260 L565,275 L520,265 L488,238 L470,200 Z"></path>
+    <path class="continent" d="M610,278 L650,288 L680,320 L695,360 L673,415 L628,448 L590,430 L575,385 L585,335 Z"></path>
 
-        <div class="label a" id="capitalALabel">Capital A</div>
-        <div class="label b" id="capitalBLabel">Capital B</div>
-      </div>
+    <path class="continent" d="M855,300 L900,285 L955,292 L1010,320 L1042,355 L1028,388 L980,404 L930,395 L888,372 L860,338 Z"></path>
+    <path class="continent" d="M1035,412 L1068,430 L1085,458 L1062,482 L1028,474 L1014,445 Z"></path>
+  </svg>
 
+  <div class="country a" id="countryABox">Country A</div>
+  <div class="country b" id="countryBBox">Country B</div>
+
+  <div class="capital a"></div>
+  <div class="capital b"></div>
+
+  <div class="label a" id="capitalALabel">Capital A</div>
+  <div class="label b" id="capitalBLabel">Capital B</div>
+</div>
       <div class="info-row">
         <div>Round: <span id="round">1</span> / 10</div>
         <div class="status" id="status">Your turn</div>
