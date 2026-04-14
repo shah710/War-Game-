@@ -1752,23 +1752,142 @@
     }
 
     function animateAttack(attacker, defender, type, target, callback, interceptedCallback) {
-      const map = $("projectileLayer");
-      const from = positions[attacker];
-      const to = target || positions[defender];
-      const weapon = ATTACKS[type];
+  const map = $("projectileLayer");
+  const from = positions[attacker];
+  const to = target || positions[defender];
+  const weapon = ATTACKS[type];
 
-      if (type === "hydrogen") runSatelliteZoom();
+  if (type === "hydrogen") runSatelliteZoom();
 
-      const projectile = document.createElement("div");
-      projectile.className = `projectile ${weapon.projectileClass}`;
-      projectile.style.left = from.x + "px";
-      projectile.style.top = from.y + "px";
-      map.appendChild(projectile);
+  const projectile = document.createElement("div");
+  projectile.className = `projectile ${weapon.projectileClass}`;
+  projectile.style.left = from.x + "px";
+  projectile.style.top = from.y + "px";
+  map.appendChild(projectile);
 
-      playAttackSound(type);
+  playAttackSound(type);
 
-      const start = performance.now();
-      let lastTrail = 0;
+  const start = performance.now();
+  let lastTrail = 0;
+  let interceptChecked = false;
+
+  function frame(now) {
+    const progress = Math.min(1, (now - start) / weapon.flight);
+    const x = from.x + (to.x - from.x) * progress;
+    const baseY = from.y + (to.y - from.y) * progress;
+    const arc = Math.sin(Math.PI * progress) * weapon.arc;
+    const y = baseY - arc;
+
+    projectile.style.left = x + "px";
+    projectile.style.top = y + "px";
+
+    if (type === "ship") {
+      if (now - lastTrail > 80) {
+        createWakeDot(map, x - (attacker === "A" ? 12 : -12), y + 5);
+        if (Math.random() < 0.45) createSeaSplash(map, x, y + 6, 1);
+        lastTrail = now;
+      }
+    } else if (now - lastTrail > 55) {
+      createTrailDot(map, x, y, type);
+      lastTrail = now;
+    }
+
+    if (!interceptChecked && progress >= 0.45 && progress < 0.82) {
+      interceptChecked = true;
+
+      if (maybeIntercept(attacker, defender, type, x, y)) {
+        projectile.remove();
+        if (interceptedCallback) interceptedCallback();
+        return;
+      }
+    }
+
+    if (progress < 1) {
+      requestAnimationFrame(frame);
+    } else {
+      projectile.remove();
+      impact();
+    }
+  }
+
+  function impact() {
+    const explosion = document.createElement("div");
+    explosion.className = `explosion ${weapon.explosionClass}`;
+    explosion.style.left = to.x + "px";
+    explosion.style.top = to.y + "px";
+    explosion.style.setProperty("--scale", weapon.explosionScale);
+    explosion.style.animation = type === "hydrogen"
+      ? "boom 1600ms ease-out forwards"
+      : "boom 900ms ease-out forwards";
+    map.appendChild(explosion);
+
+    const ringColor =
+      type === "emp" ? "rgba(106,247,255,0.9)" :
+      type === "pink" ? "rgba(255,150,235,0.9)" :
+      type === "ship" ? "rgba(203,213,225,0.9)" :
+      type === "ground" ? "rgba(249,115,22,0.9)" :
+      "rgba(255,235,180,0.85)";
+
+    const ringSize =
+      type === "hydrogen" ? 260 :
+      type === "nuclear" ? 120 :
+      type === "ballistic" ? 80 :
+      type === "ship" ? 85 :
+      type === "ground" ? 92 :
+      type === "emp" ? 95 :
+      type === "pink" ? 68 :
+      55;
+
+    createImpactRing(
+      map,
+      to.x,
+      to.y,
+      ringSize,
+      type === "hydrogen" ? 2200 : 900,
+      ringColor
+    );
+
+    if (type === "pink") {
+      createParticles(map, to.x, to.y, 16, "rgba(255,180,235,0.95)", 70, 900);
+    } else if (type === "emp") {
+      createImpactRing(map, to.x, to.y, 130, 1200, "rgba(106,247,255,0.8)");
+      createParticles(map, to.x, to.y, 18, "rgba(160,255,255,0.95)", 80, 700);
+    } else if (type === "nuclear") {
+      createMushroomCloud(map, to.x, to.y - 5, 2300, 1.0);
+      createParticles(map, to.x, to.y, 24, "rgba(255,170,50,0.95)", 95, 1000);
+      createImpactRing(map, from.x, from.y, 60, 700, "rgba(255,140,80,0.65)");
+    } else if (type === "hydrogen") {
+      createMushroomCloud(map, to.x, to.y - 10, 3600, 1.6);
+      createImpactRing(map, to.x, to.y, 340, 2600, "rgba(255,180,80,0.96)");
+      createParticles(map, to.x, to.y, 40, "rgba(255,220,130,0.98)", 145, 1400);
+      createImpactRing(map, from.x, from.y, 110, 1000, "rgba(255,180,80,0.72)");
+    } else if (type === "ship") {
+      createSeaSplash(map, to.x, to.y + 6, 6);
+      createParticles(map, to.x, to.y, 18, "rgba(203,213,225,0.95)", 80, 900);
+    } else if (type === "ground") {
+      createParticles(map, to.x, to.y, 18, "rgba(249,115,22,0.95)", 85, 950);
+    } else {
+      createParticles(
+        map,
+        to.x,
+        to.y,
+        type === "ballistic" ? 16 : type === "cruise" ? 12 : 8,
+        type === "cruise" ? "rgba(110,247,216,0.95)" : "rgba(255,200,110,0.95)",
+        type === "ballistic" ? 75 : 55,
+        700
+      );
+    }
+
+    triggerShake(weapon.shake);
+
+    setTimeout(() => {
+      explosion.remove();
+      callback();
+    }, type === "hydrogen" ? 2000 : type === "nuclear" ? 1300 : 950);
+  }
+
+  requestAnimationFrame(frame);
+}
 
       function frame(now) {
         const progress = Math.min(1, (now - start) / weapon.flight);
