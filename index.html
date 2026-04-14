@@ -2,15 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>War Game Beta v0.4</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>War Game Beta v0.5 Mobile Optimized</title>
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
     :root {
       --bg1: #091321;
       --bg2: #12263d;
-      --bg3: #1d3d61;
       --panel: rgba(255,255,255,0.08);
       --panel-border: rgba(255,255,255,0.12);
       --soft: #dce8f6;
@@ -21,28 +20,20 @@
       --pink1: #ff4fd8;
       --pink2: #ffc0ef;
       --gold: #ffd166;
-      --teal1: #00c2a8;
-      --teal2: #6ef7d8;
-      --violet1: #7b2cbf;
-      --violet2: #c8a8ff;
       --green1: #22c55e;
       --green2: #86efac;
       --orange1: #f97316;
       --orange2: #fdba74;
-      --shieldBlue: rgba(90, 190, 255, 0.35);
-      --shieldRed: rgba(255, 110, 110, 0.35);
-      --cloud: rgba(255,255,255,0.18);
-      --cloud2: rgba(255,255,255,0.1);
     }
 
-    body {
+    html, body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      overflow-x: hidden;
+      padding: 0;
+      min-height: 100%;
       background: radial-gradient(circle at top, #24486f 0%, var(--bg2) 32%, var(--bg1) 72%, #03070c 100%);
-      perspective: 1200px;
+      color: white;
+      font-family: Arial, sans-serif;
+      overflow-x: hidden;
     }
 
     body.shake-light { animation: shakeLight 0.22s linear; }
@@ -75,12 +66,16 @@
     }
 
     .container {
-      max-width: 1280px;
+      width: min(100%, 1220px);
       margin: 0 auto;
-      padding: 20px;
+      padding: 12px;
     }
 
-    h1 { margin: 0 0 8px; }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      text-align: center;
+    }
 
     .beta {
       display: inline-block;
@@ -90,52 +85,60 @@
       border-radius: 999px;
       font-weight: bold;
       margin-bottom: 10px;
+      font-size: 0.9rem;
     }
 
     .subtitle {
       color: var(--soft);
-      margin-bottom: 20px;
+      margin-bottom: 16px;
+      text-align: center;
+      font-size: 0.95rem;
+      line-height: 1.35;
     }
 
     .panel {
       background: var(--panel);
       border: 1px solid var(--panel-border);
-      border-radius: 20px;
-      box-shadow: 0 14px 30px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.05);
+      border-radius: 18px;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.05);
       backdrop-filter: blur(10px);
-      padding: 16px;
+      padding: 14px;
     }
 
-    .setup-panel {
-      max-width: 980px;
-      margin: 0 auto 22px;
-    }
+    .hidden { display: none !important; }
 
-    .setup-grid {
+    .setup-panel { max-width: 980px; margin: 0 auto 18px; }
+
+    .setup-grid, .hud, .target-panel, .economy-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
       gap: 12px;
-      margin-top: 14px;
     }
 
+    .setup-grid { grid-template-columns: 1fr 1fr; }
+    .hud { grid-template-columns: 1fr 1fr; margin-bottom: 14px; }
+    .target-panel { grid-template-columns: 1.2fr 0.8fr; margin-bottom: 14px; }
+    .economy-grid { grid-template-columns: repeat(4, minmax(150px, 1fr)); }
     .setup-full { grid-column: 1 / -1; }
 
     label {
       display: block;
       text-align: left;
       margin-bottom: 6px;
-      font-size: 14px;
+      font-size: 13px;
       color: var(--soft);
+    }
+
+    input, select, button {
+      font: inherit;
     }
 
     input, select {
       width: 100%;
-      padding: 13px 14px;
+      padding: 12px 13px;
       border-radius: 12px;
       border: 1px solid rgba(255,255,255,0.16);
       background: rgba(255,255,255,0.07);
       color: white;
-      font-size: 16px;
       outline: none;
     }
 
@@ -152,42 +155,40 @@
     button {
       border: none;
       border-radius: 12px;
-      padding: 13px 14px;
+      padding: 12px 14px;
       font-size: 14px;
       font-weight: bold;
       cursor: pointer;
       color: white;
-      transition: transform 0.15s ease, opacity 0.15s ease, filter 0.15s ease;
       box-shadow: 0 8px 18px rgba(0,0,0,0.25);
+      min-height: 48px;
     }
 
-    button:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    button:disabled { opacity: 0.45; cursor: not-allowed; transform: none; filter: none; }
-
+    button:disabled { opacity: 0.45; cursor: not-allowed; }
     .btn-start, .btn-restart { background: #2a9d8f; }
     .btn-economy { background: #16a34a; }
     .btn-shield { background: linear-gradient(135deg, #2563eb, #60a5fa); }
     .btn-interceptor { background: linear-gradient(135deg, #7c3aed, #c4b5fd); }
 
     .top-row {
-      display: flex;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 10px;
       margin-bottom: 14px;
       color: var(--soft);
       font-weight: bold;
+      font-size: 0.9rem;
     }
 
-    .hud {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 18px;
+    .top-row > div, .target-badge, .eco-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 14px;
+      padding: 10px;
     }
 
     .country-name {
-      font-size: 22px;
+      font-size: 1.2rem;
       font-weight: bold;
       margin-bottom: 10px;
       white-space: nowrap;
@@ -197,9 +198,8 @@
 
     .blue-text { color: #8ac8ff; }
     .red-text { color: #ff9c9c; }
-
     .section-label {
-      font-size: 13px;
+      font-size: 12px;
       color: #cbd8eb;
       text-align: left;
       margin: 6px 0 4px;
@@ -207,7 +207,7 @@
 
     .bar-wrap {
       background: rgba(255,255,255,0.12);
-      height: 24px;
+      height: 18px;
       border-radius: 999px;
       overflow: hidden;
       margin-bottom: 8px;
@@ -219,15 +219,6 @@
       width: 100%;
       transition: width 0.35s ease;
       position: relative;
-      overflow: hidden;
-    }
-
-    .bar::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent 60%);
-      pointer-events: none;
     }
 
     .bar.health-blue { background: linear-gradient(90deg, var(--blue1), var(--blue2)); }
@@ -242,191 +233,100 @@
     .bar.shield-red { background: linear-gradient(90deg, #ef4444, #fecaca); }
 
     .stats {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 13px;
-      color: #d8e1ea;
-      flex-wrap: wrap;
-    }
-
-    .economy-panel { margin-bottom: 18px; }
-
-    .economy-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(160px, 1fr));
-      gap: 12px;
-      margin-top: 12px;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 6px 10px;
+      font-size: 12px;
+      color: #d8e1ea;
     }
 
-    .eco-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 12px;
-      text-align: left;
-    }
-
+    .eco-card { text-align: left; }
     .eco-card b { display: block; margin-bottom: 6px; }
+    .eco-meta { color: #d5e1f0; font-size: 12px; margin-bottom: 10px; line-height: 1.35; }
 
-    .eco-meta {
-      color: #d5e1f0;
-      font-size: 13px;
-      margin-bottom: 10px;
-      line-height: 1.35;
+    .target-summary {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 10px;
+      color: #d8e1ea;
+      font-weight: bold;
     }
 
     .map-shell {
       position: relative;
-      margin: 22px 0;
-      transform-style: preserve-3d;
-    }
-
-    .globe-backdrop {
-      position: absolute;
-      inset: 30px 15% 40px 15%;
-      border-radius: 50%;
-      z-index: 0;
-      opacity: 0.45;
-      transform: rotateX(70deg) translateZ(-60px);
-      background: radial-gradient(circle at 50% 45%, rgba(90,150,220,0.22), rgba(0,0,0,0) 55%), radial-gradient(circle at 50% 50%, rgba(255,255,255,0.08), rgba(0,0,0,0) 60%);
-      filter: blur(2px);
-    }
-
-    .globe-backdrop::before,
-    .globe-backdrop::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: 50%;
-    }
-
-    .globe-backdrop::before {
-      background: repeating-linear-gradient(to right, rgba(255,255,255,0.08) 0 1px, transparent 1px 36px), repeating-linear-gradient(to bottom, rgba(255,255,255,0.06) 0 1px, transparent 1px 30px);
-      animation: globeSpin 20s linear infinite;
-      opacity: 0.65;
-    }
-
-    .globe-backdrop::after {
-      background: radial-gradient(circle at 25% 38%, rgba(90,180,110,0.35) 0 12%, transparent 13%), radial-gradient(circle at 40% 58%, rgba(90,180,110,0.32) 0 10%, transparent 11%), radial-gradient(circle at 64% 40%, rgba(90,180,110,0.33) 0 13%, transparent 14%), radial-gradient(circle at 74% 64%, rgba(90,180,110,0.3) 0 9%, transparent 10%);
-      animation: globeSpin 26s linear infinite reverse;
-      filter: blur(1px);
-      opacity: 0.7;
-    }
-
-    @keyframes globeSpin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+      margin: 16px 0;
     }
 
     .map {
       position: relative;
-      height: 540px;
-      border-radius: 24px;
+      width: 100%;
+      height: clamp(280px, 52vw, 540px);
+      border-radius: 20px;
       overflow: hidden;
       background: url("https://eoimages.gsfc.nasa.gov/images/imagerecords/74000/74218/world.topo.bathy.200412.3x5400x2700.jpg") center / cover no-repeat;
       border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: 0 25px 60px rgba(0,0,0,0.7), inset 0 2px 0 rgba(255,255,255,0.1);
-      transform: rotateX(10deg);
-      cursor: crosshair;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.5), inset 0 2px 0 rgba(255,255,255,0.1);
+      touch-action: manipulation;
     }
 
     .map.satellite-zoom { animation: satelliteZoom 2.4s ease-in-out; }
-
     @keyframes satelliteZoom {
-      0% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
-      25% { transform: rotateX(8deg) scale(1.06); filter: saturate(1.1) brightness(1.05); }
-      50% { transform: rotateX(8deg) scale(1.18); filter: saturate(1.25) brightness(1.12); }
-      75% { transform: rotateX(8deg) scale(1.08); filter: saturate(1.1) brightness(1.04); }
-      100% { transform: rotateX(8deg) scale(1); filter: saturate(1); }
+      0% { transform: scale(1); filter: saturate(1); }
+      50% { transform: scale(1.05); filter: saturate(1.15) brightness(1.08); }
+      100% { transform: scale(1); filter: saturate(1); }
     }
 
-    .grid-lines::before {
-      content: "";
+    .stars, .weather-layer, .city-layer, .target-layer, .defense-layer, .projectile-layer, .world-map-bg {
       position: absolute;
       inset: 0;
-      pointer-events: none;
-      background: repeating-linear-gradient(to right, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px), repeating-linear-gradient(to bottom, transparent 0, transparent 59px, rgba(255,255,255,0.04) 60px);
-      opacity: 0.35;
-      z-index: 1;
     }
 
-    .stars {
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at 12% 16%, rgba(255,255,255,0.7) 0 1px, transparent 2px), radial-gradient(circle at 22% 8%, rgba(255,255,255,0.45) 0 1px, transparent 2px), radial-gradient(circle at 37% 12%, rgba(255,255,255,0.5) 0 1px, transparent 2px), radial-gradient(circle at 52% 18%, rgba(255,255,255,0.4) 0 1px, transparent 2px), radial-gradient(circle at 66% 10%, rgba(255,255,255,0.55) 0 1px, transparent 2px), radial-gradient(circle at 79% 15%, rgba(255,255,255,0.5) 0 1px, transparent 2px), radial-gradient(circle at 88% 9%, rgba(255,255,255,0.6) 0 1px, transparent 2px);
-      opacity: 0.55;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .world-map-bg {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-      opacity: 0.22;
-      pointer-events: none;
-    }
+    .stars { pointer-events: none; z-index: 0; opacity: 0.35; }
+    .world-map-bg { z-index: 1; opacity: 0.16; pointer-events: none; }
+    .weather-layer { z-index: 2; pointer-events: none; }
+    .city-layer { z-index: 3; }
+    .defense-layer { z-index: 4; pointer-events: none; }
+    .projectile-layer { z-index: 5; pointer-events: none; }
+    .target-layer { z-index: 6; pointer-events: none; }
 
     .continent {
       fill: #4d7a4f;
       stroke: rgba(255,255,255,0.08);
       stroke-width: 2;
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,0.22));
     }
 
-    .weather-layer, .city-layer, .target-layer, .defense-layer, .projectile-layer {
+    .cloud-band {
       position: absolute;
-      inset: 0;
+      width: 180px;
+      height: 74px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.18) 0 35%, transparent 36%), radial-gradient(circle at 50% 40%, rgba(255,255,255,0.18) 0 38%, transparent 39%), radial-gradient(circle at 70% 54%, rgba(255,255,255,0.1) 0 30%, transparent 31%);
+      filter: blur(4px);
+      opacity: 0.5;
+      animation: driftCloud linear infinite;
     }
 
-    .weather-layer { z-index: 5; pointer-events: none; }
-    .city-layer { z-index: 6; }
-    .target-layer { z-index: 10; pointer-events: none; }
-    .defense-layer { z-index: 8; pointer-events: none; }
-    .projectile-layer { z-index: 9; pointer-events: none; }
+    @keyframes driftCloud {
+      from { transform: translateX(-240px); }
+      to { transform: translateX(1400px); }
+    }
 
     .city-node {
       position: absolute;
-      width: 22px;
-      height: 22px;
-      margin-left: -11px;
-      margin-top: -11px;
+      width: 18px;
+      height: 18px;
+      margin-left: -9px;
+      margin-top: -9px;
       border-radius: 50%;
       border: 2px solid rgba(255,255,255,0.9);
-      box-shadow: 0 0 18px rgba(255,255,255,0.65);
+      box-shadow: 0 0 14px rgba(255,255,255,0.65);
       cursor: pointer;
-      transition: transform 0.14s ease, filter 0.14s ease;
     }
-
-    .city-node:hover { transform: scale(1.08); filter: brightness(1.08); }
     .city-node.player { background: #8ecaff; }
     .city-node.enemy { background: #ff9c9c; }
-    .city-node.safe { box-shadow: 0 0 14px rgba(86, 255, 155, 0.65); }
-    .city-node.threatened { box-shadow: 0 0 16px rgba(255, 209, 102, 0.9); }
-    .city-node.attack { box-shadow: 0 0 22px rgba(255, 99, 99, 1); animation: pulseAttack 0.9s infinite; }
-
-    .city-label {
-      position: absolute;
-      transform: translate(-50%, 10px);
-      color: #eef6ff;
-      font-size: 13px;
-      font-weight: bold;
-      text-shadow: 0 2px 6px rgba(0,0,0,0.75);
-      white-space: nowrap;
-      pointer-events: none;
-    }
-
-    .city-meta {
-      position: absolute;
-      transform: translate(-50%, 28px);
-      color: #dbeafe;
-      font-size: 11px;
-      white-space: nowrap;
-      pointer-events: none;
-    }
+    .city-node.attack { box-shadow: 0 0 20px rgba(255,99,99,1); animation: pulseAttack 0.9s infinite; }
+    .city-node.threatened { box-shadow: 0 0 16px rgba(255,209,102,0.9); }
+    .city-node.safe { box-shadow: 0 0 14px rgba(86,255,155,0.65); }
 
     @keyframes pulseAttack {
       0% { transform: scale(1); }
@@ -434,10 +334,20 @@
       100% { transform: scale(1); }
     }
 
+    .city-label, .city-meta {
+      position: absolute;
+      transform: translate(-50%, 0);
+      white-space: nowrap;
+      pointer-events: none;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.75);
+    }
+    .city-label { color: #eef6ff; font-size: 11px; font-weight: bold; margin-top: 12px; }
+    .city-meta { color: #dbeafe; font-size: 10px; margin-top: 25px; }
+
     .reticle {
       position: absolute;
-      width: 54px;
-      height: 54px;
+      width: 44px;
+      height: 44px;
       border: 2px solid rgba(255,255,255,0.92);
       border-radius: 50%;
       transform: translate(-50%, -50%);
@@ -445,8 +355,7 @@
       animation: reticlePulse 1.1s infinite;
     }
 
-    .reticle::before,
-    .reticle::after {
+    .reticle::before, .reticle::after {
       content: "";
       position: absolute;
       left: 50%;
@@ -454,9 +363,8 @@
       background: rgba(255,255,255,0.92);
       transform: translate(-50%, -50%);
     }
-
-    .reticle::before { width: 2px; height: 74px; }
-    .reticle::after { width: 74px; height: 2px; }
+    .reticle::before { width: 2px; height: 58px; }
+    .reticle::after { width: 58px; height: 2px; }
 
     @keyframes reticlePulse {
       0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
@@ -465,28 +373,26 @@
 
     .target-hint {
       position: absolute;
-      transform: translate(-50%, -72px);
-      background: rgba(0,0,0,0.55);
+      transform: translate(-50%, -62px);
+      background: rgba(0,0,0,0.6);
       border: 1px solid rgba(255,255,255,0.14);
       border-radius: 10px;
-      padding: 8px 10px;
+      padding: 6px 8px;
       color: white;
-      font-size: 12px;
-      min-width: 160px;
+      font-size: 11px;
+      min-width: 130px;
     }
 
     .shield-dome {
       position: absolute;
-      width: 92px;
-      height: 92px;
+      width: 76px;
+      height: 76px;
       border-radius: 50%;
       transform: translate(-50%, -50%);
       border: 2px solid rgba(255,255,255,0.45);
-      box-shadow: 0 0 28px rgba(120,200,255,0.35), inset 0 0 18px rgba(255,255,255,0.12);
-      backdrop-filter: blur(1px);
+      box-shadow: 0 0 24px rgba(120,200,255,0.35), inset 0 0 18px rgba(255,255,255,0.12);
       animation: shieldPulse 2s infinite ease-in-out;
     }
-
     .shield-dome.player {
       background: radial-gradient(circle, rgba(110, 195, 255, 0.18), transparent 65%);
       border-color: rgba(110, 195, 255, 0.7);
@@ -495,7 +401,6 @@
       background: radial-gradient(circle, rgba(255, 115, 115, 0.18), transparent 65%);
       border-color: rgba(255, 115, 115, 0.7);
     }
-
     @keyframes shieldPulse {
       0%, 100% { opacity: 0.7; transform: translate(-50%, -50%) scale(1); }
       50% { opacity: 0.95; transform: translate(-50%, -50%) scale(1.06); }
@@ -510,195 +415,110 @@
       border-radius: 999px;
       animation: interceptorFade 0.9s linear forwards;
     }
-
     @keyframes interceptorFade {
       0% { opacity: 1; }
       100% { opacity: 0; }
     }
 
-    .cloud-band {
+    .projectile, .trail-dot, .wake-dot, .sea-splash, .explosion, .impact-ring, .cloud {
       position: absolute;
-      width: 220px;
-      height: 90px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 50%, var(--cloud) 0 35%, transparent 36%), radial-gradient(circle at 50% 40%, var(--cloud) 0 38%, transparent 39%), radial-gradient(circle at 70% 54%, var(--cloud2) 0 30%, transparent 31%), linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
-      filter: blur(4px);
-      opacity: 0.55;
-      animation: driftCloud linear infinite;
-    }
-
-    @keyframes driftCloud {
-      from { transform: translateX(-260px); }
-      to { transform: translateX(1320px); }
-    }
-
-    .projectile {
-      position: absolute;
-      z-index: 7;
-      border-radius: 999px;
       pointer-events: none;
-      box-shadow: 0 0 12px rgba(255,255,255,0.8);
       transform: translate(-50%, -50%);
     }
 
-    .projectile.drone { width: 12px; height: 12px; background: radial-gradient(circle, #ffffff 10%, #b7f3ff 80%); box-shadow: 0 0 10px rgba(183,243,255,0.9); }
+    .projectile { border-radius: 999px; box-shadow: 0 0 12px rgba(255,255,255,0.8); }
+    .projectile.drone { width: 12px; height: 12px; background: radial-gradient(circle, #ffffff 10%, #b7f3ff 80%); }
     .projectile.missile { width: 18px; height: 8px; background: linear-gradient(90deg, #ffffff, #ffdd57); }
-    .projectile.pink { width: 22px; height: 9px; background: linear-gradient(90deg, #fff, var(--pink2), var(--pink1)); box-shadow: 0 0 18px rgba(255,79,216,0.95); }
-    .projectile.cruise { width: 24px; height: 9px; background: linear-gradient(90deg, #ffffff, #6ef7d8); box-shadow: 0 0 14px rgba(110,247,216,0.9); }
-    .projectile.ballistic { width: 28px; height: 10px; background: linear-gradient(90deg, #ffffff, var(--violet2)); box-shadow: 0 0 16px rgba(179,136,255,0.9); }
-    .projectile.emp { width: 22px; height: 22px; background: radial-gradient(circle, rgba(180,255,255,0.95), rgba(0,255,240,0.2)); box-shadow: 0 0 18px rgba(120,255,255,0.95); border-radius: 50%; }
-    .projectile.nuclear { width: 38px; height: 13px; background: linear-gradient(90deg, #ffffff, #ff6b6b); box-shadow: 0 0 20px rgba(255,120,120,0.95); }
-    .projectile.hydrogen { width: 62px; height: 18px; background: linear-gradient(90deg, #ffffff, #fff0b3, #ff6a00, #ff2f2f); box-shadow: 0 0 34px rgba(255,150,40,1); }
-    .projectile.ship { width: 40px; height: 16px; border-radius: 8px 8px 5px 5px; background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 40%, #475569 100%); box-shadow: 0 0 18px rgba(203,213,225,0.65); }
-    .projectile.ship::before { content: ""; position: absolute; width: 14px; height: 6px; left: 12px; top: -4px; border-radius: 4px; background: #f8fafc; box-shadow: 0 0 8px rgba(255,255,255,0.5); }
-    .projectile.ground { width: 26px; height: 12px; border-radius: 6px; background: linear-gradient(90deg, #f59e0b, #7c2d12); box-shadow: 0 0 16px rgba(245,158,11,0.7); }
-    .projectile.interceptor { width: 14px; height: 14px; background: radial-gradient(circle, #fff, #9cf); box-shadow: 0 0 18px rgba(180,230,255,1); }
+    .projectile.pink { width: 22px; height: 9px; background: linear-gradient(90deg, #fff, var(--pink2), var(--pink1)); }
+    .projectile.cruise { width: 24px; height: 9px; background: linear-gradient(90deg, #ffffff, #6ef7d8); }
+    .projectile.ballistic { width: 28px; height: 10px; background: linear-gradient(90deg, #ffffff, #c8a8ff); }
+    .projectile.emp { width: 22px; height: 22px; background: radial-gradient(circle, rgba(180,255,255,0.95), rgba(0,255,240,0.2)); border-radius: 50%; }
+    .projectile.nuclear { width: 38px; height: 13px; background: linear-gradient(90deg, #ffffff, #ff6b6b); }
+    .projectile.hydrogen { width: 52px; height: 16px; background: linear-gradient(90deg, #ffffff, #fff0b3, #ff6a00, #ff2f2f); }
+    .projectile.ship { width: 34px; height: 14px; background: linear-gradient(180deg, #e2e8f0 0%, #94a3b8 40%, #475569 100%); }
+    .projectile.ground { width: 24px; height: 11px; background: linear-gradient(90deg, #f59e0b, #7c2d12); }
+    .projectile.interceptor { width: 14px; height: 14px; background: radial-gradient(circle, #fff, #9cf); }
 
     .trail-dot {
-      position: absolute;
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      pointer-events: none;
-      z-index: 6;
-      transform: translate(-50%, -50%);
       animation: fadeTrail 0.45s linear forwards;
     }
-
     .wake-dot {
-      position: absolute;
       width: 14px;
       height: 6px;
       border-radius: 999px;
-      pointer-events: none;
-      z-index: 6;
-      transform: translate(-50%, -50%);
       background: rgba(220, 240, 255, 0.85);
-      box-shadow: 0 0 8px rgba(220,240,255,0.65);
       animation: fadeWake 0.55s linear forwards;
     }
-
     .sea-splash {
-      position: absolute;
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      pointer-events: none;
-      z-index: 8;
-      transform: translate(-50%, -50%);
       background: radial-gradient(circle, rgba(255,255,255,0.95) 0%, rgba(170,220,255,0.8) 45%, rgba(170,220,255,0.05) 100%);
       animation: splashUp 0.8s ease-out forwards;
+    }
+    .explosion {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      opacity: 0;
+      --scale: 1.6;
+    }
+    .explosion.drone { background: radial-gradient(circle, #ffffff 0%, #9ef7ff 40%, rgba(0,180,255,0.18) 100%); }
+    .explosion.missile { background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb8500 65%, rgba(255,115,0,0.15) 100%); }
+    .explosion.pink { background: radial-gradient(circle, #fff 0%, #ffd3f4 28%, #ff7add 58%, rgba(255,79,216,0.22) 100%); }
+    .explosion.cruise { background: radial-gradient(circle, #ffffff 0%, #7df4d9 30%, #14b8a6 62%, rgba(20,184,166,0.2) 100%); }
+    .explosion.ballistic { background: radial-gradient(circle, #ffffff 0%, #ffd166 25%, #ff7b00 55%, #d62828 80%, rgba(214,40,40,0.22) 100%); }
+    .explosion.emp { background: radial-gradient(circle, #e8ffff 0%, #6af7ff 35%, #00d4ff 65%, rgba(0,200,255,0.18) 100%); }
+    .explosion.nuclear { background: radial-gradient(circle, #ffffff 0%, #fff3b0 18%, #ffb703 35%, #fb5607 58%, #d00000 78%, rgba(208,0,0,0.26) 100%); }
+    .explosion.hydrogen { background: radial-gradient(circle, #ffffff 0%, #fff8d9 10%, #ffe066 20%, #ffbf69 34%, #ff922b 48%, #ff3b3b 68%, #8b0000 90%, rgba(139,0,0,0.38) 100%); }
+    .explosion.ship { background: radial-gradient(circle, #ffffff 0%, #cbd5e1 20%, #64748b 60%, rgba(100,116,139,0.22) 100%); }
+    .explosion.ground { background: radial-gradient(circle, #fff 0%, #fdba74 25%, #f97316 60%, rgba(249,115,22,0.22) 100%); }
+    .impact-ring {
+      border: 3px solid rgba(255,235,180,0.85);
+      border-radius: 50%;
+      opacity: 0;
     }
 
     @keyframes fadeTrail {
       from { opacity: 0.95; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
     }
-
     @keyframes fadeWake {
       from { opacity: 0.9; transform: translate(-50%, -50%) scale(1); }
       to { opacity: 0; transform: translate(-50%, -50%) scale(0.55); }
     }
-
     @keyframes splashUp {
       0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
-      40% { opacity: 0.95; transform: translate(-50%, calc(-50% - 10px)) scale(1.05); }
       100% { opacity: 0; transform: translate(-50%, calc(-50% - 18px)) scale(1.35); }
     }
-
-    .explosion {
-      position: absolute;
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      pointer-events: none;
-      opacity: 0;
-      z-index: 8;
-      transform: translate(-50%, -50%) scale(0.2);
-      --scale: 1.6;
+    @keyframes boom {
+      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.18); }
+      60% { opacity: 1; transform: translate(-50%, -50%) scale(var(--scale)); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.7)); }
+    }
+    @keyframes ringExpand {
+      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
+      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
+    }
+    @keyframes cloudRise {
+      0% { opacity: 0.05; transform: translate(-50%, -30%) scale(0.35); }
+      30% { opacity: 1; }
+      100% { opacity: 0; transform: translate(-50%, -95%) scale(1.3); }
     }
 
-    .explosion.drone { background: radial-gradient(circle, #ffffff 0%, #9ef7ff 40%, rgba(0,180,255,0.18) 100%); }
-    .explosion.missile { background: radial-gradient(circle, #fff7b1 0%, #ffb703 35%, #fb8500 65%, rgba(255,115,0,0.15) 100%); }
-    .explosion.pink { background: radial-gradient(circle, #fff 0%, #ffd3f4 28%, #ff7add 58%, rgba(255,79,216,0.22) 100%); box-shadow: 0 0 24px rgba(255,79,216,0.85); }
-    .explosion.cruise { background: radial-gradient(circle, #ffffff 0%, #7df4d9 30%, #14b8a6 62%, rgba(20,184,166,0.2) 100%); }
-    .explosion.ballistic { background: radial-gradient(circle, #ffffff 0%, #ffd166 25%, #ff7b00 55%, #d62828 80%, rgba(214,40,40,0.22) 100%); }
-    .explosion.emp { background: radial-gradient(circle, #e8ffff 0%, #6af7ff 35%, #00d4ff 65%, rgba(0,200,255,0.18) 100%); box-shadow: 0 0 28px rgba(0,200,255,0.65); }
-    .explosion.nuclear { background: radial-gradient(circle, #ffffff 0%, #fff3b0 18%, #ffb703 35%, #fb5607 58%, #d00000 78%, rgba(208,0,0,0.26) 100%); box-shadow: 0 0 40px rgba(255,140,0,0.8); }
-    .explosion.hydrogen { background: radial-gradient(circle, #ffffff 0%, #fff8d9 10%, #ffe066 20%, #ffbf69 34%, #ff922b 48%, #ff3b3b 68%, #8b0000 90%, rgba(139,0,0,0.38) 100%); box-shadow: 0 0 85px rgba(255,170,0,1); }
-    .explosion.ship { background: radial-gradient(circle, #ffffff 0%, #cbd5e1 20%, #64748b 60%, rgba(100,116,139,0.22) 100%); box-shadow: 0 0 26px rgba(203,213,225,0.8); }
-    .explosion.ground { background: radial-gradient(circle, #fff 0%, #fdba74 25%, #f97316 60%, rgba(249,115,22,0.22) 100%); box-shadow: 0 0 28px rgba(249,115,22,0.85); }
-
-    .impact-ring {
-      position: absolute;
-      border: 3px solid rgba(255,235,180,0.85);
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0.3);
-      opacity: 0;
-      z-index: 7;
-      pointer-events: none;
-    }
-
-    .cloud {
-      position: absolute;
-      pointer-events: none;
-      z-index: 9;
-      opacity: 0;
-      transform: translate(-50%, -50%) scale(0.3);
-    }
-
-    .cloud .cap, .cloud .stem { position: absolute; border-radius: 50%; }
-    .cloud .cap {
-      width: 120px;
-      height: 80px;
-      left: -60px;
-      top: -70px;
-      background: radial-gradient(circle, rgba(255,244,200,0.95) 0%, rgba(255,161,60,0.85) 45%, rgba(170,45,20,0.45) 100%);
-      box-shadow: -36px 10px 0 8px rgba(255,153,51,0.35), 36px 10px 0 8px rgba(255,153,51,0.35), 0 20px 0 12px rgba(255,153,51,0.28);
-    }
-    .cloud .stem {
-      width: 44px;
-      height: 95px;
-      left: -22px;
-      top: -8px;
-      border-radius: 40px;
-      background: linear-gradient(180deg, rgba(255,200,120,0.9), rgba(180,70,30,0.45));
-    }
-
-    .target-panel {
-      margin: 12px 0 18px;
+    .weapons-toolbar, .controls {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 16px;
-      align-items: stretch;
-    }
-
-    .target-summary {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 14px;
-      justify-content: center;
-      color: #d8e1ea;
-      font-weight: bold;
-    }
-
-    .target-badge {
-      background: rgba(255,255,255,0.07);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 10px 12px;
-      min-width: 180px;
-    }
-
-    .weapons-toolbar {
-      display: grid;
-      grid-template-columns: repeat(6, minmax(90px, 1fr));
       gap: 10px;
-      margin: 18px 0;
+      margin: 14px 0;
     }
+    .weapons-toolbar { grid-template-columns: repeat(5, minmax(0,1fr)); }
+    .controls { grid-template-columns: repeat(4, minmax(0,1fr)); }
 
     .weapon-tile {
-      min-height: 84px;
+      min-height: 76px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -706,109 +526,73 @@
       gap: 4px;
       border: 1px solid rgba(255,255,255,0.12);
       background: rgba(255,255,255,0.06);
+      padding: 8px;
     }
-
-    .weapon-tile.active {
-      outline: 2px solid rgba(255,255,255,0.75);
-      transform: translateY(-2px);
-    }
-
-    .weapon-icon { font-size: 22px; line-height: 1; }
-    .weapon-name { font-size: 12px; }
-    .weapon-cost { font-size: 11px; color: #d5e1f0; }
-
-    .controls {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(120px, 1fr));
-      gap: 10px;
-      margin: 18px 0;
-    }
+    .weapon-tile.active { outline: 2px solid rgba(255,255,255,0.75); }
+    .weapon-icon { font-size: 20px; line-height: 1; }
+    .weapon-name { font-size: 11px; text-align: center; }
+    .weapon-cost { font-size: 10px; color: #d5e1f0; text-align: center; }
 
     .w-drone { background: #2d9cdb; }
     .w-missile { background: #2f7de1; }
     .w-pink { background: linear-gradient(135deg, #ff59da, #ff8fe9); }
     .w-cruise { background: #14b8a6; }
-    .w-ballistic { background: var(--violet1); }
+    .w-ballistic { background: #7b2cbf; }
     .w-emp { background: #0ea5e9; }
     .w-nuclear { background: #c62828; }
     .w-hydrogen { background: #7f1d1d; }
     .w-ship { background: #64748b; }
     .w-ground { background: #b45309; }
 
-    .info-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 12px;
+    .status {
+      min-height: 24px;
+      padding: 8px;
+      font-size: 0.95rem;
       color: #d8e1ea;
-      font-weight: bold;
+      text-align: center;
     }
 
-    .status { min-height: 24px; }
-
     #log {
-      margin-top: 16px;
+      margin-top: 12px;
       background: rgba(0,0,0,0.35);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 16px;
-      padding: 14px;
-      height: 260px;
+      padding: 12px;
+      height: 220px;
       overflow-y: auto;
       text-align: left;
+      font-size: 13px;
     }
-
-    #log div {
-      padding: 6px 0;
-      border-bottom: 1px solid rgba(255,255,255,0.06);
-      font-size: 14px;
-    }
-
-    #result {
-      font-size: 30px;
-      font-weight: bold;
-      margin-top: 12px;
-      min-height: 40px;
-    }
-
-    .hidden { display: none; }
-
-    @keyframes boom {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.18); }
-      60% { opacity: 1; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1)); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(calc(var(--scale) * 1.7)); }
-    }
-
-    @keyframes ringExpand {
-      0% { opacity: 0.95; transform: translate(-50%, -50%) scale(0.2); }
-      100% { opacity: 0; transform: translate(-50%, -50%) scale(2.8); }
-    }
-
-    @keyframes cloudRise {
-      0% { opacity: 0.05; transform: translate(-50%, -30%) scale(0.35); }
-      30% { opacity: 1; }
-      100% { opacity: 0; transform: translate(-50%, -95%) scale(1.3); }
-    }
-
-    @media (max-width: 1100px) {
-      .setup-grid, .hud, .economy-grid, .target-panel { grid-template-columns: 1fr; }
-      .controls { grid-template-columns: repeat(3, minmax(120px, 1fr)); }
-      .weapons-toolbar { grid-template-columns: repeat(4, minmax(90px, 1fr)); }
-    }
+    #log div { padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    #result { font-size: clamp(1.2rem, 4vw, 1.8rem); font-weight: bold; margin-top: 10px; min-height: 32px; text-align: center; }
 
     @media (max-width: 980px) {
-      .setup-grid, .hud, .economy-grid { grid-template-columns: 1fr; }
-      .controls { grid-template-columns: repeat(2, minmax(120px, 1fr)); }
-      .weapons-toolbar { grid-template-columns: repeat(3, minmax(90px, 1fr)); }
-      .map { height: 430px; }
+      .setup-grid, .hud, .target-panel, .economy-grid { grid-template-columns: 1fr; }
+      .top-row { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .target-summary { grid-template-columns: 1fr 1fr; }
+      .weapons-toolbar { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .controls { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    @media (max-width: 640px) {
+      .container { padding: 10px; }
+      .panel { padding: 12px; border-radius: 16px; }
+      .top-row { grid-template-columns: 1fr 1fr; font-size: 0.82rem; }
+      .stats { grid-template-columns: 1fr 1fr; font-size: 11px; }
+      .target-summary { grid-template-columns: 1fr; }
+      .weapons-toolbar { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .controls { grid-template-columns: 1fr 1fr; }
+      .city-label { font-size: 10px; }
+      .city-meta { font-size: 9px; }
+      button { padding: 11px 10px; font-size: 13px; }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>War Game: Nations at War</h1>
-    <div class="beta">⚠️ Trial Version — Beta v0.4</div>
-    <div class="subtitle">Real-time war simulator with satellite map, cities, targeting, defense shields, interceptors, economy, and simultaneous attacks.</div>
+    <div style="text-align:center;"><div class="beta">⚠️ Trial Version — Beta v0.5</div></div>
+    <div class="subtitle">Mobile-optimized real-time war simulator with satellite map, cities, targeting, shields, interceptors, and economy.</div>
 
     <div class="panel setup-panel" id="setupPanel">
       <div><b>Game Setup</b></div>
@@ -817,20 +601,17 @@
           <label for="modeSelect">Mode</label>
           <select id="modeSelect" onchange="toggleModeFields()">
             <option value="single">Single Player</option>
-            <option value="online">Online Multiplayer (disabled in this refined v0.4 build)</option>
+            <option value="online">Online Multiplayer (disabled)</option>
           </select>
         </div>
-
         <div>
           <label for="countryAInput">Your Country Name</label>
           <input id="countryAInput" type="text" maxlength="24" placeholder="Enter your country name">
         </div>
-
-        <div id="singleEnemyField">
+        <div>
           <label for="singleEnemyInput">Computer Country Name</label>
           <input id="singleEnemyInput" type="text" maxlength="24" value="Red Dominion" />
         </div>
-
         <div class="setup-full">
           <label for="levelSelect">Level</label>
           <select id="levelSelect">
@@ -845,7 +626,6 @@
             <option value="9">Level 9</option>
           </select>
         </div>
-
         <div class="setup-full button-row">
           <button class="btn-start" onclick="startSinglePlayer()">Start Single Player</button>
         </div>
@@ -857,51 +637,42 @@
         <div>Mode: <span id="modeLabel">Single Player</span></div>
         <div>Level: <span id="levelLabel">5</span></div>
         <div>Timer: <span id="timerLabel">06:00</span></div>
-        <div>Combat: <span id="turnLabel">Real-Time</span></div>
         <div>Actions: <span id="actionCount">0</span></div>
-        <div>Player Cooldown: <span id="cooldownLabel">Ready</span></div>
+        <div>Cooldown: <span id="cooldownLabel">Ready</span></div>
+        <div>Income: $<span id="incomeLabel">8</span>M</div>
       </div>
 
       <div class="hud">
         <div class="panel">
           <div class="country-name blue-text" id="hudNameA">Country A</div>
-          <div class="section-label">Health</div>
-          <div class="bar-wrap"><div id="barA" class="bar health-blue"></div></div>
-          <div class="section-label">Population</div>
-          <div class="bar-wrap"><div id="popBarA" class="bar pop-blue"></div></div>
-          <div class="section-label">Command Points</div>
-          <div class="bar-wrap"><div id="cpBarA" class="bar cp-blue"></div></div>
-          <div class="section-label">Money</div>
-          <div class="bar-wrap"><div id="moneyBarA" class="bar money-blue"></div></div>
-          <div class="section-label">Defense Shield</div>
-          <div class="bar-wrap"><div id="shieldBarA" class="bar shield-blue"></div></div>
+          <div class="section-label">Health</div><div class="bar-wrap"><div id="barA" class="bar health-blue"></div></div>
+          <div class="section-label">Population</div><div class="bar-wrap"><div id="popBarA" class="bar pop-blue"></div></div>
+          <div class="section-label">Command Points</div><div class="bar-wrap"><div id="cpBarA" class="bar cp-blue"></div></div>
+          <div class="section-label">Money</div><div class="bar-wrap"><div id="moneyBarA" class="bar money-blue"></div></div>
+          <div class="section-label">Shield</div><div class="bar-wrap"><div id="shieldBarA" class="bar shield-blue"></div></div>
           <div class="stats">
             <span>Health: <span id="scoreA">180</span></span>
             <span>Pop: <span id="popA">200M</span></span>
             <span>CP: <span id="cpA">30</span></span>
             <span>Money: $<span id="moneyA">150</span>M</span>
             <span>Shield: <span id="shieldA">55</span></span>
+            <span>Interceptors: <span id="interceptorsA">1</span></span>
           </div>
         </div>
-
         <div class="panel">
           <div class="country-name red-text" id="hudNameB">Country B</div>
-          <div class="section-label">Health</div>
-          <div class="bar-wrap"><div id="barB" class="bar health-red"></div></div>
-          <div class="section-label">Population</div>
-          <div class="bar-wrap"><div id="popBarB" class="bar pop-red"></div></div>
-          <div class="section-label">Command Points</div>
-          <div class="bar-wrap"><div id="cpBarB" class="bar cp-red"></div></div>
-          <div class="section-label">Money</div>
-          <div class="bar-wrap"><div id="moneyBarB" class="bar money-red"></div></div>
-          <div class="section-label">Defense Shield</div>
-          <div class="bar-wrap"><div id="shieldBarB" class="bar shield-red"></div></div>
+          <div class="section-label">Health</div><div class="bar-wrap"><div id="barB" class="bar health-red"></div></div>
+          <div class="section-label">Population</div><div class="bar-wrap"><div id="popBarB" class="bar pop-red"></div></div>
+          <div class="section-label">Command Points</div><div class="bar-wrap"><div id="cpBarB" class="bar cp-red"></div></div>
+          <div class="section-label">Money</div><div class="bar-wrap"><div id="moneyBarB" class="bar money-red"></div></div>
+          <div class="section-label">Shield</div><div class="bar-wrap"><div id="shieldBarB" class="bar shield-red"></div></div>
           <div class="stats">
             <span>Health: <span id="scoreB">180</span></span>
             <span>Pop: <span id="popB">200M</span></span>
             <span>CP: <span id="cpB">30</span></span>
             <span>Money: $<span id="moneyB">150</span>M</span>
             <span>Shield: <span id="shieldB">55</span></span>
+            <span>Interceptors: <span id="interceptorsB">1</span></span>
           </div>
         </div>
       </div>
@@ -913,7 +684,7 @@
           <div class="target-badge">Coords: <span id="selectedCoordsLabel">895, 220</span></div>
           <div class="target-badge">Threat: <span id="threatLabel">Low</span></div>
         </div>
-        <div class="button-row" style="margin-top:0; align-items:center;">
+        <div class="button-row" style="margin-top:0;align-items:center;">
           <button class="btn-shield" onclick="activatePlayerShield()">Raise Shield<br>18 CP / $20</button>
           <button class="btn-interceptor" onclick="activateInterceptors()">Interceptor Net<br>22 CP / $26</button>
         </div>
@@ -922,14 +693,12 @@
       <div class="panel economy-panel">
         <div class="button-row">
           <button class="btn-economy" onclick="toggleEconomy()">Business / Economy</button>
-          <div style="align-self:center;color:#dce8f6;font-weight:bold;">Income/sec: $<span id="incomeLabel">8</span>M</div>
         </div>
-
         <div id="economyPanel" class="economy-grid hidden">
           <div class="eco-card"><b>Factory</b><div class="eco-meta">Cost: $60M<br>+5 income/sec</div><button onclick="buyBusiness('factory')">Build Factory</button></div>
           <div class="eco-card"><b>Bank</b><div class="eco-meta">Cost: $90M<br>+8 income/sec</div><button onclick="buyBusiness('bank')">Build Bank</button></div>
           <div class="eco-card"><b>Mine</b><div class="eco-meta">Cost: $75M<br>+6 income/sec</div><button onclick="buyBusiness('mine')">Open Mine</button></div>
-          <div class="eco-card"><b>Port</b><div class="eco-meta">Cost: $110M<br>+9 income/sec<br>Boosts ship attack damage</div><button onclick="buyBusiness('port')">Build Port</button></div>
+          <div class="eco-card"><b>Port</b><div class="eco-meta">Cost: $110M<br>+9 income/sec<br>Boosts ship damage</div><button onclick="buyBusiness('port')">Build Port</button></div>
         </div>
       </div>
 
@@ -939,9 +708,7 @@
       </div>
 
       <div class="map-shell">
-        <div class="globe-backdrop"></div>
-        <div class="map grid-lines" id="map" onclick="mapClicked(event)">
-          <div class="stars"></div>
+        <div class="map" id="map">
           <svg class="world-map-bg" viewBox="0 0 1200 500" preserveAspectRatio="none" aria-hidden="true">
             <path class="continent" d="M70,180 L120,145 L190,130 L255,150 L315,175 L340,215 L328,255 L285,285 L230,300 L168,288 L118,260 L82,222 Z"></path>
             <path class="continent" d="M220,315 L258,300 L290,315 L305,350 L290,395 L255,430 L220,420 L205,380 L210,340 Z"></path>
@@ -958,16 +725,16 @@
         </div>
       </div>
 
-      <div class="info-row"><div class="status" id="status">Battle ready</div></div>
+      <div class="status" id="status">Battle ready</div>
 
       <div class="controls">
         <button class="w-drone" id="btnDrone" onclick="quickFire('drone')">Drone<br>8 CP / $12</button>
         <button class="w-missile" id="btnMissile" onclick="quickFire('missile')">Missile<br>14 CP / $18</button>
-        <button class="w-pink" id="btnPink" onclick="quickFire('pink')">Pink Missile<br>18 CP / $24</button>
+        <button class="w-pink" id="btnPink" onclick="quickFire('pink')">Pink<br>18 CP / $24</button>
         <button class="w-cruise" id="btnCruise" onclick="quickFire('cruise')">Cruise<br>20 CP / $28</button>
         <button class="w-ballistic" id="btnBallistic" onclick="quickFire('ballistic')">Ballistic<br>30 CP / $42</button>
-        <button class="w-ship" id="btnShip" onclick="quickFire('ship')">Ship Attack<br>24 CP / $34</button>
-        <button class="w-ground" id="btnGround" onclick="quickFire('ground')">Ground Invasion<br>28 CP / $38</button>
+        <button class="w-ship" id="btnShip" onclick="quickFire('ship')">Ship<br>24 CP / $34</button>
+        <button class="w-ground" id="btnGround" onclick="quickFire('ground')">Ground<br>28 CP / $38</button>
         <button class="w-emp" id="btnEMP" onclick="quickFire('emp')">EMP<br>24 CP / $32</button>
         <button class="w-nuclear" id="btnNuclear" onclick="quickFire('nuclear')">Nuclear<br>55 CP / $90</button>
         <button class="w-hydrogen" id="btnHydrogen" onclick="quickFire('hydrogen')">Hydrogen<br>80 CP / $140</button>
@@ -1050,7 +817,7 @@
     function toggleModeFields() {
       mode = $("modeSelect").value;
       if (mode === "online") {
-        alert("Online mode is disabled in this refined v0.4 build. Use Single Player.");
+        alert("Online mode is disabled in this build. Use Single Player.");
         $("modeSelect").value = "single";
         mode = "single";
       }
@@ -1122,22 +889,16 @@
       osc.frequency.setValueAtTime(fromFreq, now);
       osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), now + duration);
       gain.gain.setValueAtTime(0.0001, now);
-            gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
+      gain.gain.exponentialRampToValueAtTime(volume, now + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start(now);
-      osc.stop(now + duration + 0.03);
+      osc.connect(gain); gain.connect(audioCtx.destination); osc.start(now); osc.stop(now + duration + 0.03);
     }
 
     function fallbackMiyapa() {
       if ("speechSynthesis" in window) {
         const u = new SpeechSynthesisUtterance("miyapa");
-        u.pitch = 2;
-        u.rate = 1.25;
-        u.volume = 0.9;
-        speechSynthesis.cancel();
-        speechSynthesis.speak(u);
+        u.pitch = 2; u.rate = 1.25; u.volume = 0.9;
+        speechSynthesis.cancel(); speechSynthesis.speak(u);
       } else {
         playTone(900, 0.08, "triangle", 0.05, 0);
         playTone(1200, 0.08, "triangle", 0.05, 0.08);
@@ -1157,48 +918,17 @@
       ensureAudio();
       const customKey = ATTACKS[type].customKey;
       if (customKey && playCustomAudio(customKey)) return;
-
       switch (type) {
-        case "drone":
-          playTone(900, 0.08, "square", 0.05, 0);
-          playTone(1200, 0.08, "square", 0.04, 0.05);
-          break;
-        case "missile":
-          playSweep(300, 120, 0.18, "triangle", 0.08, 0);
-          break;
-        case "pink":
-          fallbackMiyapa();
-          break;
-        case "cruise":
-          playSweep(500, 180, 0.22, "triangle", 0.08, 0);
-          playTone(140, 0.15, "sine", 0.03, 0.1);
-          break;
-        case "ballistic":
-          playSweep(220, 70, 0.28, "square", 0.11, 0);
-          playTone(55, 0.22, "sine", 0.05, 0.05);
-          break;
-        case "ship":
-          playTone(180, 0.18, "square", 0.08, 0);
-          playTone(120, 0.22, "triangle", 0.06, 0.08);
-          break;
-        case "ground":
-          playTone(130, 0.2, "square", 0.08, 0);
-          playTone(90, 0.18, "sine", 0.05, 0.06);
-          break;
-        case "emp":
-          playTone(420, 0.05, "square", 0.06, 0);
-          playTone(860, 0.05, "square", 0.05, 0.06);
-          playTone(1400, 0.07, "triangle", 0.05, 0.12);
-          break;
-        case "nuclear":
-          playSweep(120, 35, 0.55, "sawtooth", 0.16, 0);
-          playTone(40, 0.45, "sine", 0.08, 0.08);
-          break;
-        case "hydrogen":
-          playSweep(150, 25, 0.9, "sawtooth", 0.25, 0);
-          playTone(28, 0.9, "triangle", 0.12, 0.1);
-          playTone(18, 1.05, "sine", 0.09, 0.18);
-          break;
+        case "drone": playTone(900, 0.08, "square", 0.05, 0); playTone(1200, 0.08, "square", 0.04, 0.05); break;
+        case "missile": playSweep(300, 120, 0.18, "triangle", 0.08, 0); break;
+        case "pink": fallbackMiyapa(); break;
+        case "cruise": playSweep(500, 180, 0.22, "triangle", 0.08, 0); playTone(140, 0.15, "sine", 0.03, 0.1); break;
+        case "ballistic": playSweep(220, 70, 0.28, "square", 0.11, 0); playTone(55, 0.22, "sine", 0.05, 0.05); break;
+        case "ship": playTone(180, 0.18, "square", 0.08, 0); playTone(120, 0.22, "triangle", 0.06, 0.08); break;
+        case "ground": playTone(130, 0.2, "square", 0.08, 0); playTone(90, 0.18, "sine", 0.05, 0.06); break;
+        case "emp": playTone(420, 0.05, "square", 0.06, 0); playTone(860, 0.05, "square", 0.05, 0.06); playTone(1400, 0.07, "triangle", 0.05, 0.12); break;
+        case "nuclear": playSweep(120, 35, 0.55, "sawtooth", 0.16, 0); playTone(40, 0.45, "sine", 0.08, 0.08); break;
+        case "hydrogen": playSweep(150, 25, 0.9, "sawtooth", 0.25, 0); playTone(28, 0.9, "triangle", 0.12, 0.1); playTone(18, 1.05, "sine", 0.09, 0.18); break;
       }
     }
 
@@ -1208,13 +938,8 @@
       return m + ":" + s;
     }
 
-    function clamp(v, min, max) {
-      return Math.max(min, Math.min(max, v));
-    }
-
-    function rand(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
+    function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+    function rand(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
 
     function logMessage(message) {
       const entry = document.createElement("div");
@@ -1224,80 +949,49 @@
 
     function resetState() {
       state = {
-        healthA: MAX_HEALTH,
-        healthB: MAX_HEALTH,
-        popA: START_POP,
-        popB: START_POP,
-        cpA: 30,
-        cpB: 30,
-        moneyA: 150,
-        moneyB: 150,
-        shieldA: 55,
-        shieldB: 55,
-        interceptorsA: 1,
-        interceptorsB: 1,
+        healthA: MAX_HEALTH, healthB: MAX_HEALTH,
+        popA: START_POP, popB: START_POP,
+        cpA: 30, cpB: 30,
+        moneyA: 150, moneyB: 150,
+        shieldA: 55, shieldB: 55,
+        interceptorsA: 1, interceptorsB: 1,
         timer: MATCH_SECONDS,
         gameOver: false,
         actionCount: 0,
-        cooldownA: 0,
-        cooldownB: 0,
-        incomeA: 8,
-        incomeB: 8,
-        factoriesA: 0,
-        banksA: 0,
-        minesA: 0,
-        portsA: 0,
-        portsB: 0
+        cooldownA: 0, cooldownB: 0,
+        incomeA: 8, incomeB: 8,
+        factoriesA: 0, banksA: 0, minesA: 0, portsA: 0, portsB: 0
       };
 
       selectedWeapon = null;
-      selectedTarget = {
-        x: positions.B.x,
-        y: positions.B.y,
-        cityId: "enemyCapital",
-        side: "B",
-        name: cities.enemyCapital.name
-      };
+      selectedTarget = { x: positions.B.x, y: positions.B.y, cityId: "enemyCapital", side: "B", name: cities.enemyCapital.name };
     }
 
     function applyNames() {
       $("hudNameA").textContent = playerCountry;
       $("hudNameB").textContent = enemyCountry;
-
       cities.playerCapital.name = playerCountry + " Capital";
       cities.enemyCapital.name = enemyCountry + " Capital";
       cities.playerIndustry.name = playerCountry + " Industry";
       cities.enemyIndustry.name = enemyCountry + " Industry";
       cities.playerPort.name = playerCountry + " Harbor";
       cities.enemyPort.name = enemyCountry + " Harbor";
-
       $("modeLabel").textContent = "Single Player";
       $("levelLabel").textContent = level;
-      $("turnLabel").textContent = "Real-Time";
     }
 
-    function setStatus(text) {
-      $("status").textContent = text;
-    }
-
-    function formatPopulation(v) {
-      return Math.max(0, v).toFixed(1) + "M";
-    }
+    function setStatus(text) { $("status").textContent = text; }
+    function formatPopulation(v) { return Math.max(0, v).toFixed(1) + "M"; }
 
     function renderWeaponToolbar() {
       const wrap = $("weaponToolbar");
       wrap.innerHTML = "";
-
       for (const [type, weapon] of Object.entries(ATTACKS)) {
         const btn = document.createElement("button");
         btn.className = "weapon-tile" + (selectedWeapon === type ? " active" : "");
         btn.disabled = !gameStarted || state.gameOver;
         btn.onclick = () => selectWeapon(type);
-        btn.innerHTML = `
-          <div class="weapon-icon">${weapon.icon}</div>
-          <div class="weapon-name">${weapon.label}</div>
-          <div class="weapon-cost">${weapon.costCP} CP / $${weapon.costMoney}</div>
-        `;
+        btn.innerHTML = `<div class="weapon-icon">${weapon.icon}</div><div class="weapon-name">${weapon.label}</div><div class="weapon-cost">${weapon.costCP} CP / $${weapon.costMoney}</div>`;
         wrap.appendChild(btn);
       }
     }
@@ -1306,23 +1000,11 @@
       selectedWeapon = type;
       $("selectedWeaponLabel").textContent = ATTACKS[type].label;
       renderWeaponToolbar();
-
-      if (selectedTarget) {
-        setStatus(`Targeting ${selectedTarget.name}. Click map or city to fire ${ATTACKS[type].label}.`);
-      } else {
-        setStatus(`Weapon selected: ${ATTACKS[type].label}. Click a city or map location.`);
-      }
+      if (selectedTarget) setStatus(`Targeting ${selectedTarget.name}. Tap map or city to fire ${ATTACKS[type].label}.`);
     }
 
     function setTarget(x, y, meta = {}) {
-      selectedTarget = {
-        x,
-        y,
-        cityId: meta.cityId || null,
-        side: meta.side || null,
-        name: meta.name || "Map Sector"
-      };
-
+      selectedTarget = { x, y, cityId: meta.cityId || null, side: meta.side || null, name: meta.name || "Map Sector" };
       $("selectedTargetLabel").textContent = selectedTarget.name;
       $("selectedCoordsLabel").textContent = `${Math.round(x)}, ${Math.round(y)}`;
       drawReticle(x, y, meta.name || "Map Sector");
@@ -1331,31 +1013,25 @@
 
     function updateThreatDisplay() {
       if (!selectedTarget) return;
-
       const d = Math.abs(selectedTarget.x - positions.B.x) + Math.abs(selectedTarget.y - positions.B.y);
       let label = "Low";
-
       if (selectedTarget.side === "B") label = "High";
       else if (d < 180) label = "Medium";
-
       $("threatLabel").textContent = label;
     }
 
     function drawReticle(x, y, name) {
       const layer = $("targetLayer");
       layer.innerHTML = "";
-
       const ret = document.createElement("div");
       ret.className = "reticle";
       ret.style.left = x + "px";
       ret.style.top = y + "px";
-
       const hint = document.createElement("div");
       hint.className = "target-hint";
       hint.style.left = x + "px";
       hint.style.top = y + "px";
-      hint.innerHTML = `<b>${name}</b><br>Click with a selected weapon to attack`;
-
+      hint.innerHTML = `<b>${name}</b><br>Tap to attack`;
       layer.appendChild(ret);
       layer.appendChild(hint);
     }
@@ -1370,7 +1046,6 @@
     function renderCities() {
       const layer = $("cityLayer");
       layer.innerHTML = "";
-
       Object.values(cities).forEach(city => {
         const node = document.createElement("div");
         node.className = `city-node ${city.side === "A" ? "player" : "enemy"} ${getCityThreatClass(city)}`;
@@ -1378,15 +1053,8 @@
         node.style.top = city.y + "px";
         node.onclick = (e) => {
           e.stopPropagation();
-          setTarget(city.x, city.y, {
-            cityId: city.id,
-            side: city.side,
-            name: city.name
-          });
-
-          if (selectedWeapon && city.side === "B") {
-            humanAttack(selectedWeapon, selectedTarget);
-          }
+          setTarget(city.x, city.y, { cityId: city.id, side: city.side, name: city.name });
+          if (selectedWeapon && city.side === "B") humanAttack(selectedWeapon, selectedTarget);
         };
 
         const label = document.createElement("div");
@@ -1410,14 +1078,13 @@
     function seedClouds() {
       if (cloudsSeeded) return;
       cloudsSeeded = true;
-
       const weatherLayer = $("weatherLayer");
       for (let i = 0; i < 6; i++) {
         const cloud = document.createElement("div");
         cloud.className = "cloud-band";
-        cloud.style.top = rand(40, 420) + "px";
-        cloud.style.left = rand(-220, 1000) + "px";
-        cloud.style.animationDuration = rand(26, 48) + "s";
+        cloud.style.top = rand(30, 240) + "px";
+        cloud.style.left = rand(-220, 800) + "px";
+        cloud.style.animationDuration = rand(24, 46) + "s";
         cloud.style.animationDelay = `-${rand(0, 30)}s`;
         weatherLayer.appendChild(cloud);
       }
@@ -1426,15 +1093,14 @@
     function refreshClouds() {
       const weatherLayer = $("weatherLayer");
       [...weatherLayer.children].forEach(cloud => {
-        cloud.style.top = rand(40, 420) + "px";
-        cloud.style.opacity = String((Math.random() * 0.28) + 0.28);
+        cloud.style.top = rand(30, Math.max(60, $("map").offsetHeight - 80)) + "px";
+        cloud.style.opacity = String((Math.random() * 0.25) + 0.25);
       });
     }
 
     function renderDefense() {
       const layer = $("defenseLayer");
       layer.innerHTML = "";
-
       if (state.shieldA > 0) {
         ["playerCapital", "playerPort", "playerIndustry"].forEach(id => {
           const city = cities[id];
@@ -1445,7 +1111,6 @@
           layer.appendChild(dome);
         });
       }
-
       if (state.shieldB > 0) {
         ["enemyCapital", "enemyPort", "enemyIndustry"].forEach(id => {
           const city = cities[id];
@@ -1458,44 +1123,31 @@
       }
     }
 
+    function getMapPoint(event) {
+      const rect = $("map").getBoundingClientRect();
+      const scaleX = $("map").offsetWidth / rect.width;
+      const scaleY = $("map").offsetHeight / rect.height;
+      return {
+        x: (event.clientX - rect.left) * scaleX,
+        y: (event.clientY - rect.top) * scaleY
+      };
+    }
+
     function mapClicked(event) {
       if (!gameStarted || state.gameOver) return;
-
-      const rect = $("map").getBoundingClientRect();
-      const x = ((event.clientX - rect.left) / rect.width) * $("map").offsetWidth;
-      const y = ((event.clientY - rect.top) / rect.height) * $("map").offsetHeight;
-
-      setTarget(x, y, { name: "Open Sector" });
-
-      if (selectedWeapon) {
-        humanAttack(selectedWeapon, selectedTarget);
-      }
+      const point = getMapPoint(event);
+      setTarget(point.x, point.y, { name: "Open Sector" });
+      if (selectedWeapon) humanAttack(selectedWeapon, selectedTarget);
     }
 
     function updateWeaponButtons() {
       if (!gameStarted || state.gameOver) {
-        [
-          "btnDrone","btnMissile","btnPink","btnCruise","btnBallistic",
-          "btnShip","btnGround","btnEMP","btnNuclear","btnHydrogen"
-        ].forEach(id => $(id).disabled = true);
+        ["btnDrone","btnMissile","btnPink","btnCruise","btnBallistic","btnShip","btnGround","btnEMP","btnNuclear","btnHydrogen"].forEach(id => $(id).disabled = true);
         return;
       }
-
+      const idMap = { drone:"btnDrone", missile:"btnMissile", pink:"btnPink", cruise:"btnCruise", ballistic:"btnBallistic", ship:"btnShip", ground:"btnGround", emp:"btnEMP", nuclear:"btnNuclear", hydrogen:"btnHydrogen" };
       for (const [type, weapon] of Object.entries(ATTACKS)) {
-        const idMap = {
-          drone: "btnDrone",
-          missile: "btnMissile",
-          pink: "btnPink",
-          cruise: "btnCruise",
-          ballistic: "btnBallistic",
-          ship: "btnShip",
-          ground: "btnGround",
-          emp: "btnEMP",
-          nuclear: "btnNuclear",
-          hydrogen: "btnHydrogen"
-        };
-        const btn = $(idMap[type]);
-        btn.disabled = state.cooldownA > 0 || state.cpA < weapon.costCP || state.moneyA < weapon.costMoney;
+        $(idMap[type]).disabled = state.cooldownA > 0 || state.cpA < weapon.costCP || state.moneyA < weapon.costMoney;
       }
     }
 
@@ -1510,10 +1162,11 @@
       $("moneyB").textContent = Math.round(state.moneyB);
       $("shieldA").textContent = Math.round(state.shieldA);
       $("shieldB").textContent = Math.round(state.shieldB);
+      $("interceptorsA").textContent = state.interceptorsA;
+      $("interceptorsB").textContent = state.interceptorsB;
       $("timerLabel").textContent = formatTime(state.timer);
       $("actionCount").textContent = state.actionCount;
       $("incomeLabel").textContent = Math.round(state.incomeA);
-
       $("barA").style.width = clamp((state.healthA / MAX_HEALTH) * 100, 0, 100) + "%";
       $("barB").style.width = clamp((state.healthB / MAX_HEALTH) * 100, 0, 100) + "%";
       $("popBarA").style.width = clamp((state.popA / START_POP) * 100, 0, 100) + "%";
@@ -1524,9 +1177,7 @@
       $("moneyBarB").style.width = clamp((state.moneyB / MAX_MONEY) * 100, 0, 100) + "%";
       $("shieldBarA").style.width = clamp((state.shieldA / MAX_SHIELD) * 100, 0, 100) + "%";
       $("shieldBarB").style.width = clamp((state.shieldB / MAX_SHIELD) * 100, 0, 100) + "%";
-
       $("cooldownLabel").textContent = state.cooldownA > 0 ? state.cooldownA + "s" : "Ready";
-
       updateWeaponButtons();
       renderWeaponToolbar();
       renderCities();
@@ -1535,15 +1186,9 @@
 
     function getLevelDamageBonus(type) {
       const scale = Math.max(0, level - 1);
-      if (type === "drone") return Math.floor(scale / 5);
-      if (type === "missile") return Math.floor(scale / 4);
-      if (type === "pink") return Math.floor(scale / 4);
-      if (type === "cruise") return Math.floor(scale / 4);
-      if (type === "ballistic") return Math.floor(scale / 3);
-      if (type === "ship") return Math.floor(scale / 3);
-      if (type === "ground") return Math.floor(scale / 3);
-      if (type === "emp") return Math.floor(scale / 4);
-      if (type === "nuclear") return Math.floor(scale / 3);
+      if (["drone"].includes(type)) return Math.floor(scale / 5);
+      if (["missile", "pink", "cruise", "emp"].includes(type)) return Math.floor(scale / 4);
+      if (["ballistic", "ship", "ground", "nuclear"].includes(type)) return Math.floor(scale / 3);
       return Math.floor(scale / 2.5);
     }
 
@@ -1551,16 +1196,14 @@
       let damage = rand(ATTACKS[type].min, ATTACKS[type].max) + getLevelDamageBonus(type);
       if ((type === "nuclear" || type === "hydrogen") && state.healthB < 40) damage += 2;
       if (type === "ship" && state.portsB > 0) damage += 3;
-      damage = Math.floor(damage * 0.8);
-      return clamp(damage, 1, 60);
+      return clamp(Math.floor(damage * 0.8), 1, 60);
     }
 
     function getPlayerDamage(type) {
       let damage = rand(ATTACKS[type].min, ATTACKS[type].max);
       if ((type === "nuclear" || type === "hydrogen") && state.healthA < 40) damage -= 2;
       if (type === "ship" && state.portsA > 0) damage += 3;
-      damage = Math.floor(damage * 0.75);
-      return clamp(damage, 1, 55);
+      return clamp(Math.floor(damage * 0.75), 1, 55);
     }
 
     function triggerShake(kind) {
@@ -1576,21 +1219,9 @@
       dot.className = "trail-dot";
       dot.style.left = x + "px";
       dot.style.top = y + "px";
-
       const colors = {
-        drone: "rgba(183,243,255,0.9)",
-        missile: "rgba(255,221,87,0.9)",
-        pink: "rgba(255,150,235,0.95)",
-        cruise: "rgba(110,247,216,0.9)",
-        ballistic: "rgba(179,136,255,0.9)",
-        ship: "rgba(203,213,225,0.9)",
-        ground: "rgba(249,115,22,0.9)",
-        emp: "rgba(106,247,255,0.95)",
-        nuclear: "rgba(255,110,110,0.95)",
-        hydrogen: "rgba(255,180,0,0.95)",
-        interceptor: "rgba(170,240,255,0.95)"
+        drone: "rgba(183,243,255,0.9)", missile: "rgba(255,221,87,0.9)", pink: "rgba(255,150,235,0.95)", cruise: "rgba(110,247,216,0.9)", ballistic: "rgba(179,136,255,0.9)", ship: "rgba(203,213,225,0.9)", ground: "rgba(249,115,22,0.9)", emp: "rgba(106,247,255,0.95)", nuclear: "rgba(255,110,110,0.95)", hydrogen: "rgba(255,180,0,0.95)", interceptor: "rgba(170,240,255,0.95)"
       };
-
       dot.style.background = colors[type] || "white";
       map.appendChild(dot);
       setTimeout(() => dot.remove(), 420);
@@ -1634,23 +1265,17 @@
         const p = document.createElement("div");
         p.className = "trail-dot";
         p.style.background = color;
-        p.style.width = rand(6, 12) + "px";
+        p.style.width = rand(6, 10) + "px";
         p.style.height = p.style.width;
         p.style.left = x + "px";
         p.style.top = y + "px";
         map.appendChild(p);
-
         const dx = rand(-spread, spread);
         const dy = rand(-spread, spread);
         p.animate([
           { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
           { transform: `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px)) scale(0.2)`, opacity: 0 }
-        ], {
-          duration: life,
-          easing: "ease-out",
-          fill: "forwards"
-        });
-
+        ], { duration: life, easing: "ease-out", fill: "forwards" });
         setTimeout(() => p.remove(), life + 20);
       }
     }
@@ -1680,49 +1305,38 @@
       return clamp((damage * factor) / 6, 0.2, 12);
     }
 
-   function maybeIntercept(attacker, defender, type, targetX, targetY) {
-  const interceptorKey = defender === "A" ? "interceptorsA" : "interceptorsB";
-  const shieldKey = defender === "A" ? "shieldA" : "shieldB";
-
-  let chance = 0;
-  if (state[interceptorKey] > 0) chance += 0.20;
-  if (state[shieldKey] > 0) chance += 0.10;
-  if (type === "hydrogen" || type === "nuclear") chance -= 0.08;
-  if (type === "drone") chance += 0.05;
-
-  chance = clamp(chance, 0, 0.45);
-
-  if (Math.random() < chance) {
-    if (state[interceptorKey] > 0) {
-      state[interceptorKey] -= 1;
+    function maybeIntercept(attacker, defender, type, targetX, targetY) {
+      const interceptorKey = defender === "A" ? "interceptorsA" : "interceptorsB";
+      const shieldKey = defender === "A" ? "shieldA" : "shieldB";
+      let chance = 0;
+      if (state[interceptorKey] > 0) chance += 0.2;
+      if (state[shieldKey] > 0) chance += 0.1;
+      if (type === "hydrogen" || type === "nuclear") chance -= 0.08;
+      if (type === "drone") chance += 0.05;
+      chance = clamp(chance, 0, 0.45);
+      if (Math.random() < chance) {
+        if (state[interceptorKey] > 0) state[interceptorKey] -= 1;
+        drawInterceptor(defender, targetX, targetY);
+        logMessage(`${defender === "A" ? playerCountry : enemyCountry} intercepted an incoming ${ATTACKS[type].label}.`);
+        updateUI();
+        return true;
+      }
+      return false;
     }
-
-    drawInterceptor(defender, targetX, targetY);
-    logMessage(`${defender === "A" ? playerCountry : enemyCountry} intercepted an incoming ${ATTACKS[type].label}.`);
-    updateUI();
-    return true;
-  }
-
-  return false;
-}
 
     function drawInterceptor(defender, targetX, targetY) {
       const layer = $("projectileLayer");
       const source = defender === "A" ? positions.A : positions.B;
-
       const line = document.createElement("div");
       line.className = "interceptor-arc";
-
       const dx = targetX - source.x;
       const dy = targetY - source.y;
       const length = Math.sqrt(dx * dx + dy * dy);
       const angle = Math.atan2(dy, dx) * 180 / Math.PI;
-
       line.style.left = source.x + "px";
       line.style.top = source.y + "px";
       line.style.width = length + "px";
       line.style.transform = `rotate(${angle}deg)`;
-
       layer.appendChild(line);
 
       const interceptor = document.createElement("div");
@@ -1730,164 +1344,39 @@
       interceptor.style.left = source.x + "px";
       interceptor.style.top = source.y + "px";
       layer.appendChild(interceptor);
-
       const start = performance.now();
-
       function frame(now) {
         const progress = Math.min(1, (now - start) / 450);
         interceptor.style.left = source.x + dx * progress + "px";
         interceptor.style.top = source.y + dy * progress + "px";
         createTrailDot(layer, source.x + dx * progress, source.y + dy * progress, "interceptor");
-
-        if (progress < 1) {
-          requestAnimationFrame(frame);
-        } else {
+        if (progress < 1) requestAnimationFrame(frame);
+        else {
           createImpactRing(layer, targetX, targetY, 60, 650, "rgba(170,240,255,0.95)");
           interceptor.remove();
           setTimeout(() => line.remove(), 850);
         }
       }
-
       requestAnimationFrame(frame);
     }
 
     function animateAttack(attacker, defender, type, target, callback, interceptedCallback) {
-  const map = $("projectileLayer");
-  const from = positions[attacker];
-  const to = target || positions[defender];
-  const weapon = ATTACKS[type];
+      const map = $("projectileLayer");
+      const from = positions[attacker];
+      const to = target || positions[defender];
+      const weapon = ATTACKS[type];
+      if (type === "hydrogen") runSatelliteZoom();
 
-  if (type === "hydrogen") runSatelliteZoom();
+      const projectile = document.createElement("div");
+      projectile.className = `projectile ${weapon.projectileClass}`;
+      projectile.style.left = from.x + "px";
+      projectile.style.top = from.y + "px";
+      map.appendChild(projectile);
+      playAttackSound(type);
 
-  const projectile = document.createElement("div");
-  projectile.className = `projectile ${weapon.projectileClass}`;
-  projectile.style.left = from.x + "px";
-  projectile.style.top = from.y + "px";
-  map.appendChild(projectile);
-
-  playAttackSound(type);
-
-  const start = performance.now();
-  let lastTrail = 0;
-  let interceptChecked = false;
-
-  function frame(now) {
-    const progress = Math.min(1, (now - start) / weapon.flight);
-    const x = from.x + (to.x - from.x) * progress;
-    const baseY = from.y + (to.y - from.y) * progress;
-    const arc = Math.sin(Math.PI * progress) * weapon.arc;
-    const y = baseY - arc;
-
-    projectile.style.left = x + "px";
-    projectile.style.top = y + "px";
-
-    if (type === "ship") {
-      if (now - lastTrail > 80) {
-        createWakeDot(map, x - (attacker === "A" ? 12 : -12), y + 5);
-        if (Math.random() < 0.45) createSeaSplash(map, x, y + 6, 1);
-        lastTrail = now;
-      }
-    } else if (now - lastTrail > 55) {
-      createTrailDot(map, x, y, type);
-      lastTrail = now;
-    }
-
-    if (!interceptChecked && progress >= 0.45 && progress < 0.82) {
-      interceptChecked = true;
-
-      if (maybeIntercept(attacker, defender, type, x, y)) {
-        projectile.remove();
-        if (interceptedCallback) interceptedCallback();
-        return;
-      }
-    }
-
-    if (progress < 1) {
-      requestAnimationFrame(frame);
-    } else {
-      projectile.remove();
-      impact();
-    }
-  }
-
-  function impact() {
-    const explosion = document.createElement("div");
-    explosion.className = `explosion ${weapon.explosionClass}`;
-    explosion.style.left = to.x + "px";
-    explosion.style.top = to.y + "px";
-    explosion.style.setProperty("--scale", weapon.explosionScale);
-    explosion.style.animation = type === "hydrogen"
-      ? "boom 1600ms ease-out forwards"
-      : "boom 900ms ease-out forwards";
-    map.appendChild(explosion);
-
-    const ringColor =
-      type === "emp" ? "rgba(106,247,255,0.9)" :
-      type === "pink" ? "rgba(255,150,235,0.9)" :
-      type === "ship" ? "rgba(203,213,225,0.9)" :
-      type === "ground" ? "rgba(249,115,22,0.9)" :
-      "rgba(255,235,180,0.85)";
-
-    const ringSize =
-      type === "hydrogen" ? 260 :
-      type === "nuclear" ? 120 :
-      type === "ballistic" ? 80 :
-      type === "ship" ? 85 :
-      type === "ground" ? 92 :
-      type === "emp" ? 95 :
-      type === "pink" ? 68 :
-      55;
-
-    createImpactRing(
-      map,
-      to.x,
-      to.y,
-      ringSize,
-      type === "hydrogen" ? 2200 : 900,
-      ringColor
-    );
-
-    if (type === "pink") {
-      createParticles(map, to.x, to.y, 16, "rgba(255,180,235,0.95)", 70, 900);
-    } else if (type === "emp") {
-      createImpactRing(map, to.x, to.y, 130, 1200, "rgba(106,247,255,0.8)");
-      createParticles(map, to.x, to.y, 18, "rgba(160,255,255,0.95)", 80, 700);
-    } else if (type === "nuclear") {
-      createMushroomCloud(map, to.x, to.y - 5, 2300, 1.0);
-      createParticles(map, to.x, to.y, 24, "rgba(255,170,50,0.95)", 95, 1000);
-      createImpactRing(map, from.x, from.y, 60, 700, "rgba(255,140,80,0.65)");
-    } else if (type === "hydrogen") {
-      createMushroomCloud(map, to.x, to.y - 10, 3600, 1.6);
-      createImpactRing(map, to.x, to.y, 340, 2600, "rgba(255,180,80,0.96)");
-      createParticles(map, to.x, to.y, 40, "rgba(255,220,130,0.98)", 145, 1400);
-      createImpactRing(map, from.x, from.y, 110, 1000, "rgba(255,180,80,0.72)");
-    } else if (type === "ship") {
-      createSeaSplash(map, to.x, to.y + 6, 6);
-      createParticles(map, to.x, to.y, 18, "rgba(203,213,225,0.95)", 80, 900);
-    } else if (type === "ground") {
-      createParticles(map, to.x, to.y, 18, "rgba(249,115,22,0.95)", 85, 950);
-    } else {
-      createParticles(
-        map,
-        to.x,
-        to.y,
-        type === "ballistic" ? 16 : type === "cruise" ? 12 : 8,
-        type === "cruise" ? "rgba(110,247,216,0.95)" : "rgba(255,200,110,0.95)",
-        type === "ballistic" ? 75 : 55,
-        700
-      );
-    }
-
-    triggerShake(weapon.shake);
-
-    setTimeout(() => {
-      explosion.remove();
-      callback();
-    }, type === "hydrogen" ? 2000 : type === "nuclear" ? 1300 : 950);
-  }
-
-  requestAnimationFrame(frame);
-}
+      const start = performance.now();
+      let lastTrail = 0;
+      let interceptChecked = false;
 
       function frame(now) {
         const progress = Math.min(1, (now - start) / weapon.flight);
@@ -1895,7 +1384,6 @@
         const baseY = from.y + (to.y - from.y) * progress;
         const arc = Math.sin(Math.PI * progress) * weapon.arc;
         const y = baseY - arc;
-
         projectile.style.left = x + "px";
         projectile.style.top = y + "px";
 
@@ -1910,15 +1398,17 @@
           lastTrail = now;
         }
 
-        if (progress < 0.82 && maybeIntercept(attacker, defender, type, x, y)) {
-          projectile.remove();
-          if (interceptedCallback) interceptedCallback();
-          return;
+        if (!interceptChecked && progress >= 0.45 && progress < 0.82) {
+          interceptChecked = true;
+          if (maybeIntercept(attacker, defender, type, x, y)) {
+            projectile.remove();
+            if (interceptedCallback) interceptedCallback();
+            return;
+          }
         }
 
-        if (progress < 1) {
-          requestAnimationFrame(frame);
-        } else {
+        if (progress < 1) requestAnimationFrame(frame);
+        else {
           projectile.remove();
           impact();
         }
@@ -1933,62 +1423,32 @@
         explosion.style.animation = type === "hydrogen" ? "boom 1600ms ease-out forwards" : "boom 900ms ease-out forwards";
         map.appendChild(explosion);
 
-        const ringColor =
-          type === "emp" ? "rgba(106,247,255,0.9)" :
-          type === "pink" ? "rgba(255,150,235,0.9)" :
-          type === "ship" ? "rgba(203,213,225,0.9)" :
-          type === "ground" ? "rgba(249,115,22,0.9)" :
-          "rgba(255,235,180,0.85)";
-
-        const ringSize =
-          type === "hydrogen" ? 260 :
-          type === "nuclear" ? 120 :
-          type === "ballistic" ? 80 :
-          type === "ship" ? 85 :
-          type === "ground" ? 92 :
-          type === "emp" ? 95 :
-          type === "pink" ? 68 :
-          55;
-
+        const ringColor = type === "emp" ? "rgba(106,247,255,0.9)" : type === "pink" ? "rgba(255,150,235,0.9)" : type === "ship" ? "rgba(203,213,225,0.9)" : type === "ground" ? "rgba(249,115,22,0.9)" : "rgba(255,235,180,0.85)";
+        const ringSize = type === "hydrogen" ? 260 : type === "nuclear" ? 120 : type === "ballistic" ? 80 : type === "ship" ? 85 : type === "ground" ? 92 : type === "emp" ? 95 : type === "pink" ? 68 : 55;
         createImpactRing(map, to.x, to.y, ringSize, type === "hydrogen" ? 2200 : 900, ringColor);
 
-        if (type === "pink") {
-          createParticles(map, to.x, to.y, 16, "rgba(255,180,235,0.95)", 70, 900);
-        } else if (type === "emp") {
+        if (type === "pink") createParticles(map, to.x, to.y, 16, "rgba(255,180,235,0.95)", 70, 900);
+        else if (type === "emp") {
           createImpactRing(map, to.x, to.y, 130, 1200, "rgba(106,247,255,0.8)");
           createParticles(map, to.x, to.y, 18, "rgba(160,255,255,0.95)", 80, 700);
         } else if (type === "nuclear") {
           createMushroomCloud(map, to.x, to.y - 5, 2300, 1.0);
           createParticles(map, to.x, to.y, 24, "rgba(255,170,50,0.95)", 95, 1000);
-          createImpactRing(map, from.x, from.y, 60, 700, "rgba(255,140,80,0.65)");
         } else if (type === "hydrogen") {
           createMushroomCloud(map, to.x, to.y - 10, 3600, 1.6);
           createImpactRing(map, to.x, to.y, 340, 2600, "rgba(255,180,80,0.96)");
           createParticles(map, to.x, to.y, 40, "rgba(255,220,130,0.98)", 145, 1400);
-          createImpactRing(map, from.x, from.y, 110, 1000, "rgba(255,180,80,0.72)");
         } else if (type === "ship") {
           createSeaSplash(map, to.x, to.y + 6, 6);
           createParticles(map, to.x, to.y, 18, "rgba(203,213,225,0.95)", 80, 900);
         } else if (type === "ground") {
           createParticles(map, to.x, to.y, 18, "rgba(249,115,22,0.95)", 85, 950);
         } else {
-          createParticles(
-            map,
-            to.x,
-            to.y,
-            type === "ballistic" ? 16 : type === "cruise" ? 12 : 8,
-            type === "cruise" ? "rgba(110,247,216,0.95)" : "rgba(255,200,110,0.95)",
-            type === "ballistic" ? 75 : 55,
-            700
-          );
+          createParticles(map, to.x, to.y, type === "ballistic" ? 16 : type === "cruise" ? 12 : 8, type === "cruise" ? "rgba(110,247,216,0.95)" : "rgba(255,200,110,0.95)", type === "ballistic" ? 75 : 55, 700);
         }
 
         triggerShake(weapon.shake);
-
-        setTimeout(() => {
-          explosion.remove();
-          callback();
-        }, type === "hydrogen" ? 2000 : type === "nuclear" ? 1300 : 950);
+        setTimeout(() => { explosion.remove(); callback(); }, type === "hydrogen" ? 2000 : type === "nuclear" ? 1300 : 950);
       }
 
       requestAnimationFrame(frame);
@@ -1997,7 +1457,6 @@
     function evaluateWinnerByTime() {
       const scoreA = state.healthA + state.popA + state.shieldA * 0.3;
       const scoreB = state.healthB + state.popB + state.shieldB * 0.3;
-
       if (scoreA > scoreB) return "🏆 " + playerCountry + " wins (better overall strength)!";
       if (scoreB > scoreA) return "🏆 " + enemyCountry + " wins (better overall strength)!";
       return "🤝 Draw!";
@@ -2010,14 +1469,10 @@
       clearInterval(aiInterval);
       clearInterval(weatherInterval);
       clearInterval(threatInterval);
-
       $("result").textContent = resultText;
       setStatus(statusText);
       updateUI();
-
-      if (resultText.includes(playerCountry)) {
-        unlockNextLevelIfNeeded();
-      }
+      if (resultText.includes(playerCountry)) unlockNextLevelIfNeeded();
     }
 
     function checkEnd() {
@@ -2027,21 +1482,18 @@
         endMatch(resultText, "Game over");
         return true;
       }
-
       if (state.healthB <= 0 || state.popB <= 0) {
         const resultText = "🏆 " + playerCountry + " wins!";
         logMessage("Game Over — " + resultText);
         endMatch(resultText, "Game over");
         return true;
       }
-
       if (state.timer <= 0) {
         const resultText = evaluateWinnerByTime();
         logMessage("Time is up — " + resultText);
         endMatch(resultText, "Match timer ended");
         return true;
       }
-
       return false;
     }
 
@@ -2049,7 +1501,6 @@
       const shieldKey = defender === "A" ? "shieldA" : "shieldB";
       const shield = state[shieldKey];
       if (shield <= 0) return damage;
-
       const absorbed = Math.min(damage * 0.55, shield * 0.35);
       state[shieldKey] = clamp(shield - absorbed * 1.8, 0, MAX_SHIELD);
       return Math.max(1, damage - absorbed);
@@ -2084,10 +1535,7 @@
       }
 
       let log = `${attackerName} used ${weapon.label} and dealt ${Math.round(damage)} damage to ${defenderName}. Population loss: ${popLoss.toFixed(1)}M.`;
-
-      if (target && target.name) {
-        log = `${attackerName} struck ${target.name} with ${weapon.label}, dealing ${Math.round(damage)} damage to ${defenderName}. Population loss: ${popLoss.toFixed(1)}M.`;
-      }
+      if (target && target.name) log = `${attackerName} struck ${target.name} with ${weapon.label}, dealing ${Math.round(damage)} damage to ${defenderName}. Population loss: ${popLoss.toFixed(1)}M.`;
 
       if (type === "emp") {
         const drain = clamp(weapon.cpDrain + (attacker === "B" ? Math.floor(level / 2) : 0), 8, 26);
@@ -2113,33 +1561,13 @@
 
     function humanAttack(type, target = null) {
       if (!gameStarted || state.gameOver) return;
-
       const weapon = ATTACKS[type];
-      const finalTarget = target || selectedTarget || {
-        x: positions.B.x,
-        y: positions.B.y,
-        cityId: "enemyCapital",
-        side: "B",
-        name: cities.enemyCapital.name
-      };
-
-      if (state.cooldownA > 0) {
-        setStatus("Weapons rearming...");
-        return;
-      }
-
-      if (state.cpA < weapon.costCP) {
-        setStatus("Not enough command points for " + weapon.label);
-        return;
-      }
-
-      if (state.moneyA < weapon.costMoney) {
-        setStatus("Not enough money for " + weapon.label);
-        return;
-      }
+      const finalTarget = target || selectedTarget || { x: positions.B.x, y: positions.B.y, cityId: "enemyCapital", side: "B", name: cities.enemyCapital.name };
+      if (state.cooldownA > 0) { setStatus("Weapons rearming..."); return; }
+      if (state.cpA < weapon.costCP) { setStatus("Not enough command points for " + weapon.label); return; }
+      if (state.moneyA < weapon.costMoney) { setStatus("Not enough money for " + weapon.label); return; }
 
       setStatus(playerCountry + " launching " + weapon.label + " at " + finalTarget.name + "...");
-
       animateAttack("A", "B", type, finalTarget, () => {
         applyAttackResult("A", type, finalTarget);
         if (!state.gameOver) setStatus("Battle in progress...");
@@ -2159,21 +1587,14 @@
     }
 
     function chooseAIAttack() {
-      const affordable = Object.keys(ATTACKS).filter(type =>
-        state.cpB >= ATTACKS[type].costCP &&
-        state.moneyB >= ATTACKS[type].costMoney
-      );
-
+      const affordable = Object.keys(ATTACKS).filter(type => state.cpB >= ATTACKS[type].costCP && state.moneyB >= ATTACKS[type].costMoney);
       if (!affordable.length) return null;
-
       const danger = (MAX_HEALTH - state.healthB) + (START_POP - state.popB);
       let best = affordable[0];
       let bestScore = -Infinity;
-
       for (const type of affordable) {
         const w = ATTACKS[type];
         let score = w.max + w.costMoney * 0.08;
-
         if (type === "emp" && state.cpA >= 35) score += 12;
         if (type === "ground" && state.popA > 25) score += 8;
         if (type === "ship" && state.portsB > 0) score += 10;
@@ -2182,16 +1603,10 @@
           if (state.popA > 35) score += 10;
         }
         if (level <= 3 && (type === "hydrogen" || type === "nuclear")) score -= 15;
-
         score += getLevelDamageBonus(type);
         score += Math.random() * 8;
-
-        if (score > bestScore) {
-          bestScore = score;
-          best = type;
-        }
+        if (score > bestScore) { bestScore = score; best = type; }
       }
-
       return best;
     }
 
@@ -2205,15 +1620,11 @@
     }
 
     function aiAttack() {
-      if (!gameStarted || state.gameOver) return;
-      if (state.cooldownB > 0) return;
-
+      if (!gameStarted || state.gameOver || state.cooldownB > 0) return;
       const type = chooseAIAttack();
       if (!type) return;
-
       const target = chooseAITarget();
       setStatus(enemyCountry + " launching " + ATTACKS[type].label + "...");
-
       animateAttack("B", "A", type, target, () => {
         applyAttackResult("B", type, target);
         if (!state.gameOver) setStatus("Battle in progress...");
@@ -2230,15 +1641,10 @@
 
     function activatePlayerShield() {
       if (!gameStarted || state.gameOver) return;
-      if (state.cpA < 18 || state.moneyA < 20) {
-        setStatus("Not enough resources to raise shields.");
-        return;
-      }
-
+      if (state.cpA < 18 || state.moneyA < 20) { setStatus("Not enough resources to raise shields."); return; }
       state.cpA = clamp(state.cpA - 18, 0, MAX_CP);
       state.moneyA = clamp(state.moneyA - 20, 0, MAX_MONEY);
       state.shieldA = clamp(state.shieldA + 35, 0, MAX_SHIELD);
-
       logMessage(`${playerCountry} reinforced defense shields.`);
       setStatus("Defense shields strengthened.");
       updateUI();
@@ -2246,15 +1652,10 @@
 
     function activateInterceptors() {
       if (!gameStarted || state.gameOver) return;
-      if (state.cpA < 22 || state.moneyA < 26) {
-        setStatus("Not enough resources to deploy interceptors.");
-        return;
-      }
-
+      if (state.cpA < 22 || state.moneyA < 26) { setStatus("Not enough resources to deploy interceptors."); return; }
       state.cpA = clamp(state.cpA - 22, 0, MAX_CP);
       state.moneyA = clamp(state.moneyA - 26, 0, MAX_MONEY);
       state.interceptorsA += 2;
-
       logMessage(`${playerCountry} deployed additional interceptor systems.`);
       setStatus("Interceptor grid active.");
       updateUI();
@@ -2271,44 +1672,29 @@
 
     function tickResources() {
       if (!gameStarted || state.gameOver) return;
-
       state.cpA = clamp(state.cpA + 4, 0, MAX_CP);
       state.cpB = clamp(state.cpB + (4 + Math.floor(level / 2)), 0, MAX_CP);
-
       const popIncomeA = Math.max(0.5, state.popA * 0.015);
       const popIncomeB = Math.max(0.5, state.popB * 0.015);
-
       state.moneyA = clamp(state.moneyA + state.incomeA + popIncomeA, 0, MAX_MONEY);
       state.moneyB = clamp(state.moneyB + state.incomeB + popIncomeB, 0, MAX_MONEY);
-
       state.shieldA = clamp(state.shieldA + 1.4, 0, MAX_SHIELD);
       state.shieldB = clamp(state.shieldB + 1.2, 0, MAX_SHIELD);
-
       if (Math.random() < 0.24) state.interceptorsB = Math.min(3, state.interceptorsB + 1);
-
       updateUI();
     }
 
-    function toggleEconomy() {
-      $("economyPanel").classList.toggle("hidden");
-    }
+    function toggleEconomy() { $("economyPanel").classList.toggle("hidden"); }
 
     function buyBusiness(type) {
       if (!gameStarted || state.gameOver) return;
       const item = businesses[type];
       if (!item) return;
-
-      if (state.moneyA < item.cost) {
-        setStatus("Not enough money to build " + item.label);
-        return;
-      }
-
+      if (state.moneyA < item.cost) { setStatus("Not enough money to build " + item.label); return; }
       state.moneyA = clamp(state.moneyA - item.cost, 0, MAX_MONEY);
       state.incomeA += item.income;
       state[item.key + "A"] = (state[item.key + "A"] || 0) + 1;
-
       if (type === "port") state.portsA += 1;
-
       logMessage(playerCountry + " built a " + item.label + ". Income increased by $" + item.income + "M/sec.");
       updateUI();
     }
@@ -2324,20 +1710,16 @@
       ensureAudio();
       setupCustomAudio();
       updateLevelLocks();
-
       mode = "single";
       level = parseInt($("levelSelect").value, 10);
-
       if (level > unlockedLevel) {
         alert("🔒 Complete previous levels first!");
         $("levelSelect").value = String(unlockedLevel);
         level = unlockedLevel;
         return;
       }
-
       playerCountry = sanitizeName($("countryAInput").value, "Blue Nation");
       enemyCountry = sanitizeName($("singleEnemyInput").value, "Red Dominion");
-
       resetState();
       state.portsB = Math.max(0, Math.floor(level / 4));
       state.incomeB = 8 + Math.floor(level / 2);
@@ -2363,14 +1745,9 @@
       seedClouds();
       refreshClouds();
       renderWeaponToolbar();
-      setTarget(positions.B.x, positions.B.y, {
-        cityId: "enemyCapital",
-        side: "B",
-        name: cities.enemyCapital.name
-      });
-
+      setTarget(positions.B.x, positions.B.y, { cityId: "enemyCapital", side: "B", name: cities.enemyCapital.name });
       playSiren();
-      setStatus("Battle started — select a weapon, click a city, or fire directly.");
+      setStatus("Battle started — select a weapon, tap a city, or use quick fire.");
       logMessage("New real-time war started: " + playerCountry + " vs " + enemyCountry + ".");
       logMessage("Use city targeting, shields, interceptors, and economy upgrades to win.");
       logMessage("Win the current level to unlock the next one.");
@@ -2387,14 +1764,20 @@
       startSinglePlayer();
     }
 
+    $("map").addEventListener("click", mapClicked);
+    $("map").addEventListener("touchend", (e) => {
+      if (!gameStarted || state.gameOver) return;
+      const touch = e.changedTouches[0];
+      if (!touch) return;
+      mapClicked({ clientX: touch.clientX, clientY: touch.clientY });
+    }, { passive: true });
+
     window.startSinglePlayer = startSinglePlayer;
     window.quickFire = quickFire;
-    window.humanAttack = humanAttack;
     window.restartGame = restartGame;
     window.toggleModeFields = toggleModeFields;
     window.toggleEconomy = toggleEconomy;
     window.buyBusiness = buyBusiness;
-    window.mapClicked = mapClicked;
     window.activatePlayerShield = activatePlayerShield;
     window.activateInterceptors = activateInterceptors;
 
