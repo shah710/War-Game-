@@ -1680,31 +1680,31 @@
       return clamp((damage * factor) / 6, 0.2, 12);
     }
 
-    function maybeIntercept(attacker, defender, type, targetX, targetY) {
-      const interceptorKey = defender === "A" ? "interceptorsA" : "interceptorsB";
-      const shieldKey = defender === "A" ? "shieldA" : "shieldB";
+   function maybeIntercept(attacker, defender, type, targetX, targetY) {
+  const interceptorKey = defender === "A" ? "interceptorsA" : "interceptorsB";
+  const shieldKey = defender === "A" ? "shieldA" : "shieldB";
 
-      let chance = 0;
-      if (state[interceptorKey] > 0) chance += 0.35;
-      if (state[shieldKey] > 0) chance += 0.18;
-      if (type === "hydrogen" || type === "nuclear") chance -= 0.12;
-      if (type === "drone") chance += 0.08;
+  let chance = 0;
+  if (state[interceptorKey] > 0) chance += 0.20;
+  if (state[shieldKey] > 0) chance += 0.10;
+  if (type === "hydrogen" || type === "nuclear") chance -= 0.08;
+  if (type === "drone") chance += 0.05;
 
-      chance = clamp(chance, 0, 0.75);
+  chance = clamp(chance, 0, 0.45);
 
-      if (Math.random() < chance) {
-        if (state[interceptorKey] > 0) {
-          state[interceptorKey] -= 1;
-        }
-
-        drawInterceptor(defender, targetX, targetY);
-        logMessage(`${defender === "A" ? playerCountry : enemyCountry} intercepted an incoming ${ATTACKS[type].label}.`);
-        updateUI();
-        return true;
-      }
-
-      return false;
+  if (Math.random() < chance) {
+    if (state[interceptorKey] > 0) {
+      state[interceptorKey] -= 1;
     }
+
+    drawInterceptor(defender, targetX, targetY);
+    logMessage(`${defender === "A" ? playerCountry : enemyCountry} intercepted an incoming ${ATTACKS[type].label}.`);
+    updateUI();
+    return true;
+  }
+
+  return false;
+}
 
     function drawInterceptor(defender, targetX, targetY) {
       const layer = $("projectileLayer");
